@@ -24,7 +24,7 @@ def main() -> int:
 
     try:
         client = genai.Client(api_key=api_key)
-        model_name = env('GEMINI_MODEL', default=os.getenv('GEMINI_MODEL', 'gemini-2.0-flash'))
+        model_name = env('GEMINI_MODEL', default=os.getenv('GEMINI_MODEL', 'gemini-3-flash'))
         response = client.models.generate_content(
             model=model_name,
             contents='Return only valid JSON object with key "ping" and value "pong".',

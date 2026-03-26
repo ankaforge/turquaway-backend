@@ -9,7 +9,7 @@ from google.genai import types
 class GeminiService:
     """Service wrapper for Gemini API calls with strict JSON responses."""
 
-    def __init__(self, model_name: str = 'gemini-2.0-flash'):
+    def __init__(self, model_name: str = 'gemini-3-flash-preview'):
         api_key = os.getenv('GEMINI_API_KEY')
         if not api_key:
             raise ValueError('GEMINI_API_KEY is not set in environment variables.')
