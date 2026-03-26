@@ -135,12 +135,13 @@ class SuggestCitiesView(APIView):
 		try:
 			service = GeminiService()
 			suggestions = service.get_city_suggestions(
-				budget_type=serializer.validated_data['budget_type'],
+				budget=serializer.validated_data['budget_type'],
 				activities=serializer.validated_data['activities'],
 			)
 		except ValueError as exc:
 			return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-		except Exception:
+		except Exception as exc:
+			print(f'[ERROR] SuggestCitiesView Gemini failure: {exc}')
 			return Response(
 				{'detail': 'Failed to get city suggestions from Gemini.'},
 				status=status.HTTP_502_BAD_GATEWAY,
@@ -235,12 +236,13 @@ class GeneratePlanView(APIView):
 					'end_date': payload['end_date'].isoformat(),
 				},
 				guests=payload['guests'],
-				budget_type=payload['budget_type'],
+				budget=payload['budget_type'],
 				activities=payload['activities'],
 			)
 		except ValueError as exc:
 			return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-		except Exception:
+		except Exception as exc:
+			print(f'[ERROR] GeneratePlanView Gemini failure: {exc}')
 			return Response(
 				{'detail': 'Failed to generate detailed plan from Gemini.'},
 				status=status.HTTP_502_BAD_GATEWAY,
