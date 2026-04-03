@@ -1,16 +1,41 @@
 from django.urls import path
-from rest_framework_simplejwt.views import TokenRefreshView
-
-from api.views import GeneratePlanView, HealthCheckView, LoginView, RegisterView, SuggestCitiesView
+from api.views import (
+    ActivityListView,
+    FunnelDraftView,
+    HotelReservationCreateView,
+    HotelReservationWebhookView,
+    HotelSearchView,
+    LoginView,
+    LogoutView,
+    MeLanguageView,
+    MeView,
+    PlanConfirmView,
+    PlanCurrentView,
+    PlanGenerateOptionsView,
+    PlanRestartView,
+    RefreshTokenView,
+    RegisterView,
+    SuggestCitiesView,
+    TourSearchView,
+)
 
 
 urlpatterns = [
-    path('health/', HealthCheckView.as_view(), name='health-check'),
-    # Auth
     path('auth/register/', RegisterView.as_view(), name='auth-register'),
     path('auth/login/', LoginView.as_view(), name='auth-login'),
-    path('auth/token/refresh/', TokenRefreshView.as_view(), name='auth-token-refresh'),
-    # AI Travel
-    path('suggest-cities/', SuggestCitiesView.as_view(), name='suggest-cities'),
-    path('generate-plan/', GeneratePlanView.as_view(), name='generate-plan'),
+    path('auth/token/refresh/', RefreshTokenView.as_view(), name='auth-token-refresh'),
+    path('auth/logout/', LogoutView.as_view(), name='auth-logout'),
+    path('me/', MeView.as_view(), name='me'),
+    path('me/language/', MeLanguageView.as_view(), name='me-language'),
+    path('funnel/draft/', FunnelDraftView.as_view(), name='funnel-draft'),
+    path('activities/', ActivityListView.as_view(), name='activities'),
+    path('ai/suggest-cities/', SuggestCitiesView.as_view(), name='suggest-cities'),
+    path('hotels/search/', HotelSearchView.as_view(), name='hotels-search'),
+    path('hotel-reservations/', HotelReservationCreateView.as_view(), name='hotel-reservation-create'),
+    path('webhooks/hotel-reservations/', HotelReservationWebhookView.as_view(), name='hotel-reservation-webhook'),
+    path('tours/search/', TourSearchView.as_view(), name='tours-search'),
+    path('plans/generate-options/', PlanGenerateOptionsView.as_view(), name='plans-generate-options'),
+    path('plans/confirm/', PlanConfirmView.as_view(), name='plans-confirm'),
+    path('plans/current/', PlanCurrentView.as_view(), name='plans-current'),
+    path('plans/restart/', PlanRestartView.as_view(), name='plans-restart'),
 ]

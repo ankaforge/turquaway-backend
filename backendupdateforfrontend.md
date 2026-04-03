@@ -1,232 +1,717 @@
-# Backend Update To-Do
+# TURQUAWAY BACKEND CONTRACT (ROADMAP ALIGNED)
 
-## Authentication Endpoints (Required for Mobile Auth Flow)
+Bu dokuman, sadece asagidaki kapsami hedefler:
+- Adim 1: Karsilama + Dil + Auth
+- Adim 2: Rezervasyon Hunisi
+- Adim 3: Satin Alma ve Planlama
 
-### POST `/api/auth/register/`
-Request body:
+Amaç: Mobil uygulamanin bekledigi backend sozlesmesini netlestirmek.
+
+## 0) Global Kurallar
+
+### 0.1 Base URL ve Versiyonlama
+- Base URL: /api/v1
+- Tumu JSON doner.
+
+### 0.2 Auth
+- JWT: access_token + refresh_token
+- Header: Authorization: Bearer <access_token>
+- Access TTL: 30 dk
+- Refresh TTL: 30 gun
+
+### 0.3 Dil
+- Desteklenen diller: tr, en, ru, ar
+- Bilinmeyen dil geldiyse fallback: en
+- Metin donen endpointlerde language/lang parametresi kabul edilmeli.
+
+### 0.4 Standart Hata Formati
+Tum hata response'lari bu formatta olmalidir:
+
 ```json
 {
-  "full_name": "string",
-  "email": "user@example.com",
-  "phone": "+905xxxxxxxxx",
+  "code": "validation_error",
+  "detail": "Human readable message",
+  "fields": {
+    "email": ["Invalid email"]
+  },
+  "trace_id": "uuid"
+}
+```
+
+### 0.5 Durum Kodlari
+- 200: basarili okuma/aksiyon
+- 201: olusturma
+- 204: silme/icerik yok
+- 400: validation
+- 401: auth gerekli/gecersiz
+- 403: yetki yok
+- 404: bulunamadi
+- 409: cakisma (or. email zaten var)
+- 422: anlamsal hata
+- 429: rate limit
+- 500/502: sunucu veya upstream AI hatasi
+
+---
+
+## 1) ADIM 1 - Karsilama ve Kimlik Dogrulama
+
+Not: Onboarding ve LanguageSelection frontend-first ekranlaridir. Backend tarafinda gerekli olanlar auth, profile ve legal consent kaydi.
+
+### 1.1 Register
+POST /api/v1/auth/register/
+
+Request:
+```json
+{
+  "full_name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "phone": "+905551112233",
   "country": "TR",
-  "password": "string"
-}
-```
-Response (201):
-```json
-{
-  "access_token": "jwt_access_token",
-  "refresh_token": "jwt_refresh_token"
-}
-```
-- Validate unique email; return 400 with `detail` message on conflict.
-- Password: min 8 chars, must not be entirely numeric.
-- Country: accept 2-letter ISO 3166-1 alpha-2 codes only.
-
-### POST `/api/auth/login/`
-Request body:
-```json
-{
-  "email": "user@example.com",
-  "password": "string"
-}
-```
-Response (200):
-```json
-{
-  "access_token": "jwt_access_token",
-  "refresh_token": "jwt_refresh_token"
-}
-```
-- Return 401 with `detail` on invalid credentials (do NOT distinguish email vs password errors).
-
-### POST `/api/auth/token/refresh/`
-Request body:
-```json
-{ "refresh": "jwt_refresh_token" }
-```
-Response (200):
-```json
-{ "access": "new_jwt_access_token" }
-```
-
-### Token Strategy
-- Use **djangorestframework-simplejwt** (or equivalent).
-- Access token TTL: 30 minutes.
-- Refresh token TTL: 30 days.
-- All authenticated endpoints must accept `Authorization: Bearer <access_token>`.
-- Mobile stores tokens in device SecureStore — never in AsyncStorage.
-- Mobile stores tokens in device SecureStore — never in AsyncStorage.
-
----
-
-## AI Planning Endpoints (Required for Core Flow)
-
-### POST `/api/suggest-cities/`
-Called from: `LoadingAIProcessingScreen`
-
-Request body:
-```json
-{
-  "budget_type": "luxury | economy | cheap",
-  "activities": ["sea", "history", "food", "nature", "night", "photo"]
-}
-```
-Response (200) — accepts any of these shapes (mobile normalizes):
-```json
-["Istanbul", "Antalya", "Kapadokya"]
-```
-veya:
-```json
-{
-  "cities": [
-    { "city": "Istanbul", "reason": "Tarihi doku ve gastronomi" },
-    { "city": "Antalya", "reason": "Sahil ve aktivite zenginligi" }
-  ]
-}
-```
-veya:
-```json
-{
-  "suggestions": [
-    { "city": "Bodrum", "description": "Premıum sahıl deneyımi" }
-  ]
-}
-```
-- Dönen şehir sayısı: **3 (sabit)** — RouteSelectionScreen tam 3 rota kartı render eder.
-- Her şehir için `city/name/title` alanlarından en az biri zorunlu.
-- İsteğe bağlı: `reason` / `description` (alt başlık olarak gösterilir).
-- Hatalarda `detail` alanıyla 4xx döndür; mobil `navigation.goBack()` yapar.
-
----
-
-### POST `/api/generate-plan/`
-Called from: `RouteSelectionScreen`
-
-Request body:
-```json
-{
-  "city": "Istanbul",
-  "start_date": "2026-05-10",
-  "end_date": "2026-05-13",
-  "guests": 3,
-  "adults": 2,
-  "children": 1,
-  "budget_type": "economy",
-  "activities": ["history", "food"]
-}
-```
-Response (200):
-```json
-{
-  "itinerary_data": {
-    "city": "Istanbul",
-    "header_image": "https://...",
-    "daily_plan": [
-      {
-        "day": 1,
-        "title": "Tarihi Yarimada",
-        "activities": [
-          {
-            "time": "09:00",
-            "name": "Sultanahmet Meydani",
-            "transportation_note": "Tramvay T1 ile ulasim kolay.",
-            "price": null,
-            "min_age": null,
-            "family_friendly": true,
-            "adult_only": false
-          }
-        ],
-        "dining": [
-          {
-            "time": "19:30",
-            "name": "Bogaz manzarali aksam yemegi",
-            "price": "€65 ort.",
-            "cuisine": "Turk mutfagi"
-          }
-        ]
-      }
-    ],
-    "accommodation": [
-      {
-        "name": "The Bosphorus Palace",
-        "area": "Besiktas",
-        "price": "€240 / gece",
-        "family_friendly": true,
-        "child_bed_available": true,
-        "adult_only": false
-      }
-    ]
+  "password": "StrongPass123!",
+  "password_confirm": "StrongPass123!",
+  "language": "tr",
+  "consents": {
+    "terms_accepted": true,
+    "privacy_accepted": true,
+    "accepted_at": "2026-04-03T12:00:00Z",
+    "version": "v1"
   }
 }
 ```
 
-Alan eşlemeleri (mobil her iki notasyonu da kabul eder):
-| Backend alanı | Alternatif alan | Kullanım yeri |
-|---|---|---|
-| `header_image` | `headerImage` | DailyItineraryScreen başlık görseli |
-| `daily_plan` | `dailyPlans` | Günlük plan listesi |
-| `accommodation` | `hotels` | Konaklama listesi |
-| `activities[].name` | `activities[].title` | Aktivite başlığı |
-| `activities[].transportation_note` | `activities[].transport` | Ulaşım notu |
-| `dining[].name` | `dining[].restaurant` | Restoran adı |
-| `dining[].price` | `dining[].average_price` | Fiyat bilgisi |
+Validation:
+- full_name zorunlu
+- email zorunlu + unique
+- phone zorunlu
+- country ISO alpha-2
+- password min 8
+- password == password_confirm
+- terms_accepted ve privacy_accepted true olmali
 
-- `itinerary_data` wrapper zorunlu değil; backend direkt nesne de dönebilir (mobil her ikisini handle eder).
-- `daily_plan` boş array dönerse mobil fallback plan gösterir — üretimde bu olmamalı.
-- `header_image` null dönerse Unsplash fallback kullanılır.
+Response 201:
+```json
+{
+  "user": {
+    "id": "uuid",
+    "full_name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "phone": "+905551112233",
+    "country": "TR",
+    "language": "tr"
+  },
+  "tokens": {
+    "access_token": "jwt_access",
+    "refresh_token": "jwt_refresh"
+  }
+}
+```
 
+### 1.2 Login
+POST /api/v1/auth/login/
 
+Request:
+```json
+{
+  "email": "ada@example.com",
+  "password": "StrongPass123!"
+}
+```
 
+Response 200:
+```json
+{
+  "user": {
+    "id": "uuid",
+    "full_name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "language": "tr"
+  },
+  "tokens": {
+    "access_token": "jwt_access",
+    "refresh_token": "jwt_refresh"
+  }
+}
+```
 
-## Critical Rule: Adult/Child Separation (Must Have)
-- Make `adults` and `children` required request fields in itinerary generation payload.
-- Keep `guests` as computed total (`adults + children`) only for compatibility, but do not use it as primary decision input.
-- Reject requests if `adults` is missing or `< 1`.
-- Reject requests if `children` is missing or `< 0`.
-- Add strict validation: `guests === adults + children`.
+### 1.3 Refresh Token
+POST /api/v1/auth/token/refresh/
 
-## API and AI Flow
-- Update itinerary endpoint contract to include: `language`, `adults`, `children`, `dates`, `budget`, `activity_preferences`.
-- Store language + guest composition in request context before AI generation.
-- Add retry and timeout strategy for AI itinerary generation requests.
-- Return structured sections: `safe_for_children`, `age_notes`, `why_recommended`, `risk_flags` for each activity/hotel.
+Request:
+```json
+{
+  "refresh_token": "jwt_refresh"
+}
+```
 
-## Child Safety and Content Filtering (Gemini Responsibility)
-- Define policy rules for child-unsafe items (nightlife, adult-only venues, unsafe transport windows, etc.).
-- Force Gemini prompt to respect `children > 0` mode and avoid unsafe recommendations.
-- Add post-generation rule checker on backend: remove or replace any unsafe activity/hotel before response.
-- If unsafe suggestions are detected, regenerate only invalid sections with stricter prompt constraints.
-- Add `family_mode: true` when `children > 0` and pass this as mandatory model instruction.
+Response 200:
+```json
+{
+  "access_token": "new_jwt_access"
+}
+```
 
-## Hotel and Activity Metadata Requirements
-- Extend activity schema with `min_age`, `family_friendly`, `adult_only`, `safety_notes`.
-- Extend hotel schema with `family_friendly`, `child_bed_available`, `adult_only`, `quiet_hours_info`.
-- Prevent returning entries where `adult_only=true` when `children > 0`.
-- Add fallback replacement strategy when filtered list becomes too short.
+### 1.4 Logout
+POST /api/v1/auth/logout/
 
-## User Profile and Preferences
-- Create profile endpoint to read/write preferences: language, budget bias, activity priorities, child sensitivity level.
-- Save latest `adults/children` preference as reusable profile defaults.
-- Add secure update route for preference changes from mobile profile screen.
+Request:
+```json
+{
+  "refresh_token": "jwt_refresh"
+}
+```
 
-## Localization
-- Add language parameter support for all itinerary and recommendation endpoints.
-- Return language-ready text fields in selected language.
-- Provide fallback language logic when requested language is unavailable.
+Response 204
 
-## Reliability and Security
-- Add input sanitization and request size limits.
-- Add rate limiting for AI generation endpoints.
-- Add structured error codes for mobile-friendly error handling.
-- Add policy violation error type for child-safety filtering failures.
+Not:
+- Refresh blacklist veya rotation uygulanmali.
 
-## Observability and QA
-- Log request lifecycle with guest composition: received, validated, AI started, filtered, completed, failed.
-- Add metrics: unsafe-item-detection-rate, filtered-item-count, family-mode-usage-rate.
-- Add trace correlation id in all API responses for easier debugging.
-- Build QA test cases:
-- `children=0`: adult recommendations allowed.
-- `children>0`: no adult-only activity/hotel must appear.
-- Mixed language requests should still respect child-safety constraints.
+### 1.5 Me (Profile bootstrap)
+GET /api/v1/me/
+
+Response 200:
+```json
+{
+  "id": "uuid",
+  "full_name": "Ada Lovelace",
+  "email": "ada@example.com",
+  "phone": "+905551112233",
+  "country": "TR",
+  "language": "tr"
+}
+```
+
+### 1.6 Dil Guncelleme
+PATCH /api/v1/me/language/
+
+Request:
+```json
+{
+  "language": "ru"
+}
+```
+
+Response 200:
+```json
+{
+  "language": "ru"
+}
+```
+
+---
+
+## 2) ADIM 2 - Rezervasyon Hunisi
+
+Huni state'i local draft olarak da tutuluyor; backend tarafi da server draft desteklemeli.
+
+### 2.1 Draft Kaydet/Guncelle
+PUT /api/v1/funnel/draft/
+
+Request:
+```json
+{
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "language": "tr"
+}
+```
+
+Response 200:
+```json
+{
+  "draft_id": "uuid",
+  "updated_at": "2026-04-03T12:00:00Z"
+}
+```
+
+### 2.2 Draft Oku
+GET /api/v1/funnel/draft/
+
+Response 200:
+```json
+{
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "language": "tr"
+}
+```
+
+### 2.3 Etkinlikleri Dinamik Cek
+GET /api/v1/activities/?lang=tr
+
+Response 200 (onerilen format):
+```json
+{
+  "results": [
+    {
+      "key": "safari",
+      "name": "Safari",
+      "icon": "binoculars",
+      "active": true
+    },
+    {
+      "key": "diving",
+      "name": "Dalis",
+      "icon": "waves",
+      "active": true
+    }
+  ]
+}
+```
+
+Kurallar:
+- key dil-bagimsiz sabit olmalidir.
+- name secilen dile gore lokalize olmalidir.
+
+### 2.4 AI Sehir Onerisi (LoadingAIProcessing)
+POST /api/v1/ai/suggest-cities/
+
+Request:
+```json
+{
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "language": "tr",
+  "family_mode": true
+}
+```
+
+family_mode kurali:
+- children > 0 ise family_mode zorunlu true
+- children == 0 ise false olabilir
+
+Response 200:
+```json
+{
+  "cities": [
+    {
+      "city": "Antalya",
+      "description": "Sahil ve aile aktiviteleri"
+    },
+    {
+      "city": "Mugla",
+      "description": "Dogal koylar ve sakin rota"
+    },
+    {
+      "city": "Nevsehir",
+      "description": "Kultur ve manzara odakli"
+    }
+  ]
+}
+```
+
+Kurallar:
+- Tam 3 rota donmeli.
+- RouteSelection en ustte ilk 3 rotayi En Cok Tercih Edilenler etiketiyle gosterecek.
+
+---
+
+## 3) ADIM 3 - Satin Alma ve Planlama
+
+Bu adim, yol haritasindaki ekranlarin backend sozlesmesidir.
+
+### 3.1 HotelSelection - Otel Arama
+POST /api/v1/hotels/search/
+
+Request:
+```json
+{
+  "city": "Antalya",
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "language": "tr",
+  "sort": "price_asc"
+}
+```
+
+Response 200:
+```json
+{
+  "hotels": [
+    {
+      "id": "uuid",
+      "name": "Hotel A",
+      "city": "Antalya",
+      "nightly_price_per_person": 4200,
+      "currency": "TRY",
+      "rating": 4.5,
+      "sponsored": true,
+      "sponsored_badge": "Gemini Onerisi",
+      "family_friendly": true,
+      "distance_to_center_km": 1.8,
+      "image": "https://..."
+    }
+  ]
+}
+```
+
+Butce kurallari:
+- cheap: nightly_price_per_person < 5000
+- economy: nightly_price_per_person < 8000
+- luxury: nightly_price_per_person > 12000
+
+Sort parametreleri:
+- price_asc
+- price_desc
+- value_score (AI fiyat/performans)
+
+### 3.2 HotelReservation - Native Rezervasyon
+POST /api/v1/hotel-reservations/
+
+Request:
+```json
+{
+  "hotel_id": "uuid",
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "guest_contact": {
+    "full_name": "Ada Lovelace",
+    "email": "ada@example.com",
+    "phone": "+905551112233"
+  }
+}
+```
+
+Response 201:
+```json
+{
+  "reservation_id": "uuid",
+  "status": "pending_payment",
+  "payment": {
+    "provider": "booking_demand_partner",
+    "payment_intent_id": "pi_xxx",
+    "client_secret": "secret_xxx"
+  }
+}
+```
+
+Webhook endpoint (partner -> backend):
+- POST /api/v1/webhooks/hotel-reservations/
+
+Beklenen olaylar:
+- payment_succeeded
+- payment_failed
+- booking_confirmed
+- booking_cancelled
+
+### 3.3 TourSelection - Yakin Tur Listesi (30km)
+POST /api/v1/tours/search/
+
+Request:
+```json
+{
+  "hotel_id": "uuid",
+  "city": "Antalya",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "radius_km": 30,
+  "language": "tr"
+}
+```
+
+Response 200:
+```json
+{
+  "tours": [
+    {
+      "id": "uuid",
+      "title": "Kanyon Safari",
+      "description": "Tam gun doga turu",
+      "price_adult": 1800,
+      "price_child": 900,
+      "currency": "TRY",
+      "distance_km": 12.4,
+      "family_friendly": true,
+      "categories": ["safari"],
+      "provider": {
+        "id": "uuid",
+        "name": "Partner Tour A"
+      }
+    }
+  ],
+  "empty_state": false,
+  "diy_fallback": null
+}
+```
+
+Bos durum:
+- Eger tour yoksa hata donme.
+- 200 + empty_state true don.
+- Backend arka planda DIY fallback plan uretebilir.
+
+Bos response ornegi:
+```json
+{
+  "tours": [],
+  "empty_state": true,
+  "diy_fallback": {
+    "title": "Kendin Yap Rota",
+    "summary": "Bolgede anlasmali tur yok, sana ozel serbest gezi plani olusturuldu."
+  }
+}
+```
+
+### 3.4 PlanSelection - 2 Plan Uret
+POST /api/v1/plans/generate-options/
+
+Request:
+```json
+{
+  "city": "Antalya",
+  "start_date": "2026-05-10",
+  "end_date": "2026-05-13",
+  "adults": 2,
+  "children": 1,
+  "budget_type": "economy",
+  "activities": ["safari", "diving"],
+  "hotel_reservation_id": "uuid",
+  "selected_tour_ids": ["uuid"],
+  "language": "tr",
+  "family_mode": true
+}
+```
+
+Response 200:
+```json
+{
+  "options": [
+    {
+      "plan_id": "uuid_plan_1",
+      "title": "Plan A",
+      "days": [
+        {
+          "day": 1,
+          "timeline": [
+            {
+              "time": "09:00",
+              "type": "activity",
+              "title": "Liman Gezisi",
+              "notes": "Aileye uygun"
+            }
+          ]
+        }
+      ],
+      "estimated_total": 12400,
+      "currency": "TRY"
+    },
+    {
+      "plan_id": "uuid_plan_2",
+      "title": "Plan B",
+      "days": [],
+      "estimated_total": 13800,
+      "currency": "TRY"
+    }
+  ]
+}
+```
+
+Kurallar:
+- Tam 2 plan donmeli.
+- Timeline saat saat formatta olmalidir.
+
+### 3.5 Plan Secimi Onayla
+POST /api/v1/plans/confirm/
+
+Request:
+```json
+{
+  "plan_id": "uuid_plan_1"
+}
+```
+
+Response 200:
+```json
+{
+  "status": "confirmed",
+  "confirmed_plan_id": "uuid_plan_1",
+  "tour_reservations_created": 2
+}
+```
+
+### 3.6 PlanScreen - Aktif Plani Getir
+GET /api/v1/plans/current/
+
+Response 200:
+```json
+{
+  "plan_id": "uuid_plan_1",
+  "city": "Antalya",
+  "status": "active",
+  "days": [
+    {
+      "day": 1,
+      "timeline": []
+    }
+  ]
+}
+```
+
+### 3.7 Huniyi Bastan Baslat
+POST /api/v1/plans/restart/
+
+Response 204
+
+Etkisi:
+- aktif draft temizlenir
+- aktif secim temizlenir
+- kullanici yeniden DateRangeGuests adimina donebilir
+
+---
+
+## 4) Django Tarafi - Model Taslagi (MVP)
+
+Asagidaki modeller adim 1-2-3 kontratini desteklemek icin yeterlidir.
+
+1. UserProfile
+- user (OneToOne)
+- full_name
+- phone
+- country
+- language
+
+2. UserLegalConsent
+- user (FK)
+- terms_accepted
+- privacy_accepted
+- accepted_at
+- version
+
+3. FunnelDraft
+- user (OneToOne)
+- start_date
+- end_date
+- adults
+- children
+- budget_type
+- activities (JSON)
+- selected_city
+- updated_at
+
+4. ActivityCategory
+- key (unique)
+- name_tr
+- name_en
+- name_ru
+- name_ar
+- icon
+- active
+
+5. Hotel
+- external_hotel_id
+- name
+- city
+- nightly_price_per_person
+- currency
+- rating
+- sponsored
+- family_friendly
+- image
+
+6. HotelReservation
+- user
+- hotel
+- start_date
+- end_date
+- adults
+- children
+- status
+- payment_provider
+- payment_intent_id
+
+7. Tour
+- provider
+- title
+- description
+- city
+- lat
+- lng
+- price_adult
+- price_child
+- family_friendly
+- categories (M2M ActivityCategory)
+
+8. TourReservation
+- user
+- tour
+- hotel_reservation
+- date
+- adults
+- children
+- status
+
+9. TravelPlan
+- user
+- source_payload (JSON)
+- options_payload (JSON)
+- confirmed_plan_id
+- status (draft/confirmed/active/completed)
+
+---
+
+## 5) Django URL Taslagi
+
+ornek api/urls.py:
+
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("auth/register/", views.RegisterView.as_view()),
+    path("auth/login/", views.LoginView.as_view()),
+    path("auth/token/refresh/", views.RefreshTokenView.as_view()),
+    path("auth/logout/", views.LogoutView.as_view()),
+
+    path("me/", views.MeView.as_view()),
+    path("me/language/", views.MeLanguageView.as_view()),
+
+    path("funnel/draft/", views.FunnelDraftView.as_view()),
+    path("activities/", views.ActivityListView.as_view()),
+
+    path("ai/suggest-cities/", views.SuggestCitiesView.as_view()),
+
+    path("hotels/search/", views.HotelSearchView.as_view()),
+    path("hotel-reservations/", views.HotelReservationCreateView.as_view()),
+    path("webhooks/hotel-reservations/", views.HotelReservationWebhookView.as_view()),
+
+    path("tours/search/", views.TourSearchView.as_view()),
+
+    path("plans/generate-options/", views.PlanGenerateOptionsView.as_view()),
+    path("plans/confirm/", views.PlanConfirmView.as_view()),
+    path("plans/current/", views.PlanCurrentView.as_view()),
+    path("plans/restart/", views.PlanRestartView.as_view()),
+]
+```
+
+---
+
+## 6) Frontend-Backend Uyum Notlari (Kritik)
+
+- adults backend tarafinda zorunludur.
+- children backend tarafinda zorunludur (0 olabilir).
+- family_mode, children > 0 ise true olarak ele alinmalidir.
+- Dil secimi tum AI metinlerinde dikkate alinmalidir.
+- Etkinlik endpointi her zaman stabil key donmelidir.
+- Suggest-cities her zaman 3 destinasyon donmelidir.
+- PlanSelection her zaman 2 plan secenegi donmelidir.
+
+Bu kurallar, mevcut mobil akisin sorunsuz calismasi icin zorunludur.

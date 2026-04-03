@@ -1,0 +1,137 @@
+:root {
+  --tw-bg: #f6f8fb;
+  --tw-card: #ffffff;
+  --tw-primary: #0b6e6e;
+  --tw-primary-2: #159895;
+  --tw-accent: #ffb703;
+  --tw-text: #14213d;
+  --tw-muted: #5a6473;
+  --tw-border: #dfe5ee;
+  --tw-danger: #b42318;
+}
+
+body {
+  background: radial-gradient(circle at top left, #e8f8f8 0%, var(--tw-bg) 40%, #edf3fa 100%);
+  color: var(--tw-text);
+}
+
+#header {
+  background: linear-gradient(130deg, var(--tw-primary) 0%, var(--tw-primary-2) 50%, #1c7ed6 100%);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(11, 110, 110, 0.28);
+}
+
+#branding h1,
+#branding h1 a:link,
+#branding h1 a:visited {
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  background: linear-gradient(130deg, #0e9f9b 0%, #1179c5 100%);
+}
+
+#content-main .module,
+.dashboard .module,
+.change-form .module,
+.submit-row {
+  border-radius: 14px;
+  border: 1px solid var(--tw-border);
+  background: var(--tw-card);
+  box-shadow: 0 8px 22px rgba(20, 33, 61, 0.06);
+  overflow: hidden;
+}
+
+a:link,
+a:visited {
+  color: #0a66c2;
+}
+
+a:hover {
+  color: #084b8a;
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+  border-radius: 10px;
+  border: 0;
+  background: linear-gradient(130deg, #0d9488 0%, #1d4ed8 100%);
+  color: #fff;
+  font-weight: 600;
+  padding: 10px 14px;
+}
+
+.button.default,
+input[type="submit"].default,
+.submit-row input.default {
+  background: linear-gradient(130deg, #0b6e6e 0%, #0f766e 60%, #155e75 100%);
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+a.button:hover {
+  filter: brightness(1.05);
+}
+
+#changelist-filter {
+  background: #f9fbff;
+  border-left: 1px solid var(--tw-border);
+}
+
+#changelist-filter h2 {
+  color: var(--tw-text);
+  background: #e9f1ff;
+}
+
+#changelist table thead th {
+  background: #eef4ff;
+  color: var(--tw-text);
+}
+
+tr:nth-child(even) {
+  background: #fbfdff;
+}
+
+input,
+textarea,
+select,
+.vTextField {
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  padding: 8px 10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #1d4ed8;
+  outline: 0;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+}
+
+.messagelist .success,
+.messagelist .warning,
+.messagelist .error {
+  border-radius: 10px;
+}
+
+.messagelist .success {
+  background: #dcfce7;
+}
+
+.messagelist .warning {
+  background: #fef3c7;
+}
+
+.messagelist .error {
+  background: #fee2e2;
+  color: var(--tw-danger);
+}

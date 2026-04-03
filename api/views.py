@@ -1,226 +1,681 @@
+from uuid import uuid4
+
 from django.contrib.auth import authenticate
-from drf_spectacular.utils import OpenApiResponse, extend_schema
-from rest_framework import serializers, status
+from django.db.models import F
+from django.utils.dateparse import parse_datetime
+from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from api.serializers import RegisterSerializer, TravelPlanSerializer
-from api.utils import GeminiService
+from api.models import (
+    ActivityCategory,
+    Destination,
+    FunnelDraft,
+    Hotel,
+    HotelReservation,
+    Tour,
+    TourReservation,
+    TourSession,
+    TravelPlan,
+    UserLegalConsent,
+)
+from api.serializers import (
+    ActivityListItemSerializer,
+    FunnelDraftSerializer,
+    HotelListItemSerializer,
+    HotelReservationCreateSerializer,
+    HotelReservationWebhookSerializer,
+    HotelSearchSerializer,
+    LoginSerializer,
+    MeLanguageSerializer,
+    PlanConfirmSerializer,
+    PlanGenerateOptionsSerializer,
+    RefreshTokenInputSerializer,
+    RegisterSerializer,
+    SuggestCitiesSerializer,
+    TourListItemSerializer,
+    TourSearchSerializer,
+)
+from api.utils import GeminiService, error_response
 
 
-class HealthCheckSerializer(serializers.Serializer):
-    status = serializers.CharField(help_text='Current health state of the API.')
-    service = serializers.CharField(help_text='Service identifier returned by the backend.')
+SUPPORTED_LANGS = {"tr", "en", "ru", "ar"}
 
 
-class HealthCheckView(APIView):
-    @extend_schema(
-        tags=['Health'],
-        summary='Health check',
-        description='Returns a simple status payload to confirm the API is reachable.',
-        responses={200: HealthCheckSerializer},
-    )
-    def get(self, request):
-        return Response({'status': 'ok', 'service': 'turquaway-backend'})
+def normalize_lang(value: str | None) -> str:
+    if value in SUPPORTED_LANGS:
+        return value
+    return "en"
 
 
-class TokenResponseSerializer(serializers.Serializer):
-    access_token = serializers.CharField()
-    refresh_token = serializers.CharField()
+def user_payload(user):
+    return {
+        "id": str(user.uuid),
+        "full_name": user.full_name,
+        "email": user.email,
+        "phone": user.phone,
+        "country": user.country,
+        "language": user.language,
+    }
 
 
-class ErrorResponseSerializer(serializers.Serializer):
-    detail = serializers.CharField()
+def build_plan_options(start_date, end_date, city: str, currency: str = "TRY"):
+    total_days = max((end_date - start_date).days + 1, 1)
+    options = []
+    for idx in [1, 2]:
+        days = []
+        for day_index in range(total_days):
+            day_no = day_index + 1
+            base_time = "09:00" if idx == 1 else "10:00"
+            days.append(
+                {
+                    "day": day_no,
+                    "timeline": [
+                        {
+                            "time": base_time,
+                            "type": "activity",
+                            "title": f"{city} Kesif Rotasi {day_no}",
+                            "notes": "Aileye uygun" if idx == 1 else "Daha dinamik rota",
+                        }
+                    ],
+                }
+            )
 
-
-class LoginRequestSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+        options.append(
+            {
+                "plan_id": f"plan_{idx}_{uuid4().hex[:10]}",
+                "title": f"Plan {'A' if idx == 1 else 'B'}",
+                "days": days,
+                "estimated_total": 12400 if idx == 1 else 13800,
+                "currency": currency,
+            }
+        )
+    return options
 
 
 class RegisterView(APIView):
-    @extend_schema(
-        tags=['Auth'],
-        summary='Register a new user',
-        request=RegisterSerializer,
-        responses={
-            201: OpenApiResponse(response=TokenResponseSerializer, description='JWT tokens on success.'),
-            400: OpenApiResponse(response=ErrorResponseSerializer, description='Validation error.'),
-        },
-    )
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Register validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = serializer.save()
+        consents = serializer.validated_data["consents"]
+        accepted_at = parse_datetime(consents["accepted_at"])
+        if accepted_at is None:
+            return error_response(
+                code="validation_error",
+                detail="accepted_at must be a valid ISO datetime.",
+                fields={"consents": {"accepted_at": ["Invalid datetime."]}},
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        UserLegalConsent.objects.create(
+            user=user,
+            terms_accepted=consents["terms_accepted"],
+            privacy_accepted=consents["privacy_accepted"],
+            accepted_at=accepted_at,
+            version=consents["version"],
+        )
+
         refresh = RefreshToken.for_user(user)
         return Response(
-            {'access_token': str(refresh.access_token), 'refresh_token': str(refresh)},
+            {
+                "user": user_payload(user),
+                "tokens": {
+                    "access_token": str(refresh.access_token),
+                    "refresh_token": str(refresh),
+                },
+            },
             status=status.HTTP_201_CREATED,
         )
 
 
 class LoginView(APIView):
-    @extend_schema(
-        tags=['Auth'],
-        summary='Login with email and password',
-        request=LoginRequestSerializer,
-        responses={
-            200: OpenApiResponse(response=TokenResponseSerializer, description='JWT tokens on success.'),
-            401: OpenApiResponse(response=ErrorResponseSerializer, description='Invalid credentials.'),
-        },
-    )
+    permission_classes = [permissions.AllowAny]
+
     def post(self, request):
-        serializer = LoginRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer = LoginSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Login validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = authenticate(
             request,
-            username=serializer.validated_data['email'],
-            password=serializer.validated_data['password'],
+            username=serializer.validated_data["email"],
+            password=serializer.validated_data["password"],
         )
         if user is None:
-            return Response({'detail': 'Invalid credentials.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return error_response(
+                code="invalid_credentials",
+                detail="Email or password is incorrect.",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
 
         refresh = RefreshToken.for_user(user)
         return Response(
-            {'access_token': str(refresh.access_token), 'refresh_token': str(refresh)},
-            status=status.HTTP_200_OK,
+            {
+                "user": {
+                    "id": str(user.uuid),
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "language": user.language,
+                },
+                "tokens": {
+                    "access_token": str(refresh.access_token),
+                    "refresh_token": str(refresh),
+                },
+            }
         )
 
 
-class SuggestCitiesRequestSerializer(serializers.Serializer):
-    budget_type = serializers.ChoiceField(choices=['luxury', 'economy', 'cheap'])
-    activities = serializers.ListField(child=serializers.CharField(), allow_empty=False)
+class RefreshTokenView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = RefreshTokenInputSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Refresh token validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            token = RefreshToken(serializer.validated_data["refresh_token"])
+            return Response({"access_token": str(token.access_token)})
+        except Exception:
+            return error_response(
+                code="invalid_token",
+                detail="Refresh token is invalid.",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
 
 
-class SuggestCitiesResponseSerializer(serializers.Serializer):
-    city = serializers.CharField()
-    country = serializers.CharField()
-    reason = serializers.CharField(required=False, allow_blank=True)
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = RefreshTokenInputSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Refresh token validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            token = RefreshToken(serializer.validated_data["refresh_token"])
+            token.blacklist()
+        except Exception:
+            return error_response(
+                code="invalid_token",
+                detail="Refresh token is invalid.",
+                status_code=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class GeneratePlanRequestSerializer(serializers.Serializer):
-    city = serializers.CharField(max_length=150)
-    start_date = serializers.DateField()
-    end_date = serializers.DateField()
-    adults = serializers.IntegerField(min_value=1)
-    children = serializers.IntegerField(min_value=0, required=False, default=0)
-    guests = serializers.IntegerField(min_value=1, required=False)
-    budget_type = serializers.ChoiceField(choices=['luxury', 'economy', 'cheap'])
-    activities = serializers.ListField(child=serializers.CharField(), allow_empty=False)
+class MeView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
 
-    def validate(self, attrs):
-        if attrs['end_date'] < attrs['start_date']:
-            raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
-
-        adults = attrs['adults']
-        children = attrs['children']
-        guests = attrs.get('guests')
-        if guests is not None and guests != adults + children:
-            raise serializers.ValidationError({'guests': 'guests must equal adults + children.'})
-
-        attrs['guests'] = adults + children
-        return attrs
+    def get(self, request):
+        return Response(user_payload(request.user))
 
 
-class GeneratePlanResponseSerializer(serializers.Serializer):
-    itinerary_data = serializers.JSONField()
+class MeLanguageView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def patch(self, request):
+        serializer = MeLanguageSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Language validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request.user.language = serializer.validated_data["language"]
+        request.user.save(update_fields=["language"])
+        return Response({"language": request.user.language})
+
+
+class FunnelDraftView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def put(self, request):
+        serializer = FunnelDraftSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Draft validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        defaults = serializer.validated_data
+        draft, _ = FunnelDraft.objects.update_or_create(user=request.user, defaults=defaults)
+        return Response({"draft_id": str(draft.uuid), "updated_at": draft.updated_at.isoformat()})
+
+    def get(self, request):
+        draft = FunnelDraft.objects.filter(user=request.user).first()
+        if not draft:
+            return Response(
+                {
+                    "start_date": None,
+                    "end_date": None,
+                    "adults": 1,
+                    "children": 0,
+                    "budget_type": "economy",
+                    "activities": [],
+                    "language": normalize_lang(request.user.language),
+                }
+            )
+
+        return Response(
+            {
+                "start_date": draft.start_date,
+                "end_date": draft.end_date,
+                "adults": draft.adults,
+                "children": draft.children,
+                "budget_type": draft.budget_type,
+                "activities": draft.activities,
+                "language": normalize_lang(draft.language),
+            }
+        )
+
+
+class ActivityListView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        lang = normalize_lang(request.query_params.get("lang") or request.query_params.get("language"))
+        activities = ActivityCategory.objects.filter(active=True).order_by("id")
+        data = ActivityListItemSerializer(activities, many=True, context={"lang": lang}).data
+        return Response({"results": data})
 
 
 class SuggestCitiesView(APIView):
-    @extend_schema(
-        operation_id='suggest_cities',
-        tags=['AI Travel'],
-        summary='Suggest cities with Gemini',
-        description='Returns exactly 3 city suggestions based on budget and activities.',
-        request=SuggestCitiesRequestSerializer,
-        responses={
-            200: OpenApiResponse(
-                response=SuggestCitiesResponseSerializer(many=True),
-                description='List of 3 suggested cities.',
-            ),
-            400: OpenApiResponse(response=ErrorResponseSerializer, description='Validation error.'),
-            502: OpenApiResponse(response=ErrorResponseSerializer, description='Gemini upstream error.'),
-        },
-    )
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
-        serializer = SuggestCitiesRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer = SuggestCitiesSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Suggest cities validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        allowed_destinations = list(
+            Destination.objects.filter(active=True).order_by("name").values_list("name", flat=True)
+        )
+        if not allowed_destinations:
+            return error_response(
+                code="validation_error",
+                detail="No active destinations configured.",
+                fields={"destinations": ["At least one active destination is required."]},
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
-            service = GeminiService()
-            suggestions = service.get_city_suggestions(
-                budget=serializer.validated_data['budget_type'],
-                activities=serializer.validated_data['activities'],
+            suggestions = GeminiService().get_city_suggestions(
+                budget=payload["budget_type"],
+                activities=payload["activities"],
+                language=normalize_lang(payload.get("language")),
+                allowed_destinations=allowed_destinations,
             )
-        except ValueError as exc:
-            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as exc:
-            print(f'[ERROR] SuggestCitiesView Gemini failure: {exc}')
-            return Response(
-                {'detail': 'Failed to get city suggestions from Gemini.'},
-                status=status.HTTP_502_BAD_GATEWAY,
+        except Exception:
+            fallback = []
+            for name in allowed_destinations[:3]:
+                fallback.append({"city": name, "description": "Butce ve aktivite tercihine uygun onerilen rota"})
+            return Response({"cities": fallback})
+
+        cities = suggestions[:3]
+        while len(cities) < 3:
+            cities.append(
+                {
+                    "city": allowed_destinations[len(cities) % len(allowed_destinations)],
+                    "description": "Onerilen alternatif rota",
+                }
             )
 
-        return Response(suggestions, status=status.HTTP_200_OK)
+        return Response({"cities": cities[:3]})
 
 
-class GeneratePlanView(APIView):
-    @extend_schema(
-        operation_id='generate_detailed_plan',
-        tags=['AI Travel'],
-        summary='Generate detailed travel plan',
-        description='Generates a structured itinerary with Gemini and stores it in TravelPlan.',
-        request=GeneratePlanRequestSerializer,
-        responses={
-            200: OpenApiResponse(response=GeneratePlanResponseSerializer, description='Itinerary generated.'),
-            400: OpenApiResponse(response=ErrorResponseSerializer, description='Validation error.'),
-            502: OpenApiResponse(response=ErrorResponseSerializer, description='Gemini upstream error.'),
-        },
-    )
+class HotelSearchView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
     def post(self, request):
-        request_serializer = GeneratePlanRequestSerializer(data=request.data)
-        request_serializer.is_valid(raise_exception=True)
-        payload = request_serializer.validated_data
-
-        adults = payload['adults']
-        children = payload['children']
-
-        try:
-            service = GeminiService()
-            itinerary_data = service.create_detailed_plan(
-                city=payload['city'],
-                start_date=payload['start_date'].isoformat(),
-                end_date=payload['end_date'].isoformat(),
-                adults=adults,
-                children=children,
-                budget=payload['budget_type'],
-                activities=payload['activities'],
+        serializer = HotelSearchSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Hotel search validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
             )
-        except ValueError as exc:
-            return Response({'detail': str(exc)}, status=status.HTTP_400_BAD_REQUEST)
-        except Exception as exc:
-            print(f'[ERROR] GeneratePlanView Gemini failure: {exc}')
+
+        payload = serializer.validated_data
+        qs = Hotel.objects.filter(destination__name__iexact=payload["city"])
+
+        budget = payload["budget_type"]
+        if budget == "cheap":
+            qs = qs.filter(nightly_price_per_person__lt=5000)
+        elif budget == "economy":
+            qs = qs.filter(nightly_price_per_person__lt=8000)
+        elif budget == "luxury":
+            qs = qs.filter(nightly_price_per_person__gt=12000)
+
+        sort = payload["sort"]
+        if sort == "price_asc":
+            qs = qs.order_by("nightly_price_per_person")
+        elif sort == "price_desc":
+            qs = qs.order_by("-nightly_price_per_person")
+        else:
+            qs = qs.order_by(F("rating").desc(), F("nightly_price_per_person").asc())
+
+        hotels_data = HotelListItemSerializer(qs, many=True).data
+        return Response({"hotels": hotels_data})
+
+
+class HotelReservationCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = HotelReservationCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Hotel reservation validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        hotel = Hotel.objects.filter(uuid=payload["hotel_id"]).first()
+        if not hotel:
+            return error_response(
+                code="not_found",
+                detail="Hotel not found.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        payment_intent = f"pi_{uuid4().hex[:16]}"
+        reservation = HotelReservation.objects.create(
+            user=request.user,
+            hotel=hotel,
+            start_date=payload["start_date"],
+            end_date=payload["end_date"],
+            adults=payload["adults"],
+            children=payload["children"],
+            payment_intent_id=payment_intent,
+        )
+
+        return Response(
+            {
+                "reservation_id": str(reservation.uuid),
+                "status": reservation.status,
+                "payment": {
+                    "provider": "booking_demand_partner",
+                    "payment_intent_id": payment_intent,
+                    "client_secret": f"secret_{uuid4().hex[:16]}",
+                },
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class HotelReservationWebhookView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = HotelReservationWebhookSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Webhook payload validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        reservation = HotelReservation.objects.filter(
+            payment_intent_id=payload["payment_intent_id"]
+        ).first()
+        if not reservation:
+            return error_response(
+                code="not_found",
+                detail="Reservation not found.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        event_to_status = {
+            "payment_succeeded": HotelReservation.Status.PAYMENT_SUCCEEDED,
+            "payment_failed": HotelReservation.Status.BOOKING_CANCELLED,
+            "booking_confirmed": HotelReservation.Status.BOOKING_CONFIRMED,
+            "booking_cancelled": HotelReservation.Status.BOOKING_CANCELLED,
+        }
+        reservation.status = event_to_status[payload["event"]]
+        reservation.save(update_fields=["status"])
+        return Response({"status": "ok"})
+
+
+class TourSearchView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = TourSearchSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Tour search validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        qs = Tour.objects.filter(destination__name__iexact=payload["city"], is_approved=True)
+
+        if payload["children"] > 0:
+            qs = qs.filter(family_friendly=True)
+
+        activity_keys = payload.get("activities") or []
+        if activity_keys:
+            qs = qs.filter(categories__key__in=activity_keys).distinct()
+
+        tours = TourListItemSerializer(qs.order_by("title", "id"), many=True).data
+        if not tours:
             return Response(
-                {'detail': 'Failed to generate detailed plan from Gemini.'},
-                status=status.HTTP_502_BAD_GATEWAY,
+                {
+                    "tours": [],
+                    "empty_state": True,
+                    "diy_fallback": {
+                        "title": "Kendin Yap Rota",
+                        "summary": "Bolgede anlasmali tur yok, sana ozel serbest gezi plani olusturuldu.",
+                    },
+                }
             )
 
-        plan_serializer = TravelPlanSerializer(
-            data={
-                'user': request.user.id if request.user.is_authenticated else None,
-                'budget_type': payload['budget_type'],
-                'activities': payload['activities'],
-                'city': payload['city'],
-                'start_date': payload['start_date'],
-                'end_date': payload['end_date'],
-                'guests': payload['guests'],
-                'adults': adults,
-                'children': children,
-                'itinerary_data': itinerary_data,
+        return Response({"tours": tours, "empty_state": False, "diy_fallback": None})
+
+
+class PlanGenerateOptionsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = PlanGenerateOptionsSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Plan options validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        options = build_plan_options(payload["start_date"], payload["end_date"], payload["city"])
+        destination = Destination.objects.filter(name__iexact=payload["city"]).first()
+        plan = TravelPlan.objects.create(
+            user=request.user,
+            destination=destination,
+            source_payload={
+                "city": payload["city"],
+                "start_date": payload["start_date"].isoformat(),
+                "end_date": payload["end_date"].isoformat(),
+                "adults": payload["adults"],
+                "children": payload["children"],
+                "budget_type": payload["budget_type"],
+                "activities": payload["activities"],
+                "hotel_reservation_id": str(payload["hotel_reservation_id"]),
+                "selected_tour_ids": [str(x) for x in payload.get("selected_tour_ids", [])],
+                "language": payload["language"],
+                "family_mode": payload["family_mode"],
+            },
+            options_payload=options,
+            status=TravelPlan.Status.DRAFT,
+        )
+        request.session["last_plan_uuid"] = str(plan.uuid)
+
+        return Response({"options": options})
+
+
+class PlanConfirmView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = PlanConfirmSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Plan confirm validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        plan_id = serializer.validated_data["plan_id"]
+        travel_plan = (
+            TravelPlan.objects.filter(user=request.user)
+            .exclude(options_payload=[])
+            .order_by("-created_at")
+            .first()
+        )
+        if not travel_plan:
+            return error_response(
+                code="not_found",
+                detail="No generated plan found.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        option = next((item for item in travel_plan.options_payload if item.get("plan_id") == plan_id), None)
+        if not option:
+            return error_response(
+                code="not_found",
+                detail="plan_id not found in generated options.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        travel_plan.confirmed_plan_id = plan_id
+        travel_plan.status = TravelPlan.Status.ACTIVE
+        travel_plan.save(update_fields=["confirmed_plan_id", "status"])
+
+        selected_tour_ids = travel_plan.source_payload.get("selected_tour_ids") or []
+        created_count = 0
+        if selected_tour_ids:
+            hotel_reservation = None
+            hotel_reservation_id = travel_plan.source_payload.get("hotel_reservation_id")
+            if hotel_reservation_id:
+                hotel_reservation = HotelReservation.objects.filter(uuid=hotel_reservation_id).first()
+
+            tours = Tour.objects.filter(uuid__in=selected_tour_ids)
+            for tour in tours:
+                session = (
+                    TourSession.objects.filter(tour=tour, is_active=True)
+                    .order_by("date", "start_time")
+                    .first()
+                )
+                if session is None:
+                    continue
+                TourReservation.objects.create(
+                    user=request.user,
+                    session=session,
+                    hotel_reservation=hotel_reservation,
+                    adults=travel_plan.source_payload.get("adults", 1),
+                    children=travel_plan.source_payload.get("children", 0),
+                    total_price=(
+                        session.tour.price_adult * travel_plan.source_payload.get("adults", 1)
+                        + session.tour.price_child * travel_plan.source_payload.get("children", 0)
+                    ),
+                    status=TourReservation.Status.CONFIRMED,
+                )
+                created_count += 1
+
+        return Response(
+            {
+                "status": "confirmed",
+                "confirmed_plan_id": plan_id,
+                "tour_reservations_created": created_count,
             }
         )
-        plan_serializer.is_valid(raise_exception=True)
-        plan_serializer.save()
 
-        return Response({'itinerary_data': itinerary_data}, status=status.HTTP_200_OK)
+
+class PlanCurrentView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        travel_plan = (
+            TravelPlan.objects.filter(user=request.user, status=TravelPlan.Status.ACTIVE)
+            .order_by("-created_at")
+            .first()
+        )
+        if not travel_plan:
+            return error_response(
+                code="not_found",
+                detail="No active plan found.",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        option = next(
+            (item for item in travel_plan.options_payload if item.get("plan_id") == travel_plan.confirmed_plan_id),
+            None,
+        )
+        if not option and travel_plan.options_payload:
+            option = travel_plan.options_payload[0]
+
+        return Response(
+            {
+                "plan_id": travel_plan.confirmed_plan_id,
+                "city": travel_plan.source_payload.get("city", ""),
+                "status": "active",
+                "days": (option or {}).get("days", []),
+            }
+        )
+
+
+class PlanRestartView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        FunnelDraft.objects.filter(user=request.user).delete()
+        TravelPlan.objects.filter(user=request.user, status__in=[TravelPlan.Status.DRAFT, TravelPlan.Status.ACTIVE]).update(
+            status=TravelPlan.Status.COMPLETED
+        )
+        return Response(status=status.HTTP_204_NO_CONTENT)
