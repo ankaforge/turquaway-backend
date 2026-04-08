@@ -1,0 +1,1226 @@
+<!doctype html>
+{% load static %}
+<html lang="en" dir="ltr">
+  <!-- Head -->
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Turquaway - AI Tour Planner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["DM Sans", "sans-serif"],
+              display: ["Playfair Display", "serif"],
+              arabicSans: ["Noto Sans Arabic", "sans-serif"],
+              arabicDisplay: ["Noto Kufi Arabic", "sans-serif"],
+            },
+            colors: {
+              lagoon: {
+                50: "#e6f9f5",
+                100: "#c0f0e5",
+                300: "#4dcdb5",
+                500: "#0db28f",
+                600: "#0e996f",
+                700: "#1ba69a",
+                900: "#083d31",
+              },
+            },
+            boxShadow: {
+              soft: "0 20px 50px rgba(13, 178, 143, 0.12)",
+              glow: "0 16px 35px rgba(13, 178, 143, 0.30)",
+            },
+            animation: {
+              float: "float 8s ease-in-out infinite",
+              pulseSlow: "pulseSlow 6s ease-in-out infinite",
+              rise: "rise .8s ease-out both",
+            },
+            keyframes: {
+              float: {
+                "0%, 100%": { transform: "translateY(0px)" },
+                "50%": { transform: "translateY(-12px)" },
+              },
+              pulseSlow: {
+                "0%, 100%": { opacity: ".7" },
+                "50%": { opacity: "1" },
+              },
+              rise: {
+                from: { opacity: "0", transform: "translateY(18px)" },
+                to: { opacity: "1", transform: "translateY(0)" },
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Noto+Kufi+Arabic:wght@500;700&family=Noto+Sans+Arabic:wght@400;500;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="{% static 'landing/styles.css' %}" />
+  </head>
+  <!-- Background -->
+  <body class="bg-slate-950 text-slate-100 font-sans antialiased">
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+      <div
+        class="absolute -top-16 left-1/2 h-72 w-72 -translate-x-1/2 bg-lagoon-500/30 blur-3xl animate-pulseSlow"
+      ></div>
+      <div
+        class="absolute top-1/3 -left-24 h-72 w-72 bg-cyan-500/20 blur-3xl animate-float"
+      ></div>
+      <div
+        class="absolute bottom-0 right-0 h-80 w-80 bg-emerald-500/20 blur-3xl animate-pulseSlow"
+      ></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav
+      class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl"
+    >
+      <div
+        class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8"
+      >
+        <a href="#" class="shrink-0 flex items-center">
+          <img src="{% static 'landing/logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
+        </a>
+
+        <div
+          class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm font-medium text-slate-300 lg:flex"
+        >
+          <a
+            href="#features"
+            class="transition hover:text-lagoon-300"
+            data-i18n="navFeatures"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="transition hover:text-lagoon-300"
+            data-i18n="navHowItWorks"
+            >How it Works</a
+          >
+          <a
+            href="#testimonials"
+            class="transition hover:text-lagoon-300"
+            data-i18n="navTestimonials"
+            >Testimonials</a
+          >
+        </div>
+
+        <div class="ms-auto flex items-center gap-2 sm:gap-3">
+          <div class="language-menu" data-language-menu>
+            <button
+              id="language-menu-button"
+              type="button"
+              class="language-menu-trigger"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+              aria-controls="language-menu-list"
+            >
+              <span class="language-menu-label" data-i18n="languageLabel"
+                >Language</span
+              >
+              <span class="language-menu-current" data-language-current
+                >EN</span
+              >
+              <i
+                class="fa-solid fa-chevron-down language-menu-chevron"
+                aria-hidden="true"
+              ></i>
+            </button>
+
+            <div
+              id="language-menu-list"
+              class="language-menu-list hidden"
+              role="listbox"
+              aria-labelledby="language-menu-button"
+            ></div>
+          </div>
+          <a
+            href="#cta"
+            class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 sm:inline-flex"
+          >
+            <span data-i18n="navDownload">Download</span>
+          </a>
+          <button
+            id="nav-hamburger"
+            class="flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-white/20 bg-white/10 lg:hidden"
+            aria-label="Toggle menu"
+            aria-expanded="false"
+          >
+            <span
+              class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+            ></span>
+            <span
+              class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+            ></span>
+            <span
+              class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+            ></span>
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="nav-mobile-menu"
+        class="hidden border-t border-white/10 bg-slate-950/95 lg:hidden"
+      >
+        <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
+          <a
+            href="#features"
+            class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+            data-i18n="navFeatures"
+            >Features</a
+          >
+          <a
+            href="#how-it-works"
+            class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+            data-i18n="navHowItWorks"
+            >How it Works</a
+          >
+          <a
+            href="#testimonials"
+            class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+            data-i18n="navTestimonials"
+            >Testimonials</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main -->
+    <main>
+      <!-- Hero -->
+      <section class="relative px-4 pb-24 pt-32 sm:px-6 lg:px-8 min-h-screen">
+        <div
+          class="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-2"
+        >
+          <div class="animate-rise">
+            <p
+              class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/40 bg-lagoon-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-lagoon-500"
+              data-page-title
+            >
+              Turquaway - AI Tour Planner
+            </p>
+            <h1
+              class="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl"
+              data-i18n="heroTitle"
+            >
+              Explore Türkiye with Turquaway
+            </h1>
+            <p
+              class="mt-5 font-display text-2xl text-lagoon-300 sm:text-3xl"
+              data-i18n="heroSubtitle"
+            >
+              Discover the Magic of Every Corner of Türkiye
+            </p>
+            <p
+              class="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base"
+              data-i18n="heroBody"
+            >
+              From the turquoise coasts of the Aegean to the historic peaks of
+              Anatolia, Turquaway uses AI to craft personalized itineraries for
+              every destination in Türkiye.
+            </p>
+            <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+              >
+                <i class="fab fa-apple text-2xl"></i>
+                <div class="store-copy">
+                  <div
+                    class="text-xs text-slate-300"
+                    data-i18n="storeDownloadOn"
+                  >
+                    Download on the
+                  </div>
+                  <div
+                    class="text-base font-semibold"
+                    data-i18n="storeAppStore"
+                  >
+                    App Store
+                  </div>
+                </div>
+              </a>
+              <a
+                href="https://play.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+              >
+                <i class="fab fa-google-play text-2xl"></i>
+                <div class="store-copy">
+                  <div class="text-xs text-slate-300" data-i18n="storeGetItOn">
+                    Get it on
+                  </div>
+                  <div
+                    class="text-base font-semibold"
+                    data-i18n="storeGooglePlay"
+                  >
+                    Play Store
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div
+            class="animate-rise border border-white/15 bg-white/5 p-3 shadow-soft backdrop-blur-sm"
+          >
+            <div class="overflow-hidden">
+              <iframe
+                class="aspect-video w-full"
+                src="https://www.youtube.com/embed/5K3Jdux_DDg?si=X62iMrFg6jSj-N2Z&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;playsinline=1"
+                title="YouTube video player"
+                frameborder="0"
+                allow="
+                  accelerometer;
+                  autoplay;
+                  clipboard-write;
+                  encrypted-media;
+                  gyroscope;
+                  picture-in-picture;
+                  web-share;
+                "
+                referrerpolicy="strict-origin-when-cross-origin"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Destinations -->
+      <section id="destinations" class="py-16">
+        <div class="w-full">
+          <p
+            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
+            data-i18n="destinationsLabel"
+          >
+            Destinations
+          </p>
+          <h2
+            class="mb-10 text-center font-display text-4xl text-white sm:text-5xl"
+            data-i18n="citiesTitle"
+          >
+            Explore Türkiye's Cities
+          </h2>
+
+          <div
+            class="city-carousel relative min-h-[34rem] overflow-hidden border border-white/15 bg-slate-900/80 shadow-soft"
+            data-city-carousel
+          >
+            <article
+              class="city-slide absolute inset-0 opacity-100 pointer-events-auto transition-opacity duration-700"
+              data-city-slide
+            >
+              <img
+                src="https://www.goatsontheroad.com/wp-content/uploads/2023/10/istanbul-1.jpg"
+                class="city-slide-image absolute inset-0 z-0 h-full w-full object-cover"
+                alt="Istanbul"
+                loading="eager"
+              />
+              <div
+                class="absolute inset-0 z-[1] bg-[linear-gradient(104deg,rgba(2,6,23,0.82)_8%,rgba(2,6,23,0.42)_52%,rgba(2,6,23,0.82)_100%)]"
+              ></div>
+              <div
+                class="city-slide-content absolute inset-0 z-[2] flex flex-col"
+              >
+                <div
+                  class="city-slide-top flex flex-col gap-3 p-5 md:flex-row md:items-start md:justify-between md:p-8"
+                >
+                  <h3 class="font-display text-5xl text-white md:text-6xl">
+                    Istanbul
+                  </h3>
+                  <div
+                    class="city-tags flex flex-col items-start gap-2 md:items-end"
+                  >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIstanbulItem1"
+                        >Cultural Heritage</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIstanbulItem2"
+                        >Bosphorus Cruise</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIstanbulItem3"
+                        >Grand Bazaar</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="city-slide-bottom mt-auto flex flex-col gap-4 p-5 pb-16 md:flex-row md:items-end md:justify-between md:gap-6 md:p-8 md:pb-[4.5rem]"
+                >
+                  <p
+                    class="max-w-2xl text-lg text-white/90"
+                    data-i18n="cityIstanbulBody"
+                  >
+                    Where East meets West. Ancient mosques, vibrant bazaars, and
+                    breathtaking views.
+                  </p>
+                  <a
+                    href="#features"
+                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    data-i18n="cityCarouselCta"
+                    >Build my city plan</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article
+              class="city-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+              data-city-slide
+            >
+              <img
+                class="city-slide-image absolute inset-0 z-0 h-full w-full object-cover"
+                src="https://cdn-imgix.headout.com/media/images/ab8e68378cb7254b4ea91aef4bf707d4-This%20is%20a%20Photograph%20of%20Safety%20Measures%20in%20Place.jpg?auto=format&w=900&h=562.5&q=90&ar=16%3A10&crop=faces%2Ccenter&fit=crop"
+                alt="Kapadokya balloons"
+                loading="lazy"
+              />
+              <div
+                class="absolute inset-0 z-[1] bg-[linear-gradient(104deg,rgba(2,6,23,0.82)_8%,rgba(2,6,23,0.42)_52%,rgba(2,6,23,0.82)_100%)]"
+              ></div>
+              <div
+                class="city-slide-content absolute inset-0 z-[2] flex flex-col"
+              >
+                <div
+                  class="city-slide-top flex flex-col gap-3 p-5 md:flex-row md:items-start md:justify-between md:p-8"
+                >
+                  <h3 class="font-display text-5xl text-white md:text-6xl">
+                    Kapadokya
+                  </h3>
+                  <div
+                    class="city-tags flex flex-col items-start gap-2 md:items-end"
+                  >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityCappadociaItem1"
+                        >Balloon Tours</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityCappadociaItem2"
+                        >Moon Valley</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityCappadociaItem3"
+                        >Underground Cities</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="city-slide-bottom mt-auto flex flex-col gap-4 p-5 pb-16 md:flex-row md:items-end md:justify-between md:gap-6 md:p-8 md:pb-[4.5rem]"
+                >
+                  <p
+                    class="max-w-2xl text-lg text-white/90"
+                    data-i18n="cityCappadociaBody"
+                  >
+                    Magical fairy chimneys and hot air balloons floating over
+                    otherworldly landscapes.
+                  </p>
+                  <a
+                    href="#features"
+                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    data-i18n="cityCarouselCta"
+                    >Build my city plan</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article
+              class="city-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+              data-city-slide
+            >
+              <img
+                class="city-slide-image absolute inset-0 z-0 h-full w-full object-cover"
+                src="https://www.pinebeach.com.tr/media/images/deneyimler/konyaalti-sahil.jpg"
+                alt="Antalya coast"
+                loading="lazy"
+              />
+              <div
+                class="absolute inset-0 z-[1] bg-[linear-gradient(104deg,rgba(2,6,23,0.82)_8%,rgba(2,6,23,0.42)_52%,rgba(2,6,23,0.82)_100%)]"
+              ></div>
+              <div
+                class="city-slide-content absolute inset-0 z-[2] flex flex-col"
+              >
+                <div
+                  class="city-slide-top flex flex-col gap-3 p-5 md:flex-row md:items-start md:justify-between md:p-8"
+                >
+                  <h3 class="font-display text-5xl text-white md:text-6xl">
+                    Antalya
+                  </h3>
+                  <div
+                    class="city-tags flex flex-col items-start gap-2 md:items-end"
+                  >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityAntalyaItem1"
+                        >Beach Resorts</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityAntalyaItem2"
+                        >Waterfalls</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityAntalyaItem3"
+                        >Ancient Temples</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="city-slide-bottom mt-auto flex flex-col gap-4 p-5 pb-16 md:flex-row md:items-end md:justify-between md:gap-6 md:p-8 md:pb-[4.5rem]"
+                >
+                  <p
+                    class="max-w-2xl text-lg text-white/90"
+                    data-i18n="cityAntalyaBody"
+                  >
+                    Mediterranean paradise with turquoise waters, white sand
+                    beaches, and ancient ruins.
+                  </p>
+                  <a
+                    href="#features"
+                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    data-i18n="cityCarouselCta"
+                    >Build my city plan</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <article
+              class="city-slide absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+              data-city-slide
+            >
+              <img
+                class="city-slide-image absolute inset-0 z-0 h-full w-full object-cover"
+                src="https://tampasistercities.org/wp-content/uploads/2020/12/Izmir-1920-72.jpg"
+                alt="Izmir ancient ruins"
+                loading="lazy"
+              />
+              <div
+                class="absolute inset-0 z-[1] bg-[linear-gradient(104deg,rgba(2,6,23,0.82)_8%,rgba(2,6,23,0.42)_52%,rgba(2,6,23,0.82)_100%)]"
+              ></div>
+              <div
+                class="city-slide-content absolute inset-0 z-[2] flex flex-col"
+              >
+                <div
+                  class="city-slide-top flex flex-col gap-3 p-5 md:flex-row md:items-start md:justify-between md:p-8"
+                >
+                  <h3 class="font-display text-5xl text-white md:text-6xl">
+                    Izmir
+                  </h3>
+                  <div
+                    class="city-tags flex flex-col items-start gap-2 md:items-end"
+                  >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIzmirItem1"
+                        >Ancient Ruins</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIzmirItem2"
+                        >Near Ephesus</span
+                      ></span
+                    >
+                    <span
+                      class="city-pill inline-flex items-center gap-2 border border-white/35 bg-white/15 px-3 py-1 text-sm font-semibold text-white backdrop-blur"
+                      ><i
+                        class="fa-solid fa-check text-xs text-lagoon-300"
+                        aria-hidden="true"
+                      ></i
+                      ><span data-i18n="cityIzmirItem3"
+                        >Local Markets</span
+                      ></span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="city-slide-bottom mt-auto flex flex-col gap-4 p-5 pb-16 md:flex-row md:items-end md:justify-between md:gap-6 md:p-8 md:pb-[4.5rem]"
+                >
+                  <p
+                    class="max-w-2xl text-lg text-white/90"
+                    data-i18n="cityIzmirBody"
+                  >
+                    Charming coastal city with ancient Greek history, modern
+                    cafes, and stunning sunsets.
+                  </p>
+                  <a
+                    href="#features"
+                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    data-i18n="cityCarouselCta"
+                    >Build my city plan</a
+                  >
+                </div>
+              </div>
+            </article>
+
+            <button
+              class="city-nav city-nav-prev absolute left-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/60 text-white transition hover:bg-slate-900/90 md:left-4 md:h-11 md:w-11"
+              type="button"
+              aria-label="Previous city"
+              data-city-prev
+            >
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button
+              class="city-nav city-nav-next absolute right-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/60 text-white transition hover:bg-slate-900/90 md:right-4 md:h-11 md:w-11"
+              type="button"
+              aria-label="Next city"
+              data-city-next
+            >
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <div
+              class="city-dots absolute bottom-3 left-1/2 z-[3] flex -translate-x-1/2 gap-2 md:bottom-4"
+              data-city-dots
+            >
+              <button
+                class="city-dot h-2.5 w-2.5 scale-125 border-0 bg-white transition"
+                type="button"
+                aria-label="Go to Istanbul"
+                data-city-dot="0"
+              ></button>
+              <button
+                class="city-dot h-2.5 w-2.5 border-0 bg-white/50 transition"
+                type="button"
+                aria-label="Go to Kapadokya"
+                data-city-dot="1"
+              ></button>
+              <button
+                class="city-dot h-2.5 w-2.5 border-0 bg-white/50 transition"
+                type="button"
+                aria-label="Go to Antalya"
+                data-city-dot="2"
+              ></button>
+              <button
+                class="city-dot h-2.5 w-2.5 border-0 bg-white/50 transition"
+                type="button"
+                aria-label="Go to Izmir"
+                data-city-dot="3"
+              ></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section id="features" class="features-section px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-6xl">
+          <p
+            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
+            data-i18n="featuresLabel"
+          >
+            Features
+          </p>
+          <h2
+            class="mb-14 text-center font-display text-4xl text-white sm:text-5xl"
+            data-i18n="featuresTitle"
+          >
+            Plan Your Turkish Adventure in Seconds
+          </h2>
+
+          <div class="features-grid grid gap-6 md:grid-cols-3">
+            <article
+              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+            >
+              <div
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+              >
+                <i class="fa-solid fa-robot"></i>
+              </div>
+              <h3
+                class="features-card-title mb-3 font-display text-2xl text-white"
+                data-i18n="feature1Title"
+              >
+                AI-Powered Itineraries
+              </h3>
+              <p
+                class="features-card-body text-sm leading-7 text-slate-300"
+                data-i18n="feature1Body"
+              >
+                Tell us which Turkish cities you want to visit, your dates, and
+                interests. Our AI creates a detailed day-by-day plan tailored to
+                you.
+              </p>
+            </article>
+            <article
+              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+            >
+              <div
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+              >
+                <i class="fa-solid fa-hotel"></i>
+              </div>
+              <h3
+                class="features-card-title mb-3 font-display text-2xl text-white"
+                data-i18n="feature2Title"
+              >
+                Hotels & Local Pricing
+              </h3>
+              <p
+                class="features-card-body text-sm leading-7 text-slate-300"
+                data-i18n="feature2Body"
+              >
+                Browse verified hotels nationwide in Türkiye. Get live pricing,
+                read trusted reviews, and secure your stay with instant
+                confirmation.
+              </p>
+            </article>
+            <article
+              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+            >
+              <div
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+              >
+                <i class="fa-solid fa-calendar-check"></i>
+              </div>
+              <h3
+                class="features-card-title mb-3 font-display text-2xl text-white"
+                data-i18n="feature3Title"
+              >
+                Complete Booking
+              </h3>
+              <p
+                class="features-card-body text-sm leading-7 text-slate-300"
+                data-i18n="feature3Body"
+              >
+                Plan your perfect trip to Türkiye. Book hotels and tours with
+                ease, all through one trusted source.
+              </p>
+            </article>
+          </div>
+
+          <div
+            class="features-highlight relative mt-14 grid items-center gap-10 border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-transparent p-6 md:grid-cols-2 md:p-8"
+          >
+            <div class="features-highlight-media overflow-hidden border border-white/15">
+              <img
+                src="https://idsb.tmgrup.com.tr/ly/uploads/images/2020/02/28/22673.jpg"
+                alt="Turkish traditional experience"
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class="features-highlight-content">
+              <h3
+                class="features-highlight-title mb-5 font-display text-3xl text-white sm:text-4xl"
+                data-i18n="personalizedTitle"
+              >
+                Personalized Turkish Experiences
+              </h3>
+              <ul class="features-list space-y-4">
+                <li class="experience-item flex gap-3">
+                  <i
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    aria-hidden="true"
+                  ></i
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem1"
+                    >Discover hidden hammams, local kebab restaurants, and
+                    authentic Turkish experiences</span
+                  >
+                </li>
+                <li class="experience-item flex gap-3">
+                  <i
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    aria-hidden="true"
+                  ></i
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem2"
+                    >Adjust plans for ferry crossings, seasonal weather, and
+                    local festivals</span
+                  >
+                </li>
+                <li class="experience-item flex gap-3">
+                  <i
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    aria-hidden="true"
+                  ></i
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem3"
+                    >Find the best bazaars, beaches, and historical sites in
+                    each city</span
+                  >
+                </li>
+                <li class="experience-item flex gap-3">
+                  <i
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    aria-hidden="true"
+                  ></i
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem4"
+                    >Connect with other travelers for group tours and shared
+                    experiences</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- HowItWorks -->
+      <section id="how-it-works" class="px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-6xl">
+          <p
+            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
+            data-i18n="processLabel"
+          >
+            Process
+          </p>
+          <h2
+            class="mb-14 text-center font-display text-4xl text-white sm:text-5xl"
+            data-i18n="howItWorksTitle"
+          >
+            How Turquaway Works
+          </h2>
+          <div class="relative" data-process-carousel>
+            <button
+              class="process-nav process-nav-prev absolute left-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/70 text-white transition hover:bg-slate-900/95 md:left-3 md:h-11 md:w-11"
+              type="button"
+              aria-label="Previous process card"
+              data-process-prev
+            >
+              <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <button
+              class="process-nav process-nav-next absolute right-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/70 text-white transition hover:bg-slate-900/95 md:right-3 md:h-11 md:w-11"
+              type="button"
+              aria-label="Next process card"
+              data-process-next
+            >
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <div
+              class="relative overflow-hidden border border-white/15 bg-white/[0.03] py-3 h-[30rem] sm:h-[33rem]"
+              data-process-viewport
+            >
+              <div class="relative h-full" data-process-track>
+                <article
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                >
+                  <div
+                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                  >
+                    <i
+                      class="fa-solid fa-calendar-days text-7xl"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                  <div class="p-6">
+                    <h3
+                      class="font-display text-4xl text-white"
+                      data-i18n="step1Title"
+                    >
+                      Set Your Dates
+                    </h3>
+                    <p
+                      class="mt-4 text-base leading-8 text-slate-300"
+                      data-i18n="step1Body"
+                    >
+                      Tell us when you want to travel and your budget
+                    </p>
+                  </div>
+                </article>
+                <article
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                >
+                  <div
+                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                  >
+                    <i
+                      class="fa-solid fa-map-location-dot text-7xl"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                  <div class="p-6">
+                    <h3
+                      class="font-display text-4xl text-white"
+                      data-i18n="step2Title"
+                    >
+                      Choose Your Cities
+                    </h3>
+                    <p
+                      class="mt-4 text-base leading-8 text-slate-300"
+                      data-i18n="step2Body"
+                    >
+                      Browse destinations all across Turkey and select your
+                      favorites
+                    </p>
+                  </div>
+                </article>
+                <article
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                >
+                  <div
+                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                  >
+                    <i
+                      class="fa-solid fa-suitcase-rolling text-7xl"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                  <div class="p-6">
+                    <h3
+                      class="font-display text-4xl text-white"
+                      data-i18n="step3Title"
+                    >
+                      Book & Travel
+                    </h3>
+                    <p
+                      class="mt-4 text-base leading-8 text-slate-300"
+                      data-i18n="step3Body"
+                    >
+                      One-click booking for hotels, tours, restaurants
+                    </p>
+                  </div>
+                </article>
+                <article
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                >
+                  <div
+                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                  >
+                    <i
+                      class="fa-solid fa-robot text-7xl"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                  <div class="p-6">
+                    <h3
+                      class="font-display text-4xl text-white"
+                      data-i18n="step4Title"
+                    >
+                      Get AI Itinerary
+                    </h3>
+                    <p
+                      class="mt-4 text-base leading-8 text-slate-300"
+                      data-i18n="step4Body"
+                    >
+                      Perfect day-by-day plans created instantly based on your
+                      preferences
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </div>
+
+            <div
+              class="mt-6 flex items-center justify-center gap-2"
+              data-process-dots
+            ></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonials -->
+      <section id="testimonials" class="px-4 py-20 sm:px-6 lg:px-8">
+        <div class="mx-auto w-full max-w-6xl">
+          <p
+            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
+            data-i18n="testimonialsLabel"
+          >
+            Testimonials
+          </p>
+          <h2
+            class="text-center font-display text-4xl text-white sm:text-5xl"
+            data-i18n="testimonialsTitle"
+          >
+            Loved by Travelers in Turkey
+          </h2>
+          <p
+            class="mx-auto mt-4 max-w-2xl text-center text-slate-300"
+            data-i18n="testimonialsSubtitle"
+          >
+            Join thousands who've discovered Turkey's beauty with Turquaway
+          </p>
+
+          <div
+            class="mt-12 overflow-hidden border border-white/10 bg-white/[0.02]"
+            data-testimonial-carousel
+          >
+            <div
+              class="flex transition-transform duration-700 ease-out"
+              data-testimonial-track
+            >
+              <article
+                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial1Quote"
+                >
+                  "I visited all 4 cities in 10 days thanks to Turquaway."
+                </p>
+                <p class="mt-4 font-semibold text-white">Ayse Kaya</p>
+                <p class="text-xs text-slate-400">Istanbul</p>
+              </article>
+              <article
+                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial2Quote"
+                >
+                  "First time in Turkey, completely overwhelmed about planning."
+                </p>
+                <p class="mt-4 font-semibold text-white">Eulogia Chaves</p>
+                <p class="text-xs text-slate-400">Spain</p>
+              </article>
+              <article
+                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial3Quote"
+                >
+                  "The Kapadokya hot air balloon experience was unreal."
+                </p>
+                <p class="mt-4 font-semibold text-white">Finnley Crawford</p>
+                <p class="text-xs text-slate-400">UK</p>
+              </article>
+              <article
+                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial4Quote"
+                >
+                  "Two weeks in Turkey with my family. Turquaway created perfect
+                  itineraries."
+                </p>
+                <p class="mt-4 font-semibold text-white">Fatih Yilmaz</p>
+                <p class="text-xs text-slate-400">Ankara</p>
+              </article>
+              <article
+                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial5Quote"
+                >
+                  "Solo trip to Izmir and Antalya. Best travel experience ever!"
+                </p>
+                <p class="mt-4 font-semibold text-white">Éliette Maurin</p>
+                <p class="text-xs text-slate-400">France</p>
+              </article>
+              <article
+                class="testimonial-card w-full shrink-0 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+              >
+                <div class="mb-4 text-lagoon-500">★★★★★</div>
+                <p
+                  class="text-sm leading-7 text-slate-300"
+                  data-i18n="testimonial6Quote"
+                >
+                  "From Istanbul's bustling streets to Kapadokya's fairy
+                  chimneys - one perfect journey."
+                </p>
+                <p class="mt-4 font-semibold text-white">Shaaban Gaber</p>
+                <p class="text-xs text-slate-400">Egypt</p>
+              </article>
+            </div>
+          </div>
+          <div
+            class="mt-5 flex items-center justify-center gap-2"
+            data-testimonial-dots
+          ></div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section id="cta" class="pb-20">
+        <div
+          class="w-full border border-lagoon-500/30 bg-gradient-to-br from-lagoon-600 to-lagoon-700 p-8 text-slate-950 shadow-glow sm:p-12"
+        >
+          <h2
+            class="text-center font-display text-4xl sm:text-5xl"
+            data-i18n="ctaTitle"
+          >
+            Ready to Discover Türkiye?
+          </h2>
+          <p
+            class="mx-auto mt-4 max-w-2xl text-center text-base/7"
+            data-i18n="ctaBody"
+          >
+            Start planning your perfect Turkish adventure today. Let Turquaway
+            handle all the details.
+          </p>
+          <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <a
+              href="https://apps.apple.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900"
+              ><i class="fab fa-apple text-2xl"></i>
+              <div class="store-copy text-left">
+                <div class="text-xs text-slate-300" data-i18n="storeDownloadOn">
+                  Download on the
+                </div>
+                <div class="font-semibold" data-i18n="storeAppStore">
+                  App Store
+                </div>
+              </div></a
+            >
+            <a
+              href="https://play.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900"
+              ><i class="fab fa-google-play text-2xl"></i>
+              <div class="store-copy text-left">
+                <div class="text-xs text-slate-300" data-i18n="storeGetItOn">
+                  Get it on
+                </div>
+                <div class="font-semibold" data-i18n="storeGooglePlay">
+                  Play Store
+                </div>
+              </div></a
+            >
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 px-4 py-10 sm:px-6 lg:px-8">
+      <div
+        class="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 md:flex-row"
+      >
+        <div class="text-center md:text-left">
+          <img src="{% static 'landing/logo.png' %}" alt="Turquaway" class="h-9 w-auto" />
+          <p class="mt-1 text-sm text-slate-400" data-i18n="footerCopyright">
+            © 2026 Turquaway.
+          </p>
+        </div>
+        <div
+          class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300"
+        >
+          <a
+            href="#"
+            class="transition hover:text-lagoon-300"
+            data-i18n="footerCompany1"
+            >About Us</a
+          >
+          <a
+            href="#"
+            class="transition hover:text-lagoon-300"
+            data-i18n="footerLegal1"
+            >Privacy Policy</a
+          >
+          <a
+            href="#"
+            class="transition hover:text-lagoon-300"
+            data-i18n="footerLegal2"
+            >Terms of Service</a
+          >
+        </div>
+        <div class="flex items-center gap-3 text-lg text-slate-300">
+          <a
+            href="https://youtube.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+            class="transition hover:text-lagoon-300"
+            ><i class="fa-brands fa-youtube"></i
+          ></a>
+          <a
+            href="https://instagram.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            class="transition hover:text-lagoon-300"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+          <a
+            href="https://facebook.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            class="transition hover:text-lagoon-300"
+            ><i class="fa-brands fa-facebook"></i
+          ></a>
+        </div>
+      </div>
+    </footer>
+
+    <script src="{% static 'landing/script.js' %}"></script>
+  </body>
+</html>
