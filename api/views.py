@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.contrib.auth import authenticate
 from django.db.models import F
 from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 from rest_framework import permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,19 +19,24 @@ from api.models import (
     TourReservation,
     TourSession,
     TravelPlan,
+    ReservationReview,
     UserLegalConsent,
 )
 from api.serializers import (
     ActivityListItemSerializer,
+    ChangePasswordSerializer,
     FunnelDraftSerializer,
     HotelListItemSerializer,
     HotelReservationCreateSerializer,
     HotelReservationWebhookSerializer,
     HotelSearchSerializer,
     LoginSerializer,
+    MeProfileUpdateSerializer,
     MeLanguageSerializer,
     PlanConfirmSerializer,
     PlanGenerateOptionsSerializer,
+    ReservationReviewCreateSerializer,
+    ReservationReviewSerializer,
     RefreshTokenInputSerializer,
     RegisterSerializer,
     SuggestCitiesSerializer,
@@ -237,6 +243,41 @@ class MeView(APIView):
     def get(self, request):
         return Response(user_payload(request.user))
 
+    def patch(self, request):
+        serializer = MeProfileUpdateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code='validation_error',
+                detail='Profile update validation failed.',
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request.user.full_name = serializer.validated_data['full_name']
+        request.user.phone = serializer.validated_data['phone']
+        request.user.country = serializer.validated_data['country']
+        request.user.save(update_fields=['full_name', 'phone', 'country'])
+
+        return Response(user_payload(request.user))
+
+
+class MePasswordView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
+        if not serializer.is_valid():
+            return error_response(
+                code='validation_error',
+                detail='Password change validation failed.',
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        request.user.set_password(serializer.validated_data['new_password'])
+        request.user.save(update_fields=['password'])
+        return Response({'detail': 'Password updated successfully.'})
+
 
 class MeLanguageView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -254,6 +295,195 @@ class MeLanguageView(APIView):
         request.user.language = serializer.validated_data["language"]
         request.user.save(update_fields=["language"])
         return Response({"language": request.user.language})
+
+
+def _hotel_status_for_frontend(reservation: HotelReservation) -> str:
+    if reservation.status == HotelReservation.Status.BOOKING_CANCELLED:
+        return 'cancelled'
+    if reservation.end_date and reservation.end_date < timezone.localdate():
+        return 'completed'
+    return 'active'
+
+
+def _tour_status_for_frontend(reservation: TourReservation) -> str:
+    if reservation.status == TourReservation.Status.CANCELLED:
+        return 'cancelled'
+    tour_date = reservation.session.date if reservation.session else None
+    if tour_date and tour_date < timezone.localdate():
+        return 'completed'
+    if reservation.status in [TourReservation.Status.CONFIRMED, TourReservation.Status.NO_SHOW]:
+        return 'completed'
+    return 'active'
+
+
+class MeReservationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        reservation_type = (request.query_params.get('type') or '').strip().lower()
+        if reservation_type not in ['hotel', 'tour']:
+            return error_response(
+                code='validation_error',
+                detail='type must be hotel or tour.',
+                fields={'type': ['Use hotel or tour.']},
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if reservation_type == 'hotel':
+            results = []
+            qs = HotelReservation.objects.filter(user=request.user).select_related('hotel__destination').order_by('-start_date')
+            for item in qs:
+                results.append(
+                    {
+                        'reservation_id': str(item.uuid),
+                        'name': item.hotel.name,
+                        'city': item.hotel.destination.name if item.hotel.destination else '',
+                        'check_in': item.start_date,
+                        'check_out': item.end_date,
+                        'status': _hotel_status_for_frontend(item),
+                    }
+                )
+            return Response({'results': results})
+
+        results = []
+        qs = (
+            TourReservation.objects.filter(user=request.user)
+            .select_related('session__tour__destination')
+            .order_by('-session__date')
+        )
+        for item in qs:
+            tour = item.session.tour if item.session and item.session.tour else None
+            results.append(
+                {
+                    'reservation_id': str(item.uuid),
+                    'title': tour.title if tour else '',
+                    'city': tour.destination.name if tour and tour.destination else '',
+                    'tour_date': item.session.date if item.session else None,
+                    'status': _tour_status_for_frontend(item),
+                }
+            )
+        return Response({'results': results})
+
+
+class MeReservationVoucherView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, reservation_id: str):
+        hotel_res = HotelReservation.objects.filter(user=request.user, uuid=reservation_id).first()
+        if hotel_res:
+            return Response({'url': f'https://cdn.example.com/vouchers/{hotel_res.uuid}.pdf'})
+
+        tour_res = TourReservation.objects.filter(user=request.user, uuid=reservation_id).first()
+        if tour_res:
+            return Response({'url': f'https://cdn.example.com/vouchers/{tour_res.uuid}.pdf'})
+
+        return error_response(
+            code='not_found',
+            detail='Reservation not found.',
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
+
+
+class MeEligibleReviewReservationsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        results = []
+        today = timezone.localdate()
+
+        hotel_qs = HotelReservation.objects.filter(user=request.user).select_related('hotel__destination')
+        for item in hotel_qs:
+            if _hotel_status_for_frontend(item) != 'completed':
+                continue
+            review = ReservationReview.objects.filter(user=request.user, hotel_reservation=item).first()
+            results.append(
+                {
+                    'reservation_id': str(item.uuid),
+                    'name': item.hotel.name,
+                    'city': item.hotel.destination.name if item.hotel.destination else '',
+                    'reservation_date': item.end_date,
+                    'rated': bool(review),
+                    'rating': review.rating if review else None,
+                    'feedback': review.feedback if review else '',
+                }
+            )
+
+        tour_qs = TourReservation.objects.filter(user=request.user).select_related('session__tour__destination')
+        for item in tour_qs:
+            if _tour_status_for_frontend(item) != 'completed':
+                continue
+            review = ReservationReview.objects.filter(user=request.user, tour_reservation=item).first()
+            tour = item.session.tour if item.session and item.session.tour else None
+            reservation_date = item.session.date if item.session else today
+            results.append(
+                {
+                    'reservation_id': str(item.uuid),
+                    'name': tour.title if tour else '',
+                    'city': tour.destination.name if tour and tour.destination else '',
+                    'reservation_date': reservation_date,
+                    'rated': bool(review),
+                    'rating': review.rating if review else None,
+                    'feedback': review.feedback if review else '',
+                }
+            )
+
+        return Response({'results': results})
+
+
+class MeReviewsView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = ReservationReviewCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code='validation_error',
+                detail='Review validation failed.',
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        reservation_uuid = serializer.validated_data['reservation_id']
+        rating = serializer.validated_data['rating']
+        feedback = serializer.validated_data.get('feedback', '')
+
+        hotel_res = HotelReservation.objects.filter(user=request.user, uuid=reservation_uuid).first()
+        if hotel_res:
+            if ReservationReview.objects.filter(user=request.user, hotel_reservation=hotel_res).exists():
+                return error_response(
+                    code='conflict',
+                    detail='Review already exists for this reservation.',
+                    status_code=status.HTTP_409_CONFLICT,
+                )
+            review = ReservationReview.objects.create(
+                user=request.user,
+                hotel_reservation=hotel_res,
+                rating=rating,
+                feedback=feedback,
+            )
+            return Response(ReservationReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+
+        tour_res = TourReservation.objects.filter(user=request.user, uuid=reservation_uuid).first()
+        if tour_res:
+            if ReservationReview.objects.filter(user=request.user, tour_reservation=tour_res).exists():
+                return error_response(
+                    code='conflict',
+                    detail='Review already exists for this reservation.',
+                    status_code=status.HTTP_409_CONFLICT,
+                )
+            review = ReservationReview.objects.create(
+                user=request.user,
+                tour_reservation=tour_res,
+                rating=rating,
+                feedback=feedback,
+            )
+            return Response(ReservationReviewSerializer(review).data, status=status.HTTP_201_CREATED)
+
+        return error_response(
+            code='not_found',
+            detail='Reservation not found.',
+            status_code=status.HTTP_404_NOT_FOUND,
+        )
 
 
 class FunnelDraftView(APIView):
@@ -325,21 +555,23 @@ class SuggestCitiesView(APIView):
             )
 
         payload = serializer.validated_data
-        allowed_destinations = list(
-            Destination.objects.filter(active=True).order_by("name").values_list("name", flat=True)
-        )
+        destination_qs = Destination.objects.filter(active=True, tours__is_approved=True)
+
+        activities = payload.get("activities") or []
+        if activities:
+            destination_qs = destination_qs.filter(tours__categories__key__in=activities)
+
+        if payload.get("children", 0) > 0:
+            destination_qs = destination_qs.filter(tours__family_friendly=True)
+
+        allowed_destinations = list(destination_qs.order_by("name").distinct().values_list("name", flat=True))
         if not allowed_destinations:
-            return error_response(
-                code="validation_error",
-                detail="No active destinations configured.",
-                fields={"destinations": ["At least one active destination is required."]},
-                status_code=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"cities": []}, status=status.HTTP_200_OK)
 
         try:
             suggestions = GeminiService().get_city_suggestions(
                 budget=payload["budget_type"],
-                activities=payload["activities"],
+                activities=activities,
                 language=normalize_lang(payload.get("language")),
                 allowed_destinations=allowed_destinations,
             )
@@ -394,6 +626,22 @@ class HotelSearchView(APIView):
             qs = qs.order_by(F("rating").desc(), F("nightly_price_per_person").asc())
 
         hotels_data = HotelListItemSerializer(qs, many=True).data
+        try:
+            ranked_ids = GeminiService().rank_hotels(
+                hotels=hotels_data,
+                budget=payload["budget_type"],
+                activities=payload.get("activities", []),
+                language=normalize_lang(payload.get("language")),
+            )
+            if ranked_ids:
+                order_map = {hotel_id: idx for idx, hotel_id in enumerate(ranked_ids)}
+                hotels_data = sorted(
+                    hotels_data,
+                    key=lambda item: order_map.get(str(item.get("id")), len(order_map) + 1),
+                )
+        except Exception:
+            pass
+
         return Response({"hotels": hotels_data})
 
 
@@ -503,6 +751,23 @@ class TourSearchView(APIView):
             qs = qs.filter(categories__key__in=activity_keys).distinct()
 
         tours = TourListItemSerializer(qs.order_by("title", "id"), many=True).data
+        try:
+            ranked_ids = GeminiService().rank_tours(
+                tours=tours,
+                budget=payload["budget_type"],
+                activities=activity_keys,
+                language=normalize_lang(payload.get("language")),
+                family_mode=payload["children"] > 0,
+            )
+            if ranked_ids:
+                order_map = {tour_id: idx for idx, tour_id in enumerate(ranked_ids)}
+                tours = sorted(
+                    tours,
+                    key=lambda item: order_map.get(str(item.get("id")), len(order_map) + 1),
+                )
+        except Exception:
+            pass
+
         if not tours:
             return Response(
                 {
@@ -532,7 +797,19 @@ class PlanGenerateOptionsView(APIView):
             )
 
         payload = serializer.validated_data
-        options = build_plan_options(payload["start_date"], payload["end_date"], payload["city"])
+        try:
+            options = GeminiService().generate_plan_options(
+                city=payload["city"],
+                start_date=payload["start_date"].isoformat(),
+                end_date=payload["end_date"].isoformat(),
+                budget=payload["budget_type"],
+                activities=payload["activities"],
+                language=normalize_lang(payload.get("language")),
+                family_mode=payload.get("family_mode", False),
+            )
+        except Exception:
+            options = build_plan_options(payload["start_date"], payload["end_date"], payload["city"])
+
         destination = Destination.objects.filter(name__iexact=payload["city"]).first()
         plan = TravelPlan.objects.create(
             user=request.user,

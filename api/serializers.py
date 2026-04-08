@@ -1,6 +1,8 @@
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.utils import timezone
 from rest_framework import serializers
+import re
 
 from api.models import (
     ActivityCategory,
@@ -11,6 +13,7 @@ from api.models import (
     Tour,
     TourSession,
     TravelPlan,
+    ReservationReview,
     User,
 )
 
@@ -104,6 +107,66 @@ class RefreshTokenInputSerializer(serializers.Serializer):
 
 class MeLanguageSerializer(serializers.Serializer):
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'])
+
+
+class MeProfileUpdateSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255)
+    phone = serializers.CharField(max_length=20)
+    country = serializers.CharField(max_length=2)
+
+    def validate_country(self, value):
+        if value.upper() not in VALID_COUNTRY_CODES:
+            raise serializers.ValidationError('Enter a valid 2-letter ISO 3166-1 alpha-2 country code.')
+        return value.upper()
+
+    def validate_phone(self, value):
+        if not re.fullmatch(r'^\+?[0-9]{10,15}$', value or ''):
+            raise serializers.ValidationError('Enter a valid phone number.')
+        return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, min_length=8)
+    new_password_confirm = serializers.CharField(write_only=True, min_length=8)
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None)
+        if user is None or not user.check_password(attrs['current_password']):
+            raise serializers.ValidationError({'current_password': ['Current password is incorrect.']})
+
+        if attrs['new_password'] != attrs['new_password_confirm']:
+            raise serializers.ValidationError({'new_password_confirm': ['Passwords do not match.']})
+
+        try:
+            validate_password(attrs['new_password'], user=user)
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError({'new_password': list(exc.messages)})
+
+        return attrs
+
+
+class ReservationReviewCreateSerializer(serializers.Serializer):
+    reservation_id = serializers.UUIDField()
+    rating = serializers.IntegerField(min_value=1, max_value=5)
+    feedback = serializers.CharField(allow_blank=True, required=False, default='')
+
+
+class ReservationReviewSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(source='uuid')
+    reservation_id = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ReservationReview
+        fields = ['id', 'reservation_id', 'rating', 'feedback', 'created_at']
+
+    def get_reservation_id(self, obj):
+        if obj.hotel_reservation_id:
+            return str(obj.hotel_reservation.uuid)
+        if obj.tour_reservation_id:
+            return str(obj.tour_reservation.uuid)
+        return ''
 
 
 class FunnelDraftSerializer(serializers.ModelSerializer):

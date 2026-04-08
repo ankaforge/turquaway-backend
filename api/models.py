@@ -2,6 +2,7 @@ from uuid import uuid4
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.db.models import Q
 
 # ---------------------------------------------------------
 # 1. KULLANICI VE AUTH SİSTEMİ
@@ -208,3 +209,27 @@ class TravelPlan(models.Model):
     confirmed_plan_id = models.CharField(max_length=64, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     created_at = models.DateTimeField(default=timezone.now)
+
+
+class ReservationReview(models.Model):
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reservation_reviews')
+    hotel_reservation = models.ForeignKey(HotelReservation, on_delete=models.CASCADE, null=True, blank=True, related_name='reviews')
+    tour_reservation = models.ForeignKey(TourReservation, on_delete=models.CASCADE, null=True, blank=True, related_name='reviews')
+    rating = models.PositiveSmallIntegerField()
+    feedback = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'hotel_reservation'],
+                condition=Q(hotel_reservation__isnull=False),
+                name='unique_user_hotel_review',
+            ),
+            models.UniqueConstraint(
+                fields=['user', 'tour_reservation'],
+                condition=Q(tour_reservation__isnull=False),
+                name='unique_user_tour_review',
+            ),
+        ]
