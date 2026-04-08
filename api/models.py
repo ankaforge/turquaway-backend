@@ -156,12 +156,15 @@ class Tour(models.Model):
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='tours', null=True, blank=True)
     title = models.CharField(max_length=150)
     description = models.TextField(blank=True)
+    location_link = models.URLField(blank=True)
     lat = models.FloatField(default=0)
     lng = models.FloatField(default=0)
     price_adult = models.PositiveIntegerField(default=0)
     price_child = models.PositiveIntegerField(default=0)
     currency = models.CharField(max_length=5, default='TRY')
     family_friendly = models.BooleanField(default=True)
+    includes_free_food_drinks = models.BooleanField(default=False)
+    includes_hotel_pickup_dropoff = models.BooleanField(default=False)
     categories = models.ManyToManyField(ActivityCategory, related_name='tours')
     is_approved = models.BooleanField(default=False) # Turquaway Admin Onayı
 

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib.auth import authenticate
@@ -41,6 +42,7 @@ from api.serializers import (
     RegisterSerializer,
     SuggestCitiesSerializer,
     TourListItemSerializer,
+    TourReservationCreateSerializer,
     TourSearchSerializer,
 )
 from api.utils import GeminiService, error_response
@@ -66,25 +68,141 @@ def user_payload(user):
     }
 
 
-def build_plan_options(start_date, end_date, city: str, currency: str = "TRY"):
+def build_plan_options(
+    start_date,
+    end_date,
+    city: str,
+    currency: str = "TRY",
+    activities=None,
+    selected_tours=None,
+):
     total_days = max((end_date - start_date).days + 1, 1)
     options = []
+
+    activities = activities or []
+    selected_tours = selected_tours or []
+    activity_titles = {
+        'swimming': 'Sahil Yuzme Etkinligi',
+        'culture': 'Tarihi Bolge Yuruyus Turu',
+        'food': 'Yerel Lezzet Deneyimi',
+        'food_drink': 'Yerel Lezzet Deneyimi',
+        'yeme_icme': 'Yerel Lezzet Deneyimi',
+        'safari': 'Doga ve Safari Turu',
+        'diving': 'Dalis ve Tekne Aktivitesi',
+        'boat': 'Tekne Turu',
+        'nature': 'Doga Kesif Rotasi',
+        'kultur': 'Tarihi Bolge Yuruyus Turu',
+        'yuzme': 'Sahil Yuzme Etkinligi',
+    }
+
+    fallback_pool = []
+    for key in activities:
+        key_norm = str(key).strip().lower()
+        if not key_norm:
+            continue
+        if key_norm in activity_titles:
+            fallback_pool.append(activity_titles[key_norm])
+        else:
+            fallback_pool.append(key_norm.replace('_', ' ').title())
+    if not fallback_pool:
+        fallback_pool = ['Sehir Turu', 'Yerel Lezzet Deneyimi', 'Sahil Etkinligi']
+
+    tours_by_date = {}
+    unscheduled_tours = []
+    for tour in selected_tours:
+        session_date = tour.get('session_date')
+        if session_date:
+            tours_by_date.setdefault(session_date, []).append(tour)
+        else:
+            unscheduled_tours.append(tour)
+
     for idx in [1, 2]:
         days = []
         for day_index in range(total_days):
             day_no = day_index + 1
+            current_date = start_date + timedelta(days=day_index)
+            current_date_iso = current_date.isoformat()
             base_time = "09:00" if idx == 1 else "10:00"
+            is_first_day = day_no == 1
+            is_last_day = day_no == total_days
+            middle_day = day_no not in (1, total_days)
+
+            timeline_items = []
+
+            if is_first_day:
+                timeline_items.append(
+                    {
+                        "time": "14:00",
+                        "type": "check_in",
+                        "title": "Otele Giris ve Yerlesme",
+                        "notes": "Varis sonrasi dinlenme ve kisa cevre kesfi.",
+                    }
+                )
+
+            # Use booked tours on their scheduled date.
+            day_tours = list(tours_by_date.get(current_date_iso, []))
+
+            # Distribute unscheduled tours to middle days first.
+            if unscheduled_tours and (middle_day or total_days <= 2):
+                day_tours.append(unscheduled_tours.pop(0))
+
+            # For trips >=3 days, keep first/last day light.
+            allow_heavy_activities = not (total_days >= 3 and (is_first_day or is_last_day))
+
+            if allow_heavy_activities:
+                for tour in day_tours:
+                    timeline_items.append(
+                        {
+                            "time": tour.get('start_time') or base_time,
+                            "type": "activity",
+                            "title": tour.get('title') or f"{city} Ozel Turu",
+                            "notes": "Planlanan tur etkinligi.",
+                        }
+                    )
+
+                fallback_title = fallback_pool[(day_index + idx - 1) % len(fallback_pool)]
+                timeline_items.append(
+                    {
+                        "time": "16:30" if day_tours else base_time,
+                        "type": "activity",
+                        "title": f"{city} {fallback_title}",
+                        "notes": "Aileye uygun" if idx == 1 else "Daha dinamik rota",
+                    }
+                )
+            else:
+                timeline_items.append(
+                    {
+                        "time": "17:00" if is_first_day else "09:30",
+                        "type": "free_time",
+                        "title": f"{city} Serbest Zaman ve Dinlenme",
+                        "notes": "Ulasim ve hazirlik temposuna uygun hafif program.",
+                    }
+                )
+
+            # Add a dining slot for richer, user-facing plans.
+            timeline_items.append(
+                {
+                    "time": "20:00" if is_first_day else "13:00",
+                    "type": "dining",
+                    "title": f"{city} Yerel Lezzet Duragi",
+                    "notes": "Bolgenin populer tatlarini deneme molasi.",
+                }
+            )
+
+            if is_last_day:
+                timeline_items.append(
+                    {
+                        "time": "12:00",
+                        "type": "check_out",
+                        "title": "Otelden Cikis",
+                        "notes": "Donus oncesi cikis islemleri.",
+                    }
+                )
+
             days.append(
                 {
                     "day": day_no,
-                    "timeline": [
-                        {
-                            "time": base_time,
-                            "type": "activity",
-                            "title": f"{city} Kesif Rotasi {day_no}",
-                            "notes": "Aileye uygun" if idx == 1 else "Daha dinamik rota",
-                        }
-                    ],
+                    "timeline": timeline_items,
                 }
             )
 
@@ -92,6 +210,13 @@ def build_plan_options(start_date, end_date, city: str, currency: str = "TRY"):
             {
                 "plan_id": f"plan_{idx}_{uuid4().hex[:10]}",
                 "title": f"Plan {'A' if idx == 1 else 'B'}",
+                "gemini_recommendation": (
+                    f"{city} icin {'aileye uygun ve dengeli' if idx == 1 else 'daha hareketli ve kesif odakli'} "
+                    f"{total_days} gunluk plan onerisi."
+                ),
+                "summary": (
+                    f"{total_days} Gun • {'Rahat tempo' if idx == 1 else 'Yogun tempo'}"
+                ),
                 "days": days,
                 "estimated_total": 12400 if idx == 1 else 13800,
                 "currency": currency,
@@ -783,6 +908,79 @@ class TourSearchView(APIView):
         return Response({"tours": tours, "empty_state": False, "diy_fallback": None})
 
 
+class TourReservationCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = TourReservationCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Tour reservation validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        vd = serializer.validated_data
+        session = TourSession.objects.select_related('tour').get(pk=vd['session_id'])
+
+        hotel_reservation = None
+        if vd.get('hotel_reservation_id'):
+            hotel_reservation = HotelReservation.objects.filter(
+                uuid=vd['hotel_reservation_id'], user=request.user
+            ).first()
+            if hotel_reservation is None:
+                return error_response(
+                    code="not_found",
+                    detail="Hotel reservation not found or does not belong to you.",
+                    status_code=status.HTTP_404_NOT_FOUND,
+                )
+
+        adults = vd['adults']
+        children = vd.get('children', 0)
+        total_price = (
+            session.tour.price_adult * adults
+            + session.tour.price_child * children
+        )
+
+        reservation = TourReservation.objects.create(
+            user=request.user,
+            session=session,
+            hotel_reservation=hotel_reservation,
+            adults=adults,
+            children=children,
+            total_price=total_price,
+            status=TourReservation.Status.PENDING,
+        )
+
+        # Increment booked_count atomically
+        TourSession.objects.filter(pk=session.pk).update(
+            booked_count=F('booked_count') + adults + children
+        )
+
+        return Response(
+            {
+                "reservation_id": str(reservation.uuid),
+                "status": reservation.status,
+                "tour": {
+                    "id": str(session.tour.uuid),
+                    "title": session.tour.title,
+                },
+                "session": {
+                    "session_id": session.pk,
+                    "date": session.date,
+                    "start_time": session.start_time,
+                    "end_time": session.end_time,
+                },
+                "adults": adults,
+                "children": children,
+                "total_price": total_price,
+                "currency": session.tour.currency,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
 class PlanGenerateOptionsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -797,18 +995,58 @@ class PlanGenerateOptionsView(APIView):
             )
 
         payload = serializer.validated_data
+        start_d = payload["start_date"]
+        end_d = payload["end_date"]
+
+        # Resolve hotel name for Gemini context
+        hotel_name = ''
+        hotel_reservation_id = payload.get("hotel_reservation_id")
+        if hotel_reservation_id:
+            hotel_res = HotelReservation.objects.filter(uuid=hotel_reservation_id).select_related('hotel').first()
+            if hotel_res:
+                hotel_name = hotel_res.hotel.name
+
+        # Resolve selected tour details with sessions within travel dates for Gemini context
+        selected_tours_detail = []
+        selected_tour_ids = payload.get("selected_tour_ids") or []
+        if selected_tour_ids:
+            for tour in Tour.objects.filter(uuid__in=selected_tour_ids).prefetch_related('sessions'):
+                session = (
+                    tour.sessions
+                    .filter(is_active=True, date__range=(start_d, end_d))
+                    .order_by('date', 'start_time')
+                    .first()
+                )
+                selected_tours_detail.append({
+                    'title': tour.title,
+                    'session_date': session.date.isoformat() if session else None,
+                    'start_time': session.start_time.strftime('%H:%M') if session else None,
+                    'end_time': session.end_time.strftime('%H:%M') if session else None,
+                    'includes_food': getattr(tour, 'includes_free_food_drinks', False),
+                    'includes_transfer': getattr(tour, 'includes_hotel_pickup_dropoff', False),
+                })
+
         try:
             options = GeminiService().generate_plan_options(
                 city=payload["city"],
-                start_date=payload["start_date"].isoformat(),
-                end_date=payload["end_date"].isoformat(),
+                start_date=start_d.isoformat(),
+                end_date=end_d.isoformat(),
                 budget=payload["budget_type"],
                 activities=payload["activities"],
                 language=normalize_lang(payload.get("language")),
                 family_mode=payload.get("family_mode", False),
+                hotel_name=hotel_name,
+                selected_tours=selected_tours_detail,
             )
-        except Exception:
-            options = build_plan_options(payload["start_date"], payload["end_date"], payload["city"])
+        except Exception as e:
+            print(f"CRITICAL GEMINI ERROR: {e}")
+            options = build_plan_options(
+                start_d,
+                end_d,
+                payload["city"],
+                activities=payload.get("activities"),
+                selected_tours=selected_tours_detail,
+            )
 
         destination = Destination.objects.filter(name__iexact=payload["city"]).first()
         plan = TravelPlan.objects.create(
@@ -816,8 +1054,8 @@ class PlanGenerateOptionsView(APIView):
             destination=destination,
             source_payload={
                 "city": payload["city"],
-                "start_date": payload["start_date"].isoformat(),
-                "end_date": payload["end_date"].isoformat(),
+                "start_date": start_d.isoformat(),
+                "end_date": end_d.isoformat(),
                 "adults": payload["adults"],
                 "children": payload["children"],
                 "budget_type": payload["budget_type"],
@@ -882,26 +1120,52 @@ class PlanConfirmView(APIView):
             if hotel_reservation_id:
                 hotel_reservation = HotelReservation.objects.filter(uuid=hotel_reservation_id).first()
 
+            # Prefer sessions within travel date range
+            from datetime import date as date_type
+            raw_start = travel_plan.source_payload.get("start_date")
+            raw_end = travel_plan.source_payload.get("end_date")
+            trip_start = date_type.fromisoformat(raw_start) if raw_start else None
+            trip_end = date_type.fromisoformat(raw_end) if raw_end else None
+
+            adults = travel_plan.source_payload.get("adults", 1)
+            children = travel_plan.source_payload.get("children", 0)
+            needed = adults + children
+
             tours = Tour.objects.filter(uuid__in=selected_tour_ids)
             for tour in tours:
-                session = (
-                    TourSession.objects.filter(tour=tour, is_active=True)
-                    .order_by("date", "start_time")
-                    .first()
-                )
+                session_qs = TourSession.objects.filter(tour=tour, is_active=True)
+                if trip_start and trip_end:
+                    session = (
+                        session_qs
+                        .filter(date__range=(trip_start, trip_end))
+                        .order_by('date', 'start_time')
+                        .first()
+                    ) or session_qs.order_by('date', 'start_time').first()
+                else:
+                    session = session_qs.order_by('date', 'start_time').first()
+
                 if session is None:
                     continue
+
+                # Skip if not enough capacity
+                available = session.capacity - session.booked_count
+                if available < needed:
+                    continue
+
                 TourReservation.objects.create(
                     user=request.user,
                     session=session,
                     hotel_reservation=hotel_reservation,
-                    adults=travel_plan.source_payload.get("adults", 1),
-                    children=travel_plan.source_payload.get("children", 0),
+                    adults=adults,
+                    children=children,
                     total_price=(
-                        session.tour.price_adult * travel_plan.source_payload.get("adults", 1)
-                        + session.tour.price_child * travel_plan.source_payload.get("children", 0)
+                        tour.price_adult * adults
+                        + tour.price_child * children
                     ),
                     status=TourReservation.Status.CONFIRMED,
+                )
+                TourSession.objects.filter(pk=session.pk).update(
+                    booked_count=F('booked_count') + needed
                 )
                 created_count += 1
 

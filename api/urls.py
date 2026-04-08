@@ -21,6 +21,7 @@ from api.views import (
     RefreshTokenView,
     RegisterView,
     SuggestCitiesView,
+    TourReservationCreateView,
     TourSearchView,
 )
 
@@ -44,6 +45,7 @@ urlpatterns = [
     path('hotel-reservations/', HotelReservationCreateView.as_view(), name='hotel-reservation-create'),
     path('webhooks/hotel-reservations/', HotelReservationWebhookView.as_view(), name='hotel-reservation-webhook'),
     path('tours/search/', TourSearchView.as_view(), name='tours-search'),
+    path('tour-reservations/', TourReservationCreateView.as_view(), name='tour-reservation-create'),
     path('plans/generate-options/', PlanGenerateOptionsView.as_view(), name='plans-generate-options'),
     path('plans/confirm/', PlanConfirmView.as_view(), name='plans-confirm'),
     path('plans/current/', PlanCurrentView.as_view(), name='plans-current'),

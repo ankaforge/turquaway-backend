@@ -332,11 +332,25 @@ class HotelListItemSerializer(serializers.ModelSerializer):
         return 0
 
 
+class TourSessionSlotSerializer(serializers.ModelSerializer):
+    session_id = serializers.UUIDField(source='id')
+    available_spots = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TourSession
+        fields = ['session_id', 'date', 'start_time', 'end_time', 'capacity', 'available_spots', 'is_active']
+
+    def get_available_spots(self, obj):
+        return max(obj.capacity - obj.booked_count, 0)
+
+
 class TourListItemSerializer(serializers.ModelSerializer):
     id = serializers.UUIDField(source='uuid')
     distance_km = serializers.SerializerMethodField()
     categories = serializers.SerializerMethodField()
     provider = serializers.SerializerMethodField()
+    available_sessions = serializers.SerializerMethodField()
+    services = serializers.SerializerMethodField()
 
     class Meta:
         model = Tour
@@ -351,6 +365,9 @@ class TourListItemSerializer(serializers.ModelSerializer):
             'family_friendly',
             'categories',
             'provider',
+            'location_link',
+            'services',
+            'available_sessions',
         ]
 
     def get_distance_km(self, obj):
@@ -363,6 +380,57 @@ class TourListItemSerializer(serializers.ModelSerializer):
         if not obj.provider:
             return {'id': '', 'name': ''}
         return {'id': str(obj.provider_id), 'name': obj.provider.company_name}
+
+    def get_services(self, obj):
+        return {
+            'free_food_drinks': obj.includes_free_food_drinks,
+            'hotel_pickup_dropoff': obj.includes_hotel_pickup_dropoff,
+        }
+
+    def get_available_sessions(self, obj):
+        from django.utils import timezone
+        today = timezone.localdate()
+        sessions = (
+            obj.sessions
+            .filter(is_active=True, date__gte=today)
+            .order_by('date', 'start_time')[:10]
+        )
+        return TourSessionSlotSerializer(sessions, many=True).data
+
+
+class TourReservationCreateSerializer(serializers.Serializer):
+    session_id = serializers.IntegerField()
+    adults = serializers.IntegerField(min_value=1)
+    children = serializers.IntegerField(min_value=0, default=0)
+    hotel_reservation_id = serializers.UUIDField(required=False, allow_null=True, default=None)
+
+    def validate_session_id(self, value):
+        from django.utils import timezone
+        try:
+            session = TourSession.objects.select_related('tour').get(pk=value)
+        except TourSession.DoesNotExist:
+            raise serializers.ValidationError('Session not found.')
+        if not session.is_active:
+            raise serializers.ValidationError('This session is not active.')
+        if session.date < timezone.localdate():
+            raise serializers.ValidationError('This session is in the past.')
+        if not session.tour or not session.tour.is_approved:
+            raise serializers.ValidationError('Tour is not available.')
+        self._session = session
+        return value
+
+    def validate(self, attrs):
+        session: TourSession = getattr(self, '_session', None)
+        if session is None:
+            return attrs
+        adults = attrs['adults']
+        children = attrs.get('children', 0)
+        available = session.capacity - session.booked_count
+        if adults + children > available:
+            raise serializers.ValidationError(
+                {'session_id': f'Not enough spots. Available: {available}.'}
+            )
+        return attrs
 
 
 class TravelPlanSerializer(serializers.ModelSerializer):

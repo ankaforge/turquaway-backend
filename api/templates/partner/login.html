@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Giris</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-white to-amber-50">
+  <div class="mx-auto flex min-h-screen max-w-md items-center px-6">
+    <div class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h1 class="text-2xl font-semibold">Partner Girisi</h1>
+      <p class="mt-2 text-sm text-slate-600">Turquaway tarafindan verilen hesapla giris yapin.</p>
+
+      {% if messages %}
+        <div class="mt-4 space-y-2">
+          {% for message in messages %}
+            <div class="rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="post" class="mt-6 space-y-4">
+        {% csrf_token %}
+        <div>
+          <label class="mb-1 block text-sm font-medium">{{ form.username.label }}</label>
+          {{ form.username }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">{{ form.password.label }}</label>
+          {{ form.password }}
+        </div>
+        <button type="submit" class="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm">Giris Yap</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

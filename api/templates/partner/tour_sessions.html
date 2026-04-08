@@ -1,0 +1,119 @@
+{% extends "partner/base.html" %}
+
+{% block title %}Tur Seanslari{% endblock %}
+
+{% block content %}
+<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+  <h1 class="text-xl font-semibold">{{ tour.title }} - Seans Yonetimi</h1>
+  <p class="mt-2 text-sm text-slate-600">Tek seans ekleyebilir veya haftalik duzende toplu seans olusturabilirsiniz.</p>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <article class="rounded-xl border border-slate-200 p-4">
+      <h2 class="text-sm font-semibold text-slate-800">Tek Seans Ekle</h2>
+      <form method="post" class="mt-4 grid gap-4 md:grid-cols-2">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="single">
+        <div>
+          <label class="mb-1 block text-sm font-medium">Tarih</label>
+          {{ single_form.date }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Kapasite</label>
+          {{ single_form.capacity }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Baslangic</label>
+          {{ single_form.start_time }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Bitis</label>
+          {{ single_form.end_time }}
+        </div>
+        <div class="flex items-center gap-2 pt-6">
+          {{ single_form.is_active }}
+          <label class="text-sm">Aktif</label>
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Tek Seans Ekle</button>
+        </div>
+      </form>
+    </article>
+
+    <article class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+      <div class="mb-2 flex items-center justify-between">
+        <h2 class="text-sm font-semibold text-slate-800">Toplu Seans Ekle</h2>
+        <span class="rounded-md border border-amber-300 bg-amber-50 px-2 py-1 text-xs font-medium text-amber-900">Hizli: Hafta ici</span>
+      </div>
+      <p class="text-xs text-slate-600">Ornek: Hafta ici her gun 10:00 - 17:00 arasi gibi tekrar eden seanslar.</p>
+
+      <form method="post" class="mt-4 grid gap-4 md:grid-cols-2">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="recurring">
+        <div>
+          <label class="mb-1 block text-sm font-medium">Baslangic Tarihi</label>
+          {{ recurring_form.start_date }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Bitis Tarihi</label>
+          {{ recurring_form.end_date }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Baslangic Saati</label>
+          {{ recurring_form.start_time }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Bitis Saati</label>
+          {{ recurring_form.end_time }}
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium">Kapasite</label>
+          {{ recurring_form.capacity }}
+        </div>
+        <div class="flex items-center gap-2 pt-6">
+          {{ recurring_form.is_active }}
+          <label class="text-sm">Aktif</label>
+        </div>
+        <div class="checkbox-list md:col-span-2">
+          <label class="mb-2 block text-sm font-medium">Haftanin Gunleri</label>
+          {{ recurring_form.weekdays }}
+        </div>
+        <div class="md:col-span-2">
+          <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white">Toplu Seans Olustur</button>
+        </div>
+      </form>
+    </article>
+  </div>
+</section>
+
+<section class="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+  <h2 class="text-lg font-semibold">Kayitli Seanslar</h2>
+  {% if sessions %}
+    <div class="mt-4 overflow-x-auto">
+      <table class="w-full text-left text-sm">
+        <thead>
+          <tr class="border-b text-slate-500">
+            <th class="py-2">Tarih</th>
+            <th class="py-2">Saat</th>
+            <th class="py-2">Kapasite</th>
+            <th class="py-2">Dolu</th>
+            <th class="py-2">Durum</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for session in sessions %}
+            <tr class="border-b">
+              <td class="py-2">{{ session.date }}</td>
+              <td class="py-2">{{ session.start_time }} - {{ session.end_time }}</td>
+              <td class="py-2">{{ session.capacity }}</td>
+              <td class="py-2">{{ session.booked_count }}</td>
+              <td class="py-2">{% if session.is_active %}<span class="text-emerald-700">Aktif</span>{% else %}<span class="text-rose-700">Pasif</span>{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="mt-3 text-sm text-slate-600">Bu tur icin henuz seans yok.</p>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "partner/base.html" %}
+
+{% block title %}Sirket Bilgileri{% endblock %}
+
+{% block content %}
+<section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+  <h1 class="text-xl font-semibold">Sirket Bilgileri</h1>
+  <p class="mt-2 text-sm text-slate-600">Bu bilgiler partner profilinizde gorunur. Once burayi tamamlamaniz, tur olusturma akisini hizlandirir.</p>
+
+  <form method="post" class="mt-6 space-y-4">
+    {% csrf_token %}
+    <div>
+      <label class="mb-1 block text-sm font-medium">Sirket Adi</label>
+      {{ form.company_name }}
+    </div>
+    <div>
+      <label class="mb-1 block text-sm font-medium">Vergi Numarasi</label>
+      {{ form.tax_number }}
+    </div>
+    <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm">Kaydet</button>
+  </form>
+</section>
+{% endblock %}

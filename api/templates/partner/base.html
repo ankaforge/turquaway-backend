@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Partner Dashboard{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .checkbox-list ul,
+    .checkbox-list > div {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      max-width: 100%;
+    }
+    @media (min-width: 768px) {
+      .checkbox-list ul,
+      .checkbox-list > div {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    .checkbox-list li,
+    .checkbox-list > div > div {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      background: #fff;
+      min-width: 0;
+    }
+    .checkbox-list li label,
+    .checkbox-list > div > div label {
+      font-size: 0.875rem;
+      color: #0f172a;
+      line-height: 1.2rem;
+      word-break: break-word;
+    }
+    .checkbox-list input[type="checkbox"] {
+      height: 1rem;
+      width: 1rem;
+      border-radius: 0.25rem;
+      border: 1px solid #94a3b8;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-100 via-white to-amber-50 text-slate-800">
+  <header class="border-b border-slate-200/80 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <a href="/partner/" class="text-lg font-semibold tracking-tight">Turquaway Partner</a>
+      <nav class="flex items-center gap-4 text-sm">
+        <a href="/partner/" class="text-slate-600 hover:text-slate-900">Panel</a>
+        <a href="/partner/company/" class="text-slate-600 hover:text-slate-900">Sirket</a>
+        <a href="/partner/tours/new/" class="rounded-lg bg-slate-900 px-3 py-2 font-medium text-white shadow-sm">Yeni Tur</a>
+        <a href="/partner/logout/" class="text-rose-600 hover:text-rose-800">Cikis</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-6 py-8">
+    {% if messages %}
+      <div class="mb-6 space-y-2">
+        {% for message in messages %}
+          <div class="rounded border px-4 py-3 text-sm {% if message.tags == 'success' %}border-emerald-200 bg-emerald-50 text-emerald-800{% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-800{% elif message.tags == 'error' %}border-rose-200 bg-rose-50 text-rose-800{% else %}border-slate-200 bg-white text-slate-700{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

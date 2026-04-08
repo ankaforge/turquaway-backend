@@ -3,6 +3,28 @@
 > Hazırlanma tarihi: 3 Nisan 2026  
 > Kapsam: Adım 1 (Auth & Profil) · Adım 2 (Rezervasyon Hunisi) · Adım 3 (Satın Alma & Planlama)
 
+## Mobil App Akışı
+
+Mobil uygulama tarafında beklenen akış aşağıdaki gibidir:
+
+1. Kullanıcı tarih aralığını seçer.
+2. Kullanıcı kişi sayısını ve bütçe tipini seçer.
+3. Kullanıcı aktivite tercihlerini seçer.
+4. Gemini destekli destinasyon önerisi alınır ve kullanıcı şehir seçer.
+5. Şehir bazlı oteller listelenir, kullanıcı otel seçer.
+6. Otel rezervasyonu oluşturulur.
+7. Kullanıcı isterse tur seçer, isterse tur seçmeden devam eder.
+8. Seçili otel rezervasyonu ve seçili turlar ile Gemini iki plan önerisi üretir.
+9. Kullanıcı planlardan birini onaylar.
+10. Onay anında seçilmiş turlar için otomatik tur rezervasyonu oluşturulur.
+11. Kullanıcı aktif planını takip ekranından izler.
+
+Önemli notlar:
+- Tur seçimi opsiyoneldir.
+- Plan üretiminde her zaman 2 seçenek döner.
+- Plan onayı, tur rezervasyonlarının gerçekten oluştuğu adımdır.
+- Seçili tur yoksa plan aktif olabilir, ancak tur rezervasyonu oluşturulmaz.
+
 ---
 
 ## 0. Genel Kurallar
@@ -499,16 +521,38 @@ Authorization: Bearer <access_token>
       "distance_km": 12.4,
       "family_friendly": true,
       "categories": ["safari"],
+      "location_link": "https://maps.google.com/...",
+      "services": {
+        "free_food_drinks": true,
+        "hotel_pickup_dropoff": true
+      },
       "provider": {
         "id": "uuid",
         "name": "Partner Tour A"
-      }
+      },
+      "available_sessions": [
+        {
+          "session_id": 14,
+          "date": "2026-05-11",
+          "start_time": "09:00:00",
+          "end_time": "17:00:00",
+          "capacity": 20,
+          "available_spots": 13,
+          "is_active": true
+        }
+      ]
     }
   ],
   "empty_state": false,
   "diy_fallback": null
 }
 ```
+
+Mobil app tarafı bu adımda:
+- Tur seçimini `id` ile tutmalı.
+- Kullanıcıya uygun seansları `available_sessions` içinden göstermeli.
+- UI mantığını `session_id` bazlı kurmalı.
+- Kullanıcı tur seçmezse `selected_tour_ids: []` ile devam edebilir.
 
 **Response 200 — Tur yoksa:**
 ```json
@@ -550,6 +594,11 @@ Authorization: Bearer <access_token>
 }
 ```
 
+Frontend anlamı:
+- `hotel_reservation_id`: bu akışta biraz önce oluşturulmuş otel rezervasyonu
+- `selected_tour_ids`: kullanıcının seçtiği tur UUID listesi
+- `selected_tour_ids` boş olabilir
+
 **Response 200:**
 ```json
 {
@@ -564,8 +613,14 @@ Authorization: Bearer <access_token>
             {
               "time": "09:00",
               "type": "activity",
-              "title": "Antalya Keşif Rotası 1",
-              "notes": "Aileye uygun"
+              "title": "Kanyon Safari",
+              "notes": "Önceden seçilen tur. Otelden transfer ve öğle yemeği dahil."
+            },
+            {
+              "time": "18:30",
+              "type": "meal",
+              "title": "Liman çevresinde akşam yemeği",
+              "notes": "Tur saatine çakışmayacak şekilde planlandı."
             }
           ]
         }
@@ -583,6 +638,18 @@ Authorization: Bearer <access_token>
   ]
 }
 ```
+
+Gemini bu aşamada şu bağlamı kullanır:
+- şehir
+- tarih aralığı
+- bütçe tipi
+- aktiviteler
+- dil
+- aile modu
+- otel adı
+- seçilen turların başlıkları
+- seçilen turların uygun tarih ve saat bilgileri
+- seçilen turların servis bilgileri
 
 > **Her zaman tam 2 seçenek döner.** `plan_id` değerlerini saklayın, bir sonraki adımda kullanılır.
 
@@ -611,6 +678,17 @@ Authorization: Bearer <access_token>
 }
 ```
 
+Bu endpoint çağrıldığında backend:
+- seçili planı aktif hale getirir
+- `selected_tour_ids` listesindeki turlar için tatil tarih aralığına uygun ilk aktif seansı bulur
+- kapasite uygunsa tur rezervasyonlarını oluşturur
+- seans doluluk bilgisini artırır
+
+Mobil app beklentisi:
+- Kullanıcı plan seçmeden bu endpoint çağrılmamalı.
+- `tour_reservations_created` değeri kontrol edilmeli.
+- Bu adımdan sonra kullanıcı `plans/current/` veya `me/reservations/?type=tour` ekranına yönlendirilebilir.
+
 ---
 
 ### 3.6 Aktif Planı Getir
@@ -637,6 +715,53 @@ Authorization: Bearer <access_token>
 
 > Aktif plan yoksa `404` döner.
 
+Bu endpoint mobil uygulamadaki plan takip ekranı için kullanılmalıdır.
+
+---
+
+### 3.6.1 Opsiyonel Doğrudan Tur Rezervasyonu
+
+Ana akış plan onayı ile otomatik rezervasyondur. Yine de tek bir seansı doğrudan rezerve etmek için aşağıdaki endpoint kullanılabilir:
+
+```
+POST /api/v1/tour-reservations/
+Authorization: Bearer <access_token>
+```
+
+**Request:**
+```json
+{
+  "session_id": 14,
+  "adults": 2,
+  "children": 1,
+  "hotel_reservation_id": "uuid"
+}
+```
+
+**Response 201:**
+```json
+{
+  "reservation_id": "uuid",
+  "status": "pending",
+  "tour": {
+    "id": "uuid",
+    "title": "Kanyon Safari"
+  },
+  "session": {
+    "session_id": 14,
+    "date": "2026-05-11",
+    "start_time": "09:00:00",
+    "end_time": "17:00:00"
+  },
+  "adults": 2,
+  "children": 1,
+  "total_price": 4500,
+  "currency": "TRY"
+}
+```
+
+Bu endpoint mobil ana akış için zorunlu değildir.
+
 ---
 
 ### 3.7 Huniyi Sıfırla
@@ -651,7 +776,7 @@ Authorization: Bearer <access_token>
 **Etkileri:**
 - Kullanıcının aktif draft'ı silinir
 - Aktif/draft planlar `completed` olarak işaretlenir
-- Kullanıcı baştan DateRangeGuests adımından devam edebilir
+- Kullanıcı baştan tarih seçimi adımına dönebilir
 
 ---
 
@@ -666,7 +791,10 @@ Authorization: Bearer <access_token>
 | Aktivite `key` | Dil bağımsız sabittir. Hiçbir zaman `name` gönderme |
 | Şehir önerisi | Daima 3 sonuç döner |
 | Plan seçenekleri | Daima 2 seçenek döner; `plan_id` kaybolmamalı |
+| Tur seçimi | `selected_tour_ids` boş gönderilebilir |
+| Tur kartı | `available_sessions` ve `services` alanları dikkate alınmalı |
 | Tour boş durum | `404` değil `empty_state: true` bekle |
+| Plan onayı | Seçili turlar varsa bu adım rezervasyon da oluşturur |
 | Token yenileme | Eski `refresh_token` tek kullanımlık; yeni token'ı sakla |
 | Tüm hatalar | `code` + `detail` + `fields` + `trace_id` formatında |
 
