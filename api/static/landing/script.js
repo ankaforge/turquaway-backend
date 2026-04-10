@@ -88,6 +88,7 @@
     ctaTitle: "Ready to Discover Türkiye?",
     ctaBody:
       "Start planning your perfect Turkish adventure today. Let Turquaway handle all the details.",
+    footerPartner: "Partner",
     footerCompany1: "About Us",
     footerLegal1: "Privacy Policy",
     footerLegal2: "Terms of Service",
@@ -160,6 +161,7 @@
     testimonial6Quote: "\"Canlı şehirlerden huzurlu doğa kaçamaklarına kadar Turquaway Türkiye genelinde mükemmel bir yolculuk planladı. Adeta cebimde bir yerel rehber varmış gibiydi.\"",
     ctaTitle: "Türkiye'yi Keşfetmeye Hazır mısınız?",
     ctaBody: "Kusursuz Türkiye maceranızı bugün planlamaya başlayın. Tüm detayları Turquaway'e bırakın.",
+    footerPartner: "Partner",
     footerCompany1: "Hakkımızda",
     footerLegal1: "Gizlilik Politikası",
     footerLegal2: "Kullanım Şartları",
@@ -232,6 +234,7 @@
     testimonial6Quote: "\"От ярких городов до спокойных природных уголков - Turquaway спланировал идеальное путешествие по Турции. Это как будто личный местный гид у тебя в кармане.\"",
     ctaTitle: "Готовы открыть Турцию?",
     ctaBody: "Начните планировать идеальное путешествие уже сегодня. Оставьте детали Turquaway.",
+    footerPartner: "Partner",
     footerCompany1: "О нас",
     footerLegal1: "Политика конфиденциальности",
     footerLegal2: "Условия использования",
@@ -304,6 +307,7 @@
     testimonial6Quote: "\"من المدن النابضة بالحياة إلى الطبيعة الهادئة، خطط Turquaway رحلة مثالية عبر تركيا. شعرت وكأن لدي مرشداً محلياً في جيبي.\"",
     ctaTitle: "هل أنت مستعد لاكتشاف تركيا؟",
     ctaBody: "ابدأ التخطيط لمغامرتك اليوم واترك التفاصيل لنا.",
+    footerPartner: "Partner",
     footerCompany1: "من نحن",
     footerLegal1: "سياسة الخصوصية",
     footerLegal2: "شروط الخدمة",
@@ -421,10 +425,11 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
   });
 });
 
-// Navbar shadow //
-window.addEventListener("scroll", () => {
+function updateNavbarState() {
   const scrollTop = window.pageYOffset;
+
   if ($navbar) {
+    $navbar.classList.toggle("is-at-top", scrollTop < 32);
     $navbar.style.boxShadow = scrollTop > 100 
       ? "0 4px 12px rgba(0, 0, 0, 0.1)" 
       : "0 1px 3px rgba(0, 0, 0, 0.05)";
@@ -433,7 +438,10 @@ window.addEventListener("scroll", () => {
   const show = scrollTop > 300;
   $scrollBtn.style.opacity = show ? "1" : "0";
   $scrollBtn.style.pointerEvents = show ? "auto" : "none";
-});
+}
+
+// Navbar shadow //
+window.addEventListener("scroll", updateNavbarState);
 
 // Scroll to top button
 $scrollBtn.innerHTML = "↑";
@@ -441,6 +449,7 @@ $scrollBtn.className = "fixed bottom-4 right-4 sm:bottom-8 sm:right-8 bg-teal-60
 $scrollBtn.setAttribute("aria-label", "Scroll to top");
 $scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 document.body.appendChild($scrollBtn);
+updateNavbarState();
 
 // Mobile menu
 const $hamburger = document.querySelector("#nav-hamburger");

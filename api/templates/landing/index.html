@@ -93,7 +93,7 @@
         </a>
 
         <div
-          class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-sm font-medium text-slate-300 lg:flex"
+          class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-lg font-medium text-slate-300 lg:flex"
         >
           <a
             href="#features"
@@ -199,31 +199,43 @@
     <!-- Main -->
     <main>
       <!-- Hero -->
-      <section class="relative px-4 pb-24 pt-32 sm:px-6 lg:px-8 min-h-screen">
-        <div
-          class="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-2"
+      <section class="hero-section relative min-h-screen overflow-hidden">
+        <video
+          class="hero-video absolute inset-0 h-full w-full object-cover"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
         >
-          <div class="animate-rise">
+          <source src="{% static 'landing/video.mp4' %}" type="video/mp4" />
+        </video>
+
+        <div class="absolute inset-0 bg-slate-950/55"></div>
+
+        <div class="relative z-10 px-4 pb-24 pt-32 sm:px-6 lg:px-8">
+          <div class="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-7xl items-center">
+            <div class="animate-rise w-full max-w-3xl">
             <p
-              class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/40 bg-lagoon-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-lagoon-500"
+              class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/40 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-black"
               data-page-title
             >
               Turquaway - AI Tour Planner
             </p>
             <h1
-              class="font-display text-4xl leading-tight text-white sm:text-5xl lg:text-6xl"
+              class="font-display text-4xl leading-tight !text-white !font-bold sm:text-5xl lg:text-6xl"
               data-i18n="heroTitle"
             >
               Explore Türkiye with Turquaway
             </h1>
             <p
-              class="mt-5 font-display text-2xl text-lagoon-300 sm:text-3xl"
+              class="mt-5 font-display text-2xl !text-white sm:text-3xl"
               data-i18n="heroSubtitle"
             >
               Discover the Magic of Every Corner of Türkiye
             </p>
             <p
-              class="mt-6 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base"
+              class="mt-6 max-w-2xl text-sm leading-7 !text-white sm:text-base"
               data-i18n="heroBody"
             >
               From the turquoise coasts of the Aegean to the historic peaks of
@@ -274,29 +286,6 @@
               </a>
             </div>
           </div>
-
-          <div
-            class="animate-rise border border-white/15 bg-white/5 p-3 shadow-soft backdrop-blur-sm"
-          >
-            <div class="overflow-hidden">
-              <iframe
-                class="aspect-video w-full"
-                src="https://www.youtube.com/embed/5K3Jdux_DDg?si=X62iMrFg6jSj-N2Z&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;playsinline=1"
-                title="YouTube video player"
-                frameborder="0"
-                allow="
-                  accelerometer;
-                  autoplay;
-                  clipboard-write;
-                  encrypted-media;
-                  gyroscope;
-                  picture-in-picture;
-                  web-share;
-                "
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
-            </div>
           </div>
         </div>
       </section>
@@ -1173,6 +1162,12 @@
         <div
           class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300"
         >
+          <a
+            href="/partner/login/"
+            class="transition hover:text-lagoon-300"
+            data-i18n="footerPartner"
+            >Partner</a
+          >
           <a
             href="#"
             class="transition hover:text-lagoon-300"
