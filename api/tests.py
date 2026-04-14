@@ -185,3 +185,65 @@ class ProfileModuleTests(APITestCase):
 
 		self.assertEqual(first.status_code, status.HTTP_201_CREATED)
 		self.assertEqual(second.status_code, status.HTTP_409_CONFLICT)
+
+
+class PartnerSessionViewTests(APITestCase):
+	def test_partner_sees_customer_name_and_email_on_session_page(self):
+		partner_user = User.objects.create_user(
+			email='partner2@example.com',
+			password='PartnerPass123!',
+			full_name='Partner User 2',
+			phone='+905551110001',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		company = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Session Partner Co',
+			tax_number='TR999',
+			is_approved=True,
+		)
+		destination = Destination.objects.create(name='Mersin', active=True)
+		tour = Tour.objects.create(
+			provider=company,
+			destination=destination,
+			title='Boat Session',
+			description='Boat tour session',
+			price_adult=900,
+			price_child=450,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=2),
+			start_time='10:00',
+			end_time='12:00',
+			capacity=10,
+			booked_count=3,
+			is_active=True,
+		)
+		customer = User.objects.create_user(
+			email='guest@example.com',
+			password='StrongPass123!',
+			full_name='Test Guest',
+			phone='+905551113333',
+			country='TR',
+		)
+		TourReservation.objects.create(
+			user=customer,
+			session=session,
+			adults=2,
+			children=1,
+			total_price=2250,
+			status=TourReservation.Status.PENDING,
+		)
+
+		self.client.login(username='partner2@example.com', password='PartnerPass123!')
+		response = self.client.get(reverse('partner-tour-sessions', kwargs={'tour_uuid': str(tour.uuid)}))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertContains(response, 'Test Guest')
+		self.assertContains(response, 'guest@example.com')
+		sessions = response.context['sessions']
+		self.assertEqual(sessions[0].available_spots, 7)
+		self.assertEqual(len(sessions[0].customer_reservations), 1)

@@ -193,7 +193,28 @@ def partner_tour_sessions_view(request, tour_uuid):
 
                 return redirect('partner-tour-sessions', tour_uuid=tour.uuid)
 
-    sessions = TourSession.objects.filter(tour=tour).order_by('date', 'start_time')
+    sessions = (
+        TourSession.objects
+        .filter(tour=tour)
+        .prefetch_related('reservations__user')
+        .order_by('date', 'start_time')
+    )
+
+    for session in sessions:
+        session.available_spots = max(session.capacity - session.booked_count, 0)
+        session.customer_reservations = [
+            {
+                'reservation_id': str(reservation.uuid),
+                'full_name': reservation.user.full_name,
+                'email': reservation.user.email,
+                'adults': reservation.adults,
+                'children': reservation.children,
+                'total_guests': reservation.adults + reservation.children,
+                'status_label': reservation.get_status_display(),
+            }
+            for reservation in session.reservations.all()
+        ]
+
     return render(
         request,
         'partner/tour_sessions.html',

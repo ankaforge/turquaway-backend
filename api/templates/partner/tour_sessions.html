@@ -96,6 +96,8 @@
             <th class="py-2">Saat</th>
             <th class="py-2">Kapasite</th>
             <th class="py-2">Dolu</th>
+            <th class="py-2">Bos</th>
+            <th class="py-2">Rezervasyon Yapan Musteriler</th>
             <th class="py-2">Durum</th>
           </tr>
         </thead>
@@ -106,6 +108,21 @@
               <td class="py-2">{{ session.start_time }} - {{ session.end_time }}</td>
               <td class="py-2">{{ session.capacity }}</td>
               <td class="py-2">{{ session.booked_count }}</td>
+              <td class="py-2">{{ session.available_spots }}</td>
+              <td class="py-2">
+                {% if session.customer_reservations %}
+                  <div class="space-y-1">
+                    {% for reservation in session.customer_reservations %}
+                      <div>
+                        <p class="font-medium text-slate-800">{{ reservation.full_name }}</p>
+                        <p class="text-xs text-slate-600">{{ reservation.email }} • {{ reservation.total_guests }} kisi • {{ reservation.status_label }}</p>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <span class="text-xs text-slate-500">Rezervasyon yok</span>
+                {% endif %}
+              </td>
               <td class="py-2">{% if session.is_active %}<span class="text-emerald-700">Aktif</span>{% else %}<span class="text-rose-700">Pasif</span>{% endif %}</td>
             </tr>
           {% endfor %}
