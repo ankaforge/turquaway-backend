@@ -188,7 +188,7 @@ class ProfileModuleTests(APITestCase):
 
 
 class PartnerSessionViewTests(APITestCase):
-	def test_partner_sees_customer_name_and_email_on_session_page(self):
+	def test_partner_sees_reservation_link_on_session_page(self):
 		partner_user = User.objects.create_user(
 			email='partner2@example.com',
 			password='PartnerPass123!',
@@ -229,9 +229,27 @@ class PartnerSessionViewTests(APITestCase):
 			phone='+905551113333',
 			country='TR',
 		)
+		hotel = Hotel.objects.create(
+			name='Seaside Resort',
+			destination=destination,
+			nightly_price_per_person=3500,
+			currency='TRY',
+			rating=4.7,
+			family_friendly=True,
+		)
+		hotel_reservation = HotelReservation.objects.create(
+			user=customer,
+			hotel=hotel,
+			start_date=timezone.localdate() + timedelta(days=1),
+			end_date=timezone.localdate() + timedelta(days=4),
+			adults=2,
+			children=1,
+			status=HotelReservation.Status.BOOKING_CONFIRMED,
+		)
 		TourReservation.objects.create(
 			user=customer,
 			session=session,
+			hotel_reservation=hotel_reservation,
 			adults=2,
 			children=1,
 			total_price=2250,
@@ -242,8 +260,88 @@ class PartnerSessionViewTests(APITestCase):
 		response = self.client.get(reverse('partner-tour-sessions', kwargs={'tour_uuid': str(tour.uuid)}))
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertContains(response, 'Test Guest')
-		self.assertContains(response, 'guest@example.com')
+		self.assertContains(response, '1 rezervasyon')
+		self.assertContains(response, reverse('partner-session-reservations', kwargs={'tour_uuid': str(tour.uuid), 'session_id': session.id}))
 		sessions = response.context['sessions']
 		self.assertEqual(sessions[0].available_spots, 7)
-		self.assertEqual(len(sessions[0].customer_reservations), 1)
+		self.assertEqual(sessions[0].reservation_count, 1)
+
+	def test_partner_sees_customer_cards_on_reservations_page(self):
+		partner_user = User.objects.create_user(
+			email='partner3@example.com',
+			password='PartnerPass123!',
+			full_name='Partner User 3',
+			phone='+905551110002',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		company = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Card Partner Co',
+			tax_number='TR998',
+			is_approved=True,
+		)
+		destination = Destination.objects.create(name='Bodrum', active=True)
+		tour = Tour.objects.create(
+			provider=company,
+			destination=destination,
+			title='Sunset Cruise',
+			description='Evening cruise',
+			price_adult=1200,
+			price_child=600,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=3),
+			start_time='18:00',
+			end_time='20:00',
+			capacity=12,
+			booked_count=4,
+			is_active=True,
+		)
+		customer = User.objects.create_user(
+			email='guest2@example.com',
+			password='StrongPass123!',
+			full_name='Card Guest',
+			phone='+905551114444',
+			country='TR',
+		)
+		hotel = Hotel.objects.create(
+			name='Harbor Hotel',
+			destination=destination,
+			nightly_price_per_person=4100,
+			currency='TRY',
+			rating=4.9,
+			family_friendly=True,
+		)
+		hotel_reservation = HotelReservation.objects.create(
+			user=customer,
+			hotel=hotel,
+			start_date=timezone.localdate() + timedelta(days=2),
+			end_date=timezone.localdate() + timedelta(days=5),
+			adults=2,
+			children=2,
+			status=HotelReservation.Status.BOOKING_CONFIRMED,
+		)
+		TourReservation.objects.create(
+			user=customer,
+			session=session,
+			hotel_reservation=hotel_reservation,
+			adults=2,
+			children=2,
+			total_price=3600,
+			status=TourReservation.Status.CONFIRMED,
+		)
+
+		self.client.login(username='partner3@example.com', password='PartnerPass123!')
+		response = self.client.get(reverse('partner-session-reservations', kwargs={'tour_uuid': str(tour.uuid), 'session_id': session.id}))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertContains(response, 'Card Guest')
+		self.assertContains(response, 'guest2@example.com')
+		self.assertContains(response, '+905551114444')
+		self.assertContains(response, 'Harbor Hotel')
+		self.assertContains(response, '4 kisi')
+		self.assertEqual(len(response.context['reservations']), 1)
+		self.assertEqual(response.context['reservations'][0]['hotel_name'], 'Harbor Hotel')

@@ -11,4 +11,5 @@ urlpatterns = [
     path('tours/new/', partner_views.partner_tour_create_view, name='partner-tour-create'),
     path('tours/<uuid:tour_uuid>/edit/', partner_views.partner_tour_edit_view, name='partner-tour-edit'),
     path('tours/<uuid:tour_uuid>/sessions/', partner_views.partner_tour_sessions_view, name='partner-tour-sessions'),
+    path('tours/<uuid:tour_uuid>/sessions/<int:session_id>/reservations/', partner_views.partner_session_reservations_view, name='partner-session-reservations'),
 ]

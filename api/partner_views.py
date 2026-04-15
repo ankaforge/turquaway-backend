@@ -196,24 +196,13 @@ def partner_tour_sessions_view(request, tour_uuid):
     sessions = (
         TourSession.objects
         .filter(tour=tour)
-        .prefetch_related('reservations__user')
+        .prefetch_related('reservations__user', 'reservations__hotel_reservation__hotel')
         .order_by('date', 'start_time')
     )
 
     for session in sessions:
         session.available_spots = max(session.capacity - session.booked_count, 0)
-        session.customer_reservations = [
-            {
-                'reservation_id': str(reservation.uuid),
-                'full_name': reservation.user.full_name,
-                'email': reservation.user.email,
-                'adults': reservation.adults,
-                'children': reservation.children,
-                'total_guests': reservation.adults + reservation.children,
-                'status_label': reservation.get_status_display(),
-            }
-            for reservation in session.reservations.all()
-        ]
+        session.reservation_count = len(session.reservations.all())
 
     return render(
         request,
@@ -223,5 +212,41 @@ def partner_tour_sessions_view(request, tour_uuid):
             'single_form': single_form,
             'recurring_form': recurring_form,
             'sessions': sessions,
+        },
+    )
+
+
+@partner_required
+def partner_session_reservations_view(request, tour_uuid, session_id):
+    company = PartnerCompany.objects.filter(user=request.user).first()
+    tour = get_object_or_404(Tour, uuid=tour_uuid, provider=company)
+    session = get_object_or_404(
+        TourSession.objects.prefetch_related('reservations__user', 'reservations__hotel_reservation__hotel'),
+        pk=session_id,
+        tour=tour,
+    )
+
+    reservations = [
+        {
+            'reservation_id': str(reservation.uuid),
+            'full_name': reservation.user.full_name,
+            'email': reservation.user.email,
+            'phone': reservation.user.phone,
+            'hotel_name': reservation.hotel_reservation.hotel.name if reservation.hotel_reservation_id else '',
+            'adults': reservation.adults,
+            'children': reservation.children,
+            'total_guests': reservation.adults + reservation.children,
+            'status_label': reservation.get_status_display(),
+        }
+        for reservation in session.reservations.all()
+    ]
+
+    return render(
+        request,
+        'partner/session_reservations.html',
+        {
+            'tour': tour,
+            'session': session,
+            'reservations': reservations,
         },
     )
