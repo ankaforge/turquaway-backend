@@ -194,6 +194,15 @@ class TourReservation(models.Model):
     total_price = models.PositiveIntegerField(default=0)
     status = models.CharField(max_length=15, choices=Status.choices, default=Status.PENDING)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'session'],
+                condition=Q(session__isnull=False),
+                name='unique_user_tour_session_reservation',
+            ),
+        ]
+
 # ---------------------------------------------------------
 # 7. YAPAY ZEKA SEYAHAT PLANI
 # ---------------------------------------------------------

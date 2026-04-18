@@ -103,6 +103,36 @@ class TourSessionForm(StyledFormMixin, forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.apply_widget_classes()
 
+    def clean(self):
+        cleaned = super().clean()
+        start_time = cleaned.get('start_time')
+        end_time = cleaned.get('end_time')
+
+        if start_time and end_time and end_time <= start_time:
+            self.add_error('end_time', 'Bitis saati, baslangic saatinden sonra olmali.')
+
+        return cleaned
+
+
+class TourSessionAvailabilityForm(StyledFormMixin, forms.ModelForm):
+    class Meta:
+        model = TourSession
+        fields = ['capacity', 'booked_count', 'is_active']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.apply_widget_classes()
+
+    def clean(self):
+        cleaned = super().clean()
+        capacity = cleaned.get('capacity')
+        booked_count = cleaned.get('booked_count')
+
+        if capacity is not None and booked_count is not None and booked_count > capacity:
+            self.add_error('booked_count', 'Dolu sayisi kapasiteden buyuk olamaz.')
+
+        return cleaned
+
 
 class RecurringTourSessionForm(StyledFormMixin, forms.Form):
     WEEKDAY_CHOICES = [

@@ -186,6 +186,55 @@ class ProfileModuleTests(APITestCase):
 		self.assertEqual(first.status_code, status.HTTP_201_CREATED)
 		self.assertEqual(second.status_code, status.HTTP_409_CONFLICT)
 
+	def test_same_user_cannot_create_second_reservation_for_same_session(self):
+		partner_user = User.objects.create_user(
+			email='partner-dup@example.com',
+			password='PartnerPass123!',
+			full_name='Partner Dup',
+			phone='+905551115555',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		partner = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Duplicate Guard Co',
+			tax_number='TR777',
+			is_approved=True,
+		)
+		tour = Tour.objects.create(
+			provider=partner,
+			destination=self.destination,
+			title='Morning Jeep Tour',
+			description='Off-road tour',
+			price_adult=800,
+			price_child=400,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=5),
+			start_time='09:00',
+			end_time='11:00',
+			capacity=15,
+			booked_count=0,
+			is_active=True,
+		)
+
+		payload = {
+			'session_id': session.id,
+			'adults': 2,
+			'children': 1,
+		}
+
+		first = self.client.post(reverse('tour-reservation-create'), payload, format='json')
+		second = self.client.post(reverse('tour-reservation-create'), payload, format='json')
+
+		self.assertEqual(first.status_code, status.HTTP_201_CREATED)
+		self.assertEqual(second.status_code, status.HTTP_409_CONFLICT)
+		self.assertEqual(TourReservation.objects.filter(user=self.user, session=session).count(), 1)
+		session.refresh_from_db()
+		self.assertEqual(session.booked_count, 3)
+
 
 class PartnerSessionViewTests(APITestCase):
 	def test_partner_sees_reservation_link_on_session_page(self):
@@ -345,3 +394,59 @@ class PartnerSessionViewTests(APITestCase):
 		self.assertContains(response, '4 kisi')
 		self.assertEqual(len(response.context['reservations']), 1)
 		self.assertEqual(response.context['reservations'][0]['hotel_name'], 'Harbor Hotel')
+
+	def test_partner_can_update_session_availability(self):
+		partner_user = User.objects.create_user(
+			email='partner4@example.com',
+			password='PartnerPass123!',
+			full_name='Partner User 4',
+			phone='+905551116666',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		company = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Availability Partner Co',
+			tax_number='TR997',
+			is_approved=True,
+		)
+		destination = Destination.objects.create(name='Fethiye', active=True)
+		tour = Tour.objects.create(
+			provider=company,
+			destination=destination,
+			title='Lagoon Boat',
+			description='Daily boat tour',
+			price_adult=950,
+			price_child=475,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=4),
+			start_time='11:00',
+			end_time='13:00',
+			capacity=20,
+			booked_count=6,
+			is_active=True,
+		)
+
+		self.client.login(username='partner4@example.com', password='PartnerPass123!')
+		response = self.client.post(
+			reverse('partner-tour-sessions', kwargs={'tour_uuid': str(tour.uuid)}),
+			{
+				'action': 'update',
+				'session_id': session.id,
+				f'session-{session.id}-capacity': 24,
+				f'session-{session.id}-booked_count': 9,
+				f'session-{session.id}-is_active': '',
+			},
+			follow=True,
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		session.refresh_from_db()
+		self.assertEqual(session.capacity, 24)
+		self.assertEqual(session.booked_count, 9)
+		self.assertFalse(session.is_active)
+		self.assertContains(response, 'Seans doluluk bilgisi guncellendi.')
+		self.assertContains(response, '15')

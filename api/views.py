@@ -2,6 +2,7 @@ from datetime import timedelta
 from uuid import uuid4
 
 from django.contrib.auth import authenticate
+from django.db import IntegrityError, transaction
 from django.db.models import F
 from django.utils.dateparse import parse_datetime
 from django.utils import timezone
@@ -922,7 +923,6 @@ class TourReservationCreateView(APIView):
             )
 
         vd = serializer.validated_data
-        session = TourSession.objects.select_related('tour').get(pk=vd['session_id'])
 
         hotel_reservation = None
         if vd.get('hotel_reservation_id'):
@@ -938,25 +938,51 @@ class TourReservationCreateView(APIView):
 
         adults = vd['adults']
         children = vd.get('children', 0)
-        total_price = (
-            session.tour.price_adult * adults
-            + session.tour.price_child * children
-        )
 
-        reservation = TourReservation.objects.create(
-            user=request.user,
-            session=session,
-            hotel_reservation=hotel_reservation,
-            adults=adults,
-            children=children,
-            total_price=total_price,
-            status=TourReservation.Status.PENDING,
-        )
+        try:
+            with transaction.atomic():
+                session = TourSession.objects.select_for_update().select_related('tour').get(pk=vd['session_id'])
 
-        # Increment booked_count atomically
-        TourSession.objects.filter(pk=session.pk).update(
-            booked_count=F('booked_count') + adults + children
-        )
+                if TourReservation.objects.filter(user=request.user, session=session).exists():
+                    return error_response(
+                        code='conflict',
+                        detail='You already have a reservation for this session.',
+                        status_code=status.HTTP_409_CONFLICT,
+                    )
+
+                available = session.capacity - session.booked_count
+                if adults + children > available:
+                    return error_response(
+                        code='validation_error',
+                        detail='Tour reservation validation failed.',
+                        fields={'session_id': [f'Not enough spots. Available: {available}.']},
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                    )
+
+                total_price = (
+                    session.tour.price_adult * adults
+                    + session.tour.price_child * children
+                )
+
+                reservation = TourReservation.objects.create(
+                    user=request.user,
+                    session=session,
+                    hotel_reservation=hotel_reservation,
+                    adults=adults,
+                    children=children,
+                    total_price=total_price,
+                    status=TourReservation.Status.PENDING,
+                )
+
+                TourSession.objects.filter(pk=session.pk).update(
+                    booked_count=F('booked_count') + adults + children
+                )
+        except IntegrityError:
+            return error_response(
+                code='conflict',
+                detail='You already have a reservation for this session.',
+                status_code=status.HTTP_409_CONFLICT,
+            )
 
         return Response(
             {
@@ -1133,41 +1159,44 @@ class PlanConfirmView(APIView):
 
             tours = Tour.objects.filter(uuid__in=selected_tour_ids)
             for tour in tours:
-                session_qs = TourSession.objects.filter(tour=tour, is_active=True)
-                if trip_start and trip_end:
-                    session = (
-                        session_qs
-                        .filter(date__range=(trip_start, trip_end))
-                        .order_by('date', 'start_time')
-                        .first()
-                    ) or session_qs.order_by('date', 'start_time').first()
-                else:
-                    session = session_qs.order_by('date', 'start_time').first()
+                with transaction.atomic():
+                    session_qs = TourSession.objects.select_for_update().filter(tour=tour, is_active=True)
+                    if trip_start and trip_end:
+                        session = (
+                            session_qs
+                            .filter(date__range=(trip_start, trip_end))
+                            .order_by('date', 'start_time')
+                            .first()
+                        ) or session_qs.order_by('date', 'start_time').first()
+                    else:
+                        session = session_qs.order_by('date', 'start_time').first()
 
-                if session is None:
-                    continue
+                    if session is None:
+                        continue
 
-                # Skip if not enough capacity
-                available = session.capacity - session.booked_count
-                if available < needed:
-                    continue
+                    if TourReservation.objects.filter(user=request.user, session=session).exists():
+                        continue
 
-                TourReservation.objects.create(
-                    user=request.user,
-                    session=session,
-                    hotel_reservation=hotel_reservation,
-                    adults=adults,
-                    children=children,
-                    total_price=(
-                        tour.price_adult * adults
-                        + tour.price_child * children
-                    ),
-                    status=TourReservation.Status.CONFIRMED,
-                )
-                TourSession.objects.filter(pk=session.pk).update(
-                    booked_count=F('booked_count') + needed
-                )
-                created_count += 1
+                    available = session.capacity - session.booked_count
+                    if available < needed:
+                        continue
+
+                    TourReservation.objects.create(
+                        user=request.user,
+                        session=session,
+                        hotel_reservation=hotel_reservation,
+                        adults=adults,
+                        children=children,
+                        total_price=(
+                            tour.price_adult * adults
+                            + tour.price_child * children
+                        ),
+                        status=TourReservation.Status.CONFIRMED,
+                    )
+                    TourSession.objects.filter(pk=session.pk).update(
+                        booked_count=F('booked_count') + needed
+                    )
+                    created_count += 1
 
         return Response(
             {

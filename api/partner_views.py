@@ -12,6 +12,7 @@ from api.forms import (
     PartnerLoginForm,
     PartnerTourForm,
     RecurringTourSessionForm,
+    TourSessionAvailabilityForm,
     TourSessionForm,
 )
 from api.models import PartnerCompany, Tour, TourSession, User
@@ -136,6 +137,8 @@ def partner_tour_sessions_view(request, tour_uuid):
 
     single_form = TourSessionForm()
     recurring_form = RecurringTourSessionForm()
+    update_session_id = None
+    update_form = None
 
     if request.method == 'POST':
         action = request.POST.get('action', 'single')
@@ -193,7 +196,23 @@ def partner_tour_sessions_view(request, tour_uuid):
 
                 return redirect('partner-tour-sessions', tour_uuid=tour.uuid)
 
-    sessions = (
+        elif action == 'update':
+            update_session = get_object_or_404(TourSession, pk=request.POST.get('session_id'), tour=tour)
+            update_session_id = update_session.id
+            update_form = TourSessionAvailabilityForm(
+                request.POST,
+                instance=update_session,
+                prefix=f'session-{update_session.id}',
+            )
+
+            if update_form.is_valid():
+                update_form.save()
+                messages.success(request, 'Seans doluluk bilgisi guncellendi.')
+                return redirect('partner-tour-sessions', tour_uuid=tour.uuid)
+
+            messages.error(request, 'Seans guncellenemedi. Lutfen alanlari kontrol edin.')
+
+    sessions = list(
         TourSession.objects
         .filter(tour=tour)
         .prefetch_related('reservations__user', 'reservations__hotel_reservation__hotel')
@@ -203,6 +222,10 @@ def partner_tour_sessions_view(request, tour_uuid):
     for session in sessions:
         session.available_spots = max(session.capacity - session.booked_count, 0)
         session.reservation_count = len(session.reservations.all())
+        if update_session_id == session.id and update_form is not None:
+            session.edit_form = update_form
+        else:
+            session.edit_form = TourSessionAvailabilityForm(instance=session, prefix=f'session-{session.id}')
 
     return render(
         request,
