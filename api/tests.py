@@ -450,3 +450,116 @@ class PartnerSessionViewTests(APITestCase):
 		self.assertFalse(session.is_active)
 		self.assertContains(response, 'Seans doluluk bilgisi guncellendi.')
 		self.assertContains(response, '15')
+
+	def test_partner_can_delete_empty_session(self):
+		partner_user = User.objects.create_user(
+			email='partner5@example.com',
+			password='PartnerPass123!',
+			full_name='Partner User 5',
+			phone='+905551117777',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		company = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Delete Partner Co',
+			tax_number='TR996',
+			is_approved=True,
+		)
+		destination = Destination.objects.create(name='Kas', active=True)
+		tour = Tour.objects.create(
+			provider=company,
+			destination=destination,
+			title='Morning Swim',
+			description='Empty session delete test',
+			price_adult=700,
+			price_child=350,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=6),
+			start_time='08:00',
+			end_time='10:00',
+			capacity=10,
+			booked_count=0,
+			is_active=True,
+		)
+
+		self.client.login(username='partner5@example.com', password='PartnerPass123!')
+		response = self.client.post(
+			reverse('partner-tour-sessions', kwargs={'tour_uuid': str(tour.uuid)}),
+			{
+				'action': 'delete',
+				'session_id': session.id,
+			},
+			follow=True,
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertFalse(TourSession.objects.filter(id=session.id).exists())
+		self.assertContains(response, 'Seans silindi.')
+
+	def test_partner_cannot_delete_session_with_reservations(self):
+		partner_user = User.objects.create_user(
+			email='partner6@example.com',
+			password='PartnerPass123!',
+			full_name='Partner User 6',
+			phone='+905551118999',
+			country='TR',
+			role=User.Role.PARTNER,
+		)
+		company = PartnerCompany.objects.create(
+			user=partner_user,
+			company_name='Reserved Delete Co',
+			tax_number='TR995',
+			is_approved=True,
+		)
+		destination = Destination.objects.create(name='Alanya', active=True)
+		tour = Tour.objects.create(
+			provider=company,
+			destination=destination,
+			title='Reserved Session',
+			description='Reservation guard test',
+			price_adult=850,
+			price_child=425,
+			is_approved=True,
+		)
+		session = TourSession.objects.create(
+			tour=tour,
+			date=timezone.localdate() + timedelta(days=7),
+			start_time='14:00',
+			end_time='16:00',
+			capacity=12,
+			booked_count=2,
+			is_active=True,
+		)
+		customer = User.objects.create_user(
+			email='delete-guest@example.com',
+			password='StrongPass123!',
+			full_name='Delete Guest',
+			phone='+905551119111',
+			country='TR',
+		)
+		TourReservation.objects.create(
+			user=customer,
+			session=session,
+			adults=2,
+			children=0,
+			total_price=1700,
+			status=TourReservation.Status.PENDING,
+		)
+
+		self.client.login(username='partner6@example.com', password='PartnerPass123!')
+		response = self.client.post(
+			reverse('partner-tour-sessions', kwargs={'tour_uuid': str(tour.uuid)}),
+			{
+				'action': 'delete',
+				'session_id': session.id,
+			},
+			follow=True,
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertTrue(TourSession.objects.filter(id=session.id).exists())
+		self.assertContains(response, 'Rezervasyonu olan seans silinemez.')

@@ -212,12 +212,37 @@ def partner_tour_sessions_view(request, tour_uuid):
 
             messages.error(request, 'Seans guncellenemedi. Lutfen alanlari kontrol edin.')
 
-    sessions = list(
+        elif action == 'delete':
+            delete_session = get_object_or_404(TourSession, pk=request.POST.get('session_id'), tour=tour)
+
+            if delete_session.reservations.exists():
+                messages.error(request, 'Rezervasyonu olan seans silinemez.')
+            else:
+                delete_session.delete()
+                messages.success(request, 'Seans silindi.')
+
+            return redirect('partner-tour-sessions', tour_uuid=tour.uuid)
+
+    date_from = request.GET.get('date_from', '').strip()
+    date_to = request.GET.get('date_to', '').strip()
+    active_status = request.GET.get('active_status', '').strip()
+
+    sessions_qs = (
         TourSession.objects
         .filter(tour=tour)
         .prefetch_related('reservations__user', 'reservations__hotel_reservation__hotel')
-        .order_by('date', 'start_time')
     )
+
+    if date_from:
+        sessions_qs = sessions_qs.filter(date__gte=date_from)
+    if date_to:
+        sessions_qs = sessions_qs.filter(date__lte=date_to)
+    if active_status == 'active':
+        sessions_qs = sessions_qs.filter(is_active=True)
+    elif active_status == 'inactive':
+        sessions_qs = sessions_qs.filter(is_active=False)
+
+    sessions = list(sessions_qs.order_by('date', 'start_time'))
 
     for session in sessions:
         session.available_spots = max(session.capacity - session.booked_count, 0)
@@ -235,6 +260,11 @@ def partner_tour_sessions_view(request, tour_uuid):
             'single_form': single_form,
             'recurring_form': recurring_form,
             'sessions': sessions,
+            'filters': {
+                'date_from': date_from,
+                'date_to': date_to,
+                'active_status': active_status,
+            },
         },
     )
 
