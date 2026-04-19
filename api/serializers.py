@@ -439,6 +439,53 @@ class TravelPlanSerializer(serializers.ModelSerializer):
         fields = ['uuid', 'source_payload', 'options_payload', 'confirmed_plan_id', 'status']
 
 
+class TravelPlanListItemSerializer(serializers.ModelSerializer):
+    plan_id = serializers.UUIDField(source='uuid')
+    city = serializers.SerializerMethodField()
+    start_date = serializers.SerializerMethodField()
+    end_date = serializers.SerializerMethodField()
+    gemini_recommendation = serializers.SerializerMethodField()
+    days = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TravelPlan
+        fields = [
+            'plan_id',
+            'city',
+            'status',
+            'start_date',
+            'end_date',
+            'gemini_recommendation',
+            'days',
+        ]
+
+    def _selected_option(self, obj):
+        options = obj.options_payload or []
+        if not options:
+            return {}
+
+        selected = next(
+            (item for item in options if item.get('plan_id') == obj.confirmed_plan_id),
+            None,
+        )
+        return selected or options[0]
+
+    def get_city(self, obj):
+        return obj.source_payload.get('city') or (obj.destination.name if obj.destination else '')
+
+    def get_start_date(self, obj):
+        return obj.source_payload.get('start_date')
+
+    def get_end_date(self, obj):
+        return obj.source_payload.get('end_date')
+
+    def get_gemini_recommendation(self, obj):
+        return self._selected_option(obj).get('gemini_recommendation')
+
+    def get_days(self, obj):
+        return self._selected_option(obj).get('days', [])
+
+
 class HotelReservationSerializer(serializers.ModelSerializer):
     payment_provider = serializers.SerializerMethodField()
 

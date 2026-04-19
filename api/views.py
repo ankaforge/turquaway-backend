@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date as date_type, timedelta
 from uuid import uuid4
 
 from django.contrib.auth import authenticate
@@ -37,6 +37,7 @@ from api.serializers import (
     MeLanguageSerializer,
     PlanConfirmSerializer,
     PlanGenerateOptionsSerializer,
+    TravelPlanListItemSerializer,
     ReservationReviewCreateSerializer,
     ReservationReviewSerializer,
     RefreshTokenInputSerializer,
@@ -440,6 +441,23 @@ def _tour_status_for_frontend(reservation: TourReservation) -> str:
     if reservation.status in [TourReservation.Status.CONFIRMED, TourReservation.Status.NO_SHOW]:
         return 'completed'
     return 'active'
+
+
+def _travel_plan_trip_dates(plan: TravelPlan):
+    raw_start = plan.source_payload.get('start_date')
+    raw_end = plan.source_payload.get('end_date')
+
+    try:
+        start_date = date_type.fromisoformat(raw_start) if raw_start else None
+    except (TypeError, ValueError):
+        start_date = None
+
+    try:
+        end_date = date_type.fromisoformat(raw_end) if raw_end else None
+    except (TypeError, ValueError):
+        end_date = None
+
+    return start_date, end_date
 
 
 class MeReservationsView(APIView):
@@ -1238,6 +1256,48 @@ class PlanCurrentView(APIView):
                 "days": (option or {}).get("days", []),
             }
         )
+
+
+class PlanListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        status_filter = (request.query_params.get('status') or 'all').strip().lower()
+        if status_filter not in {'all', 'ongoing', 'upcoming', 'past'}:
+            return error_response(
+                code='validation_error',
+                detail='status must be one of ongoing, upcoming, past, all.',
+                fields={'status': ['Use ongoing, upcoming, past, or all.']},
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        plans = list(
+            TravelPlan.objects.filter(
+                user=request.user,
+                status__in=[TravelPlan.Status.ACTIVE, TravelPlan.Status.COMPLETED],
+            )
+            .select_related('destination')
+            .order_by('-created_at')
+        )
+
+        today = timezone.localdate()
+        if status_filter != 'all':
+            filtered_plans = []
+            for plan in plans:
+                start_date, end_date = _travel_plan_trip_dates(plan)
+                if not start_date or not end_date:
+                    continue
+
+                if status_filter == 'ongoing' and start_date <= today <= end_date:
+                    filtered_plans.append(plan)
+                elif status_filter == 'upcoming' and start_date > today:
+                    filtered_plans.append(plan)
+                elif status_filter == 'past' and end_date < today:
+                    filtered_plans.append(plan)
+            plans = filtered_plans
+
+        serialized = TravelPlanListItemSerializer(plans, many=True)
+        return Response({'count': len(serialized.data), 'results': serialized.data})
 
 
 class PlanRestartView(APIView):

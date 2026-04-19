@@ -11,6 +11,7 @@ from api.models import (
 	Hotel,
 	HotelReservation,
 	PartnerCompany,
+	TravelPlan,
 	Tour,
 	TourReservation,
 	TourSession,
@@ -234,6 +235,124 @@ class ProfileModuleTests(APITestCase):
 		self.assertEqual(TourReservation.objects.filter(user=self.user, session=session).count(), 1)
 		session.refresh_from_db()
 		self.assertEqual(session.booked_count, 3)
+
+	def test_list_plans_returns_all_non_draft_plans(self):
+		ongoing_plan = TravelPlan.objects.create(
+			user=self.user,
+			destination=self.destination,
+			source_payload={
+				'city': 'Antalya',
+				'start_date': (timezone.localdate() - timedelta(days=1)).isoformat(),
+				'end_date': (timezone.localdate() + timedelta(days=2)).isoformat(),
+			},
+			options_payload=[
+				{
+					'plan_id': 'generated-1',
+					'gemini_recommendation': 'Kemer ve Olimpos icin ideal bahar donemi.',
+					'days': [
+						{
+							'day': 1,
+							'timeline': [
+								{
+									'time': '09:00',
+									'title': 'Konyaalti Plaji',
+									'notes': 'Sabah erken gitmek tavsiye edilir.',
+								}
+							],
+						}
+					],
+				}
+			],
+			confirmed_plan_id='generated-1',
+			status=TravelPlan.Status.ACTIVE,
+		)
+		completed_plan = TravelPlan.objects.create(
+			user=self.user,
+			source_payload={
+				'city': 'Istanbul',
+				'start_date': (timezone.localdate() - timedelta(days=12)).isoformat(),
+				'end_date': (timezone.localdate() - timedelta(days=9)).isoformat(),
+			},
+			options_payload=[
+				{
+					'plan_id': 'generated-2',
+					'gemini_recommendation': None,
+					'days': [],
+				}
+			],
+			confirmed_plan_id='generated-2',
+			status=TravelPlan.Status.COMPLETED,
+		)
+		TravelPlan.objects.create(
+			user=self.user,
+			source_payload={
+				'city': 'Izmir',
+				'start_date': (timezone.localdate() + timedelta(days=5)).isoformat(),
+				'end_date': (timezone.localdate() + timedelta(days=7)).isoformat(),
+			},
+			status=TravelPlan.Status.DRAFT,
+		)
+
+		response = self.client.get(reverse('plans-list'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['count'], 2)
+		self.assertEqual(len(response.data['results']), 2)
+		self.assertEqual(response.data['results'][0]['plan_id'], str(completed_plan.uuid))
+		self.assertEqual(response.data['results'][1]['plan_id'], str(ongoing_plan.uuid))
+		self.assertEqual(response.data['results'][1]['city'], 'Antalya')
+		self.assertEqual(response.data['results'][1]['status'], 'active')
+		self.assertEqual(response.data['results'][1]['gemini_recommendation'], 'Kemer ve Olimpos icin ideal bahar donemi.')
+		self.assertEqual(response.data['results'][1]['days'][0]['timeline'][0]['title'], 'Konyaalti Plaji')
+
+	def test_list_plans_filters_by_temporal_status(self):
+		TravelPlan.objects.create(
+			user=self.user,
+			source_payload={
+				'city': 'Antalya',
+				'start_date': (timezone.localdate() - timedelta(days=1)).isoformat(),
+				'end_date': (timezone.localdate() + timedelta(days=1)).isoformat(),
+			},
+			options_payload=[{'plan_id': 'ongoing', 'days': []}],
+			confirmed_plan_id='ongoing',
+			status=TravelPlan.Status.ACTIVE,
+		)
+		TravelPlan.objects.create(
+			user=self.user,
+			source_payload={
+				'city': 'Mugla',
+				'start_date': (timezone.localdate() + timedelta(days=3)).isoformat(),
+				'end_date': (timezone.localdate() + timedelta(days=6)).isoformat(),
+			},
+			options_payload=[{'plan_id': 'upcoming', 'days': []}],
+			confirmed_plan_id='upcoming',
+			status=TravelPlan.Status.ACTIVE,
+		)
+		TravelPlan.objects.create(
+			user=self.user,
+			source_payload={
+				'city': 'Istanbul',
+				'start_date': (timezone.localdate() - timedelta(days=8)).isoformat(),
+				'end_date': (timezone.localdate() - timedelta(days=5)).isoformat(),
+			},
+			options_payload=[{'plan_id': 'past', 'days': []}],
+			confirmed_plan_id='past',
+			status=TravelPlan.Status.COMPLETED,
+		)
+
+		ongoing_response = self.client.get(reverse('plans-list') + '?status=ongoing')
+		upcoming_response = self.client.get(reverse('plans-list') + '?status=upcoming')
+		past_response = self.client.get(reverse('plans-list') + '?status=past')
+
+		self.assertEqual(ongoing_response.status_code, status.HTTP_200_OK)
+		self.assertEqual(upcoming_response.status_code, status.HTTP_200_OK)
+		self.assertEqual(past_response.status_code, status.HTTP_200_OK)
+		self.assertEqual(ongoing_response.data['count'], 1)
+		self.assertEqual(ongoing_response.data['results'][0]['city'], 'Antalya')
+		self.assertEqual(upcoming_response.data['count'], 1)
+		self.assertEqual(upcoming_response.data['results'][0]['city'], 'Mugla')
+		self.assertEqual(past_response.data['count'], 1)
+		self.assertEqual(past_response.data['results'][0]['city'], 'Istanbul')
 
 
 class PartnerSessionViewTests(APITestCase):
