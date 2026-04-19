@@ -247,6 +247,172 @@ Return strict JSON object:
                     ranked.append(item_id)
         return ranked
 
+    def _language_code(self, language: str) -> str:
+        code = str(language or "en").strip().lower()
+        if code.startswith("tr"):
+            return "tr"
+        if code.startswith("ru"):
+            return "ru"
+        if code.startswith("ar"):
+            return "ar"
+        return "en"
+
+    def _localized_text(self, language: str, key: str, city: str = "") -> str:
+        code = self._language_code(language)
+        texts = {
+            "tr": {
+                "near_hotel_evening_title": f"{city} Otel Cevresi Aksam Kahve ve Yuruyus",
+                "near_hotel_evening_notes": "Uzak rota yerine otele yakin, guvenli ve dinlendirici aksam programi.",
+                "checkin_title": "Otele Giris",
+                "checkin_notes": "Aktivite oncesi otele yerlesme.",
+                "checkout_title": "Otelden Cikis",
+                "checkout_notes": "Cikis islemleri ve ayrilis.",
+                "coffee_break_title": "Kahve Molasi",
+                "coffee_break_notes": "Mevcut rotaya yakin kisa kahve/cay molasi.",
+                "lunch_title": "Ogle Yemegi",
+                "lunch_notes": "Yerel lezzetlerle oturarak dinlenmeli ogle arasi.",
+                "rest_title": "Dinlenme Zamani",
+                "rest_notes": "Yorgunlugu azaltmak icin otel veya yakinda dinlenme araligi.",
+                "nearby_walk_title": f"{city} Yakindaki Kesif Yuruyusu",
+                "nearby_walk_notes": "Dusuk transferli, otele yakin yerel aktivite.",
+            },
+            "en": {
+                "near_hotel_evening_title": f"{city} Near-Hotel Evening Coffee and Stroll",
+                "near_hotel_evening_notes": "Replacing a long commute with a nearby and relaxed evening option.",
+                "checkin_title": "Hotel Check-in",
+                "checkin_notes": "Arrival and room settling before activities.",
+                "checkout_title": "Hotel Check-out",
+                "checkout_notes": "Check-out and departure.",
+                "coffee_break_title": "Coffee Break",
+                "coffee_break_notes": "Short coffee or tea break near the current route.",
+                "lunch_title": "Lunch",
+                "lunch_notes": "A seated local lunch break with time to rest.",
+                "rest_title": "Rest Time",
+                "rest_notes": "Hotel or nearby resting window to avoid fatigue.",
+                "nearby_walk_title": f"{city} Nearby Discovery Walk",
+                "nearby_walk_notes": "A low-transfer local activity close to the hotel area.",
+            },
+            "ru": {
+                "near_hotel_evening_title": f"{city} Vecherniy Kofe i Progulka Ryadom s Otelem",
+                "near_hotel_evening_notes": "Vmesto dalekoy poezdki predlagaetsya blizhniy i spokoynyy vecherniy variant.",
+                "checkin_title": "Zaselenie v Otel",
+                "checkin_notes": "Pribytie i razmeshchenie pered aktivnostyami.",
+                "checkout_title": "Vyezd iz Otelya",
+                "checkout_notes": "Oformlenie vyezda i otpravlenie.",
+                "coffee_break_title": "Kofe-Pauza",
+                "coffee_break_notes": "Korotkiy kofe ili chai ryadom s marshrutom.",
+                "lunch_title": "Obed",
+                "lunch_notes": "Spokoynyy obed s mestnoy kuzhney i otdykhom.",
+                "rest_title": "Vremya dlya Otdykha",
+                "rest_notes": "Pereryv v otele ili poblizosti, chtoby ne pereutomlyatsya.",
+                "nearby_walk_title": f"{city} Progulka po Okrestnostyam",
+                "nearby_walk_notes": "Spokoynaya lokalnaya aktivnost nedaleko ot otelya.",
+            },
+            "ar": {
+                "near_hotel_evening_title": f"{city} Qahwa Masa'iya wa Nuzha Qarib Min Al Funduq",
+                "near_hotel_evening_notes": "Badalan min intiqal baid, tam ikhtiyar khiyar masa'i hadi wa qarib.",
+                "checkin_title": "Tasjeel Al Dukhool Ila Al Funduq",
+                "checkin_notes": "Al wusool wa al istiqrar qabl al anشطة.",
+                "checkout_title": "Tasjeel Al Khurooj Min Al Funduq",
+                "checkout_notes": "Ijraat al khurooj wa al mughadara.",
+                "coffee_break_title": "Istirahat Qahwa",
+                "coffee_break_notes": "Istirahat qasira lilqahwa aw al shay qarib min al masar.",
+                "lunch_title": "Ghadaa",
+                "lunch_notes": "Waqfat ghadaa mahalli ma'a jalasat raaha.",
+                "rest_title": "Waqt Lilraaha",
+                "rest_notes": "Fatra raaha fi al funduq aw fi makan qarib لتجنب al irhaq.",
+                "nearby_walk_title": f"{city} Jawla Istikshaf Qariba",
+                "nearby_walk_notes": "Nashat mahalli qarib min al funduq wa bidun tanqul tawil.",
+            },
+        }
+        return texts.get(code, texts["en"]).get(key, texts["en"].get(key, ""))
+
+    def build_local_experience_context(
+        self,
+        city: str,
+        hotel_name: str,
+        activities: List[str],
+        language: str = "en",
+        selected_tours: List[Dict[str, Any]] | None = None,
+    ) -> Dict[str, Any]:
+        if not str(hotel_name or "").strip():
+            return {
+                "hotel_area": "",
+                "must_try_foods": [],
+                "nearby_places": [],
+                "photo_spots": [],
+                "avoid_duplicates": [],
+            }
+
+        selected_tours = selected_tours or []
+        tour_lines = []
+        for tour in selected_tours:
+            title = str(tour.get("title") or "").strip()
+            if not title:
+                continue
+            line = title
+            if tour.get("session_date"):
+                line += f" on {tour['session_date']}"
+            tour_lines.append(line)
+
+        prompt = f"""
+You are a local travel concierge building neighborhood-aware trip context.
+Infer the likely hotel area from the hotel name and city when possible.
+Do not invent exact street addresses, phone numbers, coordinates, or opening hours.
+Use general knowledge and provide practical, itinerary-friendly recommendations.
+
+City: {city}
+Hotel name: {hotel_name}
+Preferred activities: {', '.join(activities)}
+Response language: {language}
+Already booked tours or reserved experiences: {json.dumps(tour_lines, ensure_ascii=False)}
+
+Requirements:
+- All text values must be written in the requested response language.
+- Focus on suggestions plausibly close to the hotel area or the same district cluster.
+- Include local foods the traveler should try and a suitable venue or area for each.
+- Include nearby places worth visiting.
+- Include photo spots.
+- Avoid duplicates with already booked tours and avoid closely overlapping recommendations.
+- If a booked tour likely already covers ruins, an ancient city, a boat trip, a museum block, or a canyon, do not recommend the same attraction again.
+- Prefer human-friendly, itinerary-usable wording.
+
+Return strict JSON object:
+{{
+  "hotel_area": "string",
+  "must_try_foods": [
+    {{"dish": "string", "venue": "string", "notes": "string"}}
+  ],
+  "nearby_places": [
+    {{"name": "string", "why_visit": "string", "best_for": "string"}}
+  ],
+  "photo_spots": [
+    {{"name": "string", "best_time": "string", "notes": "string"}}
+  ],
+  "avoid_duplicates": ["string"]
+}}
+""".strip()
+
+        payload = self._chat_json(prompt=prompt, temperature=0.3)
+        return {
+            "hotel_area": str(payload.get("hotel_area") or "").strip(),
+            "must_try_foods": [
+                item for item in (payload.get("must_try_foods") or [])
+                if isinstance(item, dict) and str(item.get("dish") or "").strip()
+            ][:6],
+            "nearby_places": [
+                item for item in (payload.get("nearby_places") or [])
+                if isinstance(item, dict) and str(item.get("name") or "").strip()
+            ][:8],
+            "photo_spots": [
+                item for item in (payload.get("photo_spots") or [])
+                if isinstance(item, dict) and str(item.get("name") or "").strip()
+            ][:6],
+            "avoid_duplicates": [
+                str(item).strip() for item in (payload.get("avoid_duplicates") or []) if str(item).strip()
+            ][:10],
+        }
+
     def _parse_time_to_minutes(self, value: str) -> int | None:
         text = str(value or "").strip()
         if not text:
@@ -289,18 +455,11 @@ Return strict JSON object:
         return any(keyword in text for keyword in far_keywords)
 
     def _near_hotel_evening_item(self, city: str, language: str, minutes: int) -> Dict[str, str]:
-        if self._is_turkish(language):
-            title = f"{city} Otel Cevresi Aksam Kahve ve Yuruyus"
-            notes = "Uzak rota yerine otele yakin, guvenli ve dinlendirici aksam programi."
-        else:
-            title = f"{city} Near-Hotel Evening Coffee and Stroll"
-            notes = "Replacing far commute with a nearby and relaxed evening option."
-
         return {
             "time": self._minutes_to_time(minutes),
             "type": "break",
-            "title": title,
-            "notes": notes,
+            "title": self._localized_text(language, "near_hotel_evening_title", city=city),
+            "notes": self._localized_text(language, "near_hotel_evening_notes", city=city),
         }
 
     def _normalize_day_timeline(
@@ -336,8 +495,6 @@ Return strict JSON object:
 
         check_in_time = 14 * 60
         check_out_time = 12 * 60
-        is_tr = self._is_turkish(language)
-
         if is_first_day:
             filtered: List[Dict[str, Any]] = []
             for item in valid_items:
@@ -362,8 +519,8 @@ Return strict JSON object:
                     {
                         "time": "14:00",
                         "type": "checkin",
-                        "title": "Otele Giris" if is_tr else "Hotel Check-in",
-                        "notes": "Aktivite oncesi otele yerlesme." if is_tr else "Arrival and room settling before activities.",
+                        "title": self._localized_text(language, "checkin_title", city=city),
+                        "notes": self._localized_text(language, "checkin_notes", city=city),
                     },
                 )
 
@@ -389,26 +546,19 @@ Return strict JSON object:
                     {
                         "time": "12:00",
                         "type": "checkout",
-                        "title": "Otelden Cikis" if is_tr else "Hotel Check-out",
-                        "notes": "Cikis islemleri ve ayrilis." if is_tr else "Check-out and departure.",
+                        "title": self._localized_text(language, "checkout_title", city=city),
+                        "notes": self._localized_text(language, "checkout_notes", city=city),
                     }
                 )
 
             valid_items = sorted(filtered, key=lambda item: self._parse_time_to_minutes(str(item.get("time") or "")) or 0)
 
         # Add missing core breaks to keep the plan realistic and paced.
-        if is_tr:
-            mandatory_breaks: List[Tuple[int, str, str, str]] = [
-                (10 * 60 + 30, "break", "Kahve Molasi", "Mevcut rotaya yakin kisa kahve/cay molasi."),
-                (13 * 60, "meal", "Ogle Yemegi", "Yerel lezzetlerle oturarak dinlenmeli ogle arasi."),
-                (16 * 60 + 30, "rest", "Dinlenme Zamani", "Yorgunlugu azaltmak icin otel veya yakinda dinlenme araligi."),
-            ]
-        else:
-            mandatory_breaks = [
-                (10 * 60 + 30, "break", "Coffee Break", "Short coffee/tea break near current route."),
-                (13 * 60, "meal", "Lunch", "Local lunch break with seated rest."),
-                (16 * 60 + 30, "rest", "Rest Time", "Hotel or nearby resting window to avoid fatigue."),
-            ]
+        mandatory_breaks: List[Tuple[int, str, str, str]] = [
+            (10 * 60 + 30, "break", self._localized_text(language, "coffee_break_title", city=city), self._localized_text(language, "coffee_break_notes", city=city)),
+            (13 * 60, "meal", self._localized_text(language, "lunch_title", city=city), self._localized_text(language, "lunch_notes", city=city)),
+            (16 * 60 + 30, "rest", self._localized_text(language, "rest_title", city=city), self._localized_text(language, "rest_notes", city=city)),
+        ]
 
         for break_minutes, break_type, break_title, break_notes in mandatory_breaks:
             exists = any(
@@ -445,10 +595,8 @@ Return strict JSON object:
                 {
                     "time": self._minutes_to_time(filler_cursor),
                     "type": "activity",
-                    "title": f"{city} Yakindaki Kesif Yuruyusu" if is_tr else f"{city} Nearby Discovery Walk",
-                    "notes": "Dusuk transferli, otele yakin yerel aktivite."
-                    if is_tr
-                    else "Low-transfer local activity close to hotel area.",
+                    "title": self._localized_text(language, "nearby_walk_title", city=city),
+                    "notes": self._localized_text(language, "nearby_walk_notes", city=city),
                 }
             )
             filler_cursor += 90
@@ -577,6 +725,15 @@ Return strict JSON object:
                 lines.append(line)
             tour_block = "\\n".join(lines)
 
+        local_context = self.build_local_experience_context(
+            city=city,
+            hotel_name=hotel_name,
+            activities=activities,
+            language=language,
+            selected_tours=selected_tours,
+        )
+        local_context_block = json.dumps(local_context, ensure_ascii=False)
+
         prompt = f"""
 You are an expert travel planner.
 Generate exactly 2 plan options for this trip.
@@ -590,6 +747,7 @@ Language: {language}
 Family mode: {str(family_mode).lower()}
 {hotel_block}
 {tour_block}
+Local hotel-area context JSON: {local_context_block}
 
 Rules:
 - Return exactly 2 options.
@@ -597,6 +755,7 @@ Rules:
 - Option B must be "Calm & relaxed" with lower tempo and longer rests.
 - The two options must be clearly different in rhythm, route density and daily flow.
 - Each option must include: plan_id, title, gemini_recommendation or summary, days, estimated_total, currency.
+- All user-facing text fields must be fully written in the requested language: title, notes, gemini_recommendation, summary, food/place names when applicable.
 - Day 1 should include check-in around 14:00.
 - Final day should include check-out around 12:00.
 - Do not schedule any activity before check-in on day 1.
@@ -607,6 +766,12 @@ Rules:
 - Include explicit meal and break entries (coffee/tea, lunch, and rest).
 - timeline.title must be real user-facing activity names for {city}.
 - Never use placeholders like "Kesif Rotasi 1", "Day 1 Activity", or "Activity 1".
+- Use the local hotel-area context.
+- Integrate must-try dishes and suitable venues into meal entries where it makes sense.
+- Use nearby places and photo spots from the local context when building the route.
+- Prefer route coherence around the inferred hotel area or same district cluster.
+- Do not recommend items listed in avoid_duplicates.
+- If a pre-booked tour likely covers a landmark or district, do not recommend the same attraction again unless it is only a brief photo stop clearly different from the reserved experience.
 - Respect destination geography and transfer realism:
     - Prefer nearby venues around hotel and same district/cluster.
     - Avoid suggesting far-out locations late evening (after 18:00).

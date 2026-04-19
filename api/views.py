@@ -77,24 +77,132 @@ def build_plan_options(
     currency: str = "TRY",
     activities=None,
     selected_tours=None,
+    language: str = "en",
+    hotel_name: str = "",
 ):
     total_days = max((end_date - start_date).days + 1, 1)
     options = []
 
+    language = normalize_lang(language)
+    is_tr = language == 'tr'
+    is_ru = language == 'ru'
+    is_ar = language == 'ar'
+
+    def text(key: str) -> str:
+        translations = {
+            'plan_a': {
+                'tr': 'Plan A',
+                'en': 'Plan A',
+                'ru': 'Plan A',
+                'ar': 'Al Khitta A',
+            },
+            'plan_b': {
+                'tr': 'Plan B',
+                'en': 'Plan B',
+                'ru': 'Plan B',
+                'ar': 'Al Khitta B',
+            },
+            'checkin_title': {
+                'tr': 'Otele Giris ve Yerlesme',
+                'en': 'Hotel Check-in and Settling In',
+                'ru': 'Zaselenie v Otel i Razmeshchenie',
+                'ar': 'Tasjeel Al Dukhool wa Al Istiqrar fi Al Funduq',
+            },
+            'checkin_notes': {
+                'tr': 'Varis sonrasi dinlenme ve kisa cevre kesfi.',
+                'en': 'Time to settle in after arrival and take a short walk nearby.',
+                'ru': 'Vremya ustroitsya posle pribytiya i sdelat korotkuyu progulku ryadom.',
+                'ar': 'Waqt lil istiqrar baad al wusool wa li jawla qasira qariba.',
+            },
+            'tour_notes': {
+                'tr': 'Planlanan tur etkinligi.',
+                'en': 'Pre-booked tour activity.',
+                'ru': 'Zaranee zabronirovannaya ekskursiya.',
+                'ar': 'Nashat jawla mahjooza musbaqan.',
+            },
+            'calm_notes': {
+                'tr': 'Aileye uygun ve dengeli durak.',
+                'en': 'Balanced stop suitable for a relaxed pace.',
+                'ru': 'Sbalansirovannaya ostanovka dlya spokoynogo tempa.',
+                'ar': 'Tawaquf mutawazin limasaar hadi.',
+            },
+            'dynamic_notes': {
+                'tr': 'Daha dinamik rota ve kesif odagi.',
+                'en': 'A more dynamic route with stronger exploration focus.',
+                'ru': 'Bolee dinamichnyy marshrut s aktsentom na issledovanie.',
+                'ar': 'Masaar akthar haraka ma tarkiz ala al istikshaf.',
+            },
+            'free_time_title': {
+                'tr': f'{city} Serbest Zaman ve Dinlenme',
+                'en': f'{city} Free Time and Rest',
+                'ru': f'{city} Svobodnoe Vremya i Otdykh',
+                'ar': f'{city} Waqt Hurr wa Raaha',
+            },
+            'free_time_notes': {
+                'tr': 'Ulasim ve hazirlik temposuna uygun hafif program.',
+                'en': 'A lighter schedule that fits arrival, preparation, and transfer pace.',
+                'ru': 'Bolee legkaya programma s uchetom priezda i tempa peremeshcheniy.',
+                'ar': 'Barnamaj akhaf yunasib al wusool wa tahdheer wa waqt al tanqul.',
+            },
+            'food_title': {
+                'tr': f'{city} Yerel Lezzet Duragi',
+                'en': f'{city} Local Food Stop',
+                'ru': f'{city} Ostanovka dlya Mestnoy Kukhni',
+                'ar': f'{city} Mahattat Atima Mahalliya',
+            },
+            'food_notes': {
+                'tr': 'Bolgenin populer tatlarini deneme molasi.',
+                'en': 'A stop to try popular flavors of the area.',
+                'ru': 'Pauza, chtoby poprobovat populyarnye mestnye vkusy.',
+                'ar': 'Waqfa litajrib nakehat al mantiqa al mashhoora.',
+            },
+            'food_notes_hotel': {
+                'tr': f'{hotel_name} civarinda bolgenin populer tatlarini deneyebilecegin bir mola.' if hotel_name else 'Bolgenin populer tatlarini deneme molasi.',
+                'en': f'A stop near {hotel_name} to try popular flavors of the area.' if hotel_name else 'A stop to try popular flavors of the area.',
+                'ru': f'Ostanovka ryadom s {hotel_name}, chtoby poprobovat populyarnye vkusy rayona.' if hotel_name else 'Pauza, chtoby poprobovat populyarnye mestnye vkusy.',
+                'ar': f'Waqfa qarib min {hotel_name} litajrib mashhoor atimat al mantiqa.' if hotel_name else 'Waqfa litajrib nakehat al mantiqa al mashhoora.',
+            },
+            'checkout_title': {
+                'tr': 'Otelden Cikis',
+                'en': 'Hotel Check-out',
+                'ru': 'Vyezd iz Otelya',
+                'ar': 'Tasjeel Al Khurooj Min Al Funduq',
+            },
+            'checkout_notes': {
+                'tr': 'Donus oncesi cikis islemleri.',
+                'en': 'Check-out procedures before departure.',
+                'ru': 'Formalnosti vyezda pered otpravleniem.',
+                'ar': 'Ijraat al khurooj qabl al mughadara.',
+            },
+            'summary_relaxed': {
+                'tr': 'Rahat tempo',
+                'en': 'Relaxed pace',
+                'ru': 'Spokoynyy temp',
+                'ar': 'Iqa mutarakhkh',
+            },
+            'summary_intense': {
+                'tr': 'Yogun tempo',
+                'en': 'High tempo',
+                'ru': 'Intensivnyy temp',
+                'ar': 'Iqa sari',
+            },
+        }
+        return translations.get(key, {}).get(language, translations.get(key, {}).get('en', ''))
+
     activities = activities or []
     selected_tours = selected_tours or []
     activity_titles = {
-        'swimming': 'Sahil Yuzme Etkinligi',
-        'culture': 'Tarihi Bolge Yuruyus Turu',
-        'food': 'Yerel Lezzet Deneyimi',
-        'food_drink': 'Yerel Lezzet Deneyimi',
-        'yeme_icme': 'Yerel Lezzet Deneyimi',
-        'safari': 'Doga ve Safari Turu',
-        'diving': 'Dalis ve Tekne Aktivitesi',
-        'boat': 'Tekne Turu',
-        'nature': 'Doga Kesif Rotasi',
-        'kultur': 'Tarihi Bolge Yuruyus Turu',
-        'yuzme': 'Sahil Yuzme Etkinligi',
+        'swimming': {'tr': 'Sahil Yuzme Etkinligi', 'en': 'Coastal Swimming Experience', 'ru': 'Plyazhnyy Otdyk i Kupanie', 'ar': 'Tajribat Sibaha Ala Al Sahil'},
+        'culture': {'tr': 'Tarihi Bolge Yuruyus Turu', 'en': 'Historic District Walk', 'ru': 'Progulka po Istoricheskomu Rayonu', 'ar': 'Jawla fi Al Hara Al Tarikhia'},
+        'food': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
+        'food_drink': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
+        'yeme_icme': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
+        'safari': {'tr': 'Doga ve Safari Turu', 'en': 'Nature and Safari Route', 'ru': 'Marshrut po Prirode i Safari', 'ar': 'Masaar Tabi'i wa Safari'},
+        'diving': {'tr': 'Dalis ve Tekne Aktivitesi', 'en': 'Diving and Boat Experience', 'ru': 'Dayving i Lodocnaya Aktivnost', 'ar': 'Tajribat Ghaws wa Qareb'},
+        'boat': {'tr': 'Tekne Turu', 'en': 'Boat Tour', 'ru': 'Progulka na Lodke', 'ar': 'Jawlat Qareb'},
+        'nature': {'tr': 'Doga Kesif Rotasi', 'en': 'Nature Discovery Route', 'ru': 'Marshrut Izucheniya Prirody', 'ar': 'Masaar Istikshaf Al Tabi'a'},
+        'kultur': {'tr': 'Tarihi Bolge Yuruyus Turu', 'en': 'Historic District Walk', 'ru': 'Progulka po Istoricheskomu Rayonu', 'ar': 'Jawla fi Al Hara Al Tarikhia'},
+        'yuzme': {'tr': 'Sahil Yuzme Etkinligi', 'en': 'Coastal Swimming Experience', 'ru': 'Plyazhnyy Otdyk i Kupanie', 'ar': 'Tajribat Sibaha Ala Al Sahil'},
     }
 
     fallback_pool = []
@@ -103,11 +211,18 @@ def build_plan_options(
         if not key_norm:
             continue
         if key_norm in activity_titles:
-            fallback_pool.append(activity_titles[key_norm])
+            fallback_pool.append(activity_titles[key_norm].get(language, activity_titles[key_norm]['en']))
         else:
             fallback_pool.append(key_norm.replace('_', ' ').title())
     if not fallback_pool:
-        fallback_pool = ['Sehir Turu', 'Yerel Lezzet Deneyimi', 'Sahil Etkinligi']
+        if is_tr:
+            fallback_pool = ['Sehir Turu', 'Yerel Lezzet Deneyimi', 'Sahil Etkinligi']
+        elif is_ru:
+            fallback_pool = ['Progulka po Gorodu', 'Mestnaya Kulinariya', 'Otdykh u Berega']
+        elif is_ar:
+            fallback_pool = ['Jawla fi Al Madina', 'Tajribat Atima Mahalliya', 'Nashat Ala Al Sahil']
+        else:
+            fallback_pool = ['City Walk', 'Local Food Experience', 'Waterfront Activity']
 
     tours_by_date = {}
     unscheduled_tours = []
@@ -136,8 +251,8 @@ def build_plan_options(
                     {
                         "time": "14:00",
                         "type": "check_in",
-                        "title": "Otele Giris ve Yerlesme",
-                        "notes": "Varis sonrasi dinlenme ve kisa cevre kesfi.",
+                            "title": text('checkin_title'),
+                            "notes": text('checkin_notes'),
                     }
                 )
 
@@ -157,8 +272,8 @@ def build_plan_options(
                         {
                             "time": tour.get('start_time') or base_time,
                             "type": "activity",
-                            "title": tour.get('title') or f"{city} Ozel Turu",
-                            "notes": "Planlanan tur etkinligi.",
+                            "title": tour.get('title') or f"{city} Tour",
+                            "notes": text('tour_notes'),
                         }
                     )
 
@@ -168,7 +283,7 @@ def build_plan_options(
                         "time": "16:30" if day_tours else base_time,
                         "type": "activity",
                         "title": f"{city} {fallback_title}",
-                        "notes": "Aileye uygun" if idx == 1 else "Daha dinamik rota",
+                        "notes": text('calm_notes') if idx == 1 else text('dynamic_notes'),
                     }
                 )
             else:
@@ -176,8 +291,8 @@ def build_plan_options(
                     {
                         "time": "17:00" if is_first_day else "09:30",
                         "type": "free_time",
-                        "title": f"{city} Serbest Zaman ve Dinlenme",
-                        "notes": "Ulasim ve hazirlik temposuna uygun hafif program.",
+                        "title": text('free_time_title'),
+                        "notes": text('free_time_notes'),
                     }
                 )
 
@@ -186,8 +301,8 @@ def build_plan_options(
                 {
                     "time": "20:00" if is_first_day else "13:00",
                     "type": "dining",
-                    "title": f"{city} Yerel Lezzet Duragi",
-                    "notes": "Bolgenin populer tatlarini deneme molasi.",
+                    "title": text('food_title'),
+                    "notes": text('food_notes_hotel'),
                 }
             )
 
@@ -196,8 +311,8 @@ def build_plan_options(
                     {
                         "time": "12:00",
                         "type": "check_out",
-                        "title": "Otelden Cikis",
-                        "notes": "Donus oncesi cikis islemleri.",
+                        "title": text('checkout_title'),
+                        "notes": text('checkout_notes'),
                     }
                 )
 
@@ -211,13 +326,30 @@ def build_plan_options(
         options.append(
             {
                 "plan_id": f"plan_{idx}_{uuid4().hex[:10]}",
-                "title": f"Plan {'A' if idx == 1 else 'B'}",
+                "title": text('plan_a') if idx == 1 else text('plan_b'),
                 "gemini_recommendation": (
-                    f"{city} icin {'aileye uygun ve dengeli' if idx == 1 else 'daha hareketli ve kesif odakli'} "
-                    f"{total_days} gunluk plan onerisi."
+                    (
+                        f"{city} icin {total_days} gunluk, otele yakin duraklar ve yerel lezzetler iceren dengeli plan."
+                        if is_tr else
+                        f"A {total_days}-day balanced plan for {city} with nearby stops and local food suggestions."
+                        if not (is_ru or is_ar) else
+                        f"{city} {total_days}-dnevny plan s blizkimi ostanovkami i mestnoy edoy."
+                        if is_ru else
+                        f"Khutta limuddat {total_days} ayam fi {city} tatadamman amaakin qariba wa atima mahalliya."
+                    ) if idx == 1 else (
+                        f"{city} icin {total_days} gunluk, daha hareketli ve fotograf duraklari guclu kesif plani."
+                        if is_tr else
+                        f"A {total_days}-day more dynamic discovery plan for {city} with stronger photo stops."
+                        if not (is_ru or is_ar) else
+                        f"{city} {total_days}-dnevnyy bolee dinamichnyy plan s yarkimi foto-tochkami."
+                        if is_ru else
+                        f"Khutta akthar haraka limuddat {total_days} ayam fi {city} ma tawqofat suwar mumayyaza."
+                    )
                 ),
                 "summary": (
-                    f"{total_days} Gun • {'Rahat tempo' if idx == 1 else 'Yogun tempo'}"
+                    f"{total_days} Gun • {text('summary_relaxed') if idx == 1 else text('summary_intense')}"
+                    if is_tr else
+                    f"{total_days} Days • {text('summary_relaxed') if idx == 1 else text('summary_intense')}"
                 ),
                 "days": days,
                 "estimated_total": 12400 if idx == 1 else 13800,
@@ -1090,6 +1222,8 @@ class PlanGenerateOptionsView(APIView):
                 payload["city"],
                 activities=payload.get("activities"),
                 selected_tours=selected_tours_detail,
+                language=normalize_lang(payload.get("language")),
+                hotel_name=hotel_name,
             )
 
         destination = Destination.objects.filter(name__iexact=payload["city"]).first()
