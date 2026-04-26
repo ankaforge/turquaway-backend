@@ -197,10 +197,10 @@ def build_plan_options(
         'food': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
         'food_drink': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
         'yeme_icme': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
-        'safari': {'tr': 'Doga ve Safari Turu', 'en': 'Nature and Safari Route', 'ru': 'Marshrut po Prirode i Safari', 'ar': 'Masaar Tabi'i wa Safari'},
+        'safari': {'tr': 'Doga ve Safari Turu', 'en': 'Nature and Safari Route', 'ru': 'Marshrut po Prirode i Safari', 'ar': "Masaar Tabi'i wa Safari"},
         'diving': {'tr': 'Dalis ve Tekne Aktivitesi', 'en': 'Diving and Boat Experience', 'ru': 'Dayving i Lodocnaya Aktivnost', 'ar': 'Tajribat Ghaws wa Qareb'},
         'boat': {'tr': 'Tekne Turu', 'en': 'Boat Tour', 'ru': 'Progulka na Lodke', 'ar': 'Jawlat Qareb'},
-        'nature': {'tr': 'Doga Kesif Rotasi', 'en': 'Nature Discovery Route', 'ru': 'Marshrut Izucheniya Prirody', 'ar': 'Masaar Istikshaf Al Tabi'a'},
+        'nature': {'tr': 'Doga Kesif Rotasi', 'en': 'Nature Discovery Route', 'ru': 'Marshrut Izucheniya Prirody', 'ar': "Masaar Istikshaf Al Tabi'a"},
         'kultur': {'tr': 'Tarihi Bolge Yuruyus Turu', 'en': 'Historic District Walk', 'ru': 'Progulka po Istoricheskomu Rayonu', 'ar': 'Jawla fi Al Hara Al Tarikhia'},
         'yuzme': {'tr': 'Sahil Yuzme Etkinligi', 'en': 'Coastal Swimming Experience', 'ru': 'Plyazhnyy Otdyk i Kupanie', 'ar': 'Tajribat Sibaha Ala Al Sahil'},
     }
