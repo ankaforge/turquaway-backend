@@ -66,6 +66,11 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="{% static 'landing/styles.css' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'landing/favicon/apple-touch-icon.png' %}" />
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'landing/favicon/favicon-32x32.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'landing/favicon/favicon-16x16.png' %}" />
+    <link rel="manifest" href="{% static 'landing/favicon/site.webmanifest' %}" />
+    <link rel="shortcut icon" href="{% static 'landing/favicon/favicon.ico' %}" />
   </head>
   <!-- Background -->
   <body class="bg-slate-950 text-slate-100 font-sans antialiased">
@@ -89,7 +94,7 @@
         class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8"
       >
         <a href="#" class="shrink-0 flex items-center">
-          <img src="{% static 'landing/logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
+          <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
         </a>
 
         <div
@@ -1154,7 +1159,7 @@
         class="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 md:flex-row"
       >
         <div class="text-center md:text-left">
-          <img src="{% static 'landing/logo.png' %}" alt="Turquaway" class="h-9 w-auto" />
+          <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-9 w-auto" />
           <p class="mt-1 text-sm text-slate-400" data-i18n="footerCopyright">
             © 2026 Turquaway.
           </p>
