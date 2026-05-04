@@ -1,0 +1,115 @@
+{% load static %}
+<!-- Navigation -->
+<nav
+  class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl"
+>
+  <div
+    class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8"
+  >
+    <a href="#" class="shrink-0 flex items-center">
+      <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
+    </a>
+
+    <div
+      class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 text-lg font-medium text-slate-300 lg:flex"
+    >
+      <a
+        href="#features"
+        class="transition hover:text-lagoon-300"
+        data-i18n="navFeatures"
+        >Features</a
+      >
+      <a
+        href="#how-it-works"
+        class="transition hover:text-lagoon-300"
+        data-i18n="navHowItWorks"
+        >How it Works</a
+      >
+      <a
+        href="#testimonials"
+        class="transition hover:text-lagoon-300"
+        data-i18n="navTestimonials"
+        >Testimonials</a
+      >
+    </div>
+
+    <div class="ms-auto flex items-center gap-2 sm:gap-3">
+      <div class="language-menu" data-language-menu>
+        <button
+          id="language-menu-button"
+          type="button"
+          class="language-menu-trigger"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-controls="language-menu-list"
+        >
+          <span class="language-menu-label" data-i18n="languageLabel"
+            >Language</span
+          >
+          <span class="language-menu-current" data-language-current
+            >EN</span
+          >
+          <i
+            class="fa-solid fa-chevron-down language-menu-chevron"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        <div
+          id="language-menu-list"
+          class="language-menu-list hidden"
+          role="listbox"
+          aria-labelledby="language-menu-button"
+        ></div>
+      </div>
+      <a
+        href="#cta"
+        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 sm:inline-flex"
+      >
+        <span data-i18n="navDownload">Download</span>
+      </a>
+      <button
+        id="nav-hamburger"
+        class="flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-white/20 bg-white/10 lg:hidden"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+      >
+        <span
+          class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+        ></span>
+        <span
+          class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+        ></span>
+        <span
+          class="hamburger-bar block h-0.5 w-5 bg-white transition-all duration-300"
+        ></span>
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="nav-mobile-menu"
+    class="hidden border-t border-white/10 bg-slate-950/95 lg:hidden"
+  >
+    <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
+      <a
+        href="#features"
+        class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+        data-i18n="navFeatures"
+        >Features</a
+      >
+      <a
+        href="#how-it-works"
+        class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+        data-i18n="navHowItWorks"
+        >How it Works</a
+      >
+      <a
+        href="#testimonials"
+        class="px-3 py-2 text-slate-200 transition hover:bg-white/10"
+        data-i18n="navTestimonials"
+        >Testimonials</a
+      >
+    </div>
+  </div>
+</nav>
