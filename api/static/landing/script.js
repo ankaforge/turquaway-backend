@@ -123,6 +123,8 @@
     authAndWord: "and",
     authPrivacyLink: "Privacy Policy",
     authRegisterBtn: "Create Account",
+    navExplore: "Explore",
+    navLogout: "Sign Out",
   },
   tr: {
     pageTitle: "Turquaway - Yapay Zeka Destekli Tur Planlayıcı",
@@ -225,8 +227,8 @@
     authTermsLink: "Kullan\u0131m \u015eartlar\u0131",
     authAndWord: "ve",
     authPrivacyLink: "Gizlilik Politikas\u0131",
-    authRegisterBtn: "Hesap Olu\u015ftur",
-},
+    authRegisterBtn: "Hesap Olu\u015ftur",    navExplore: "Keşfet",
+    navLogout: "Çıkış Yap",},
   ru: {
     pageTitle: "Turquaway - ИИ-планировщик путешествий",
     languageLabel: "Язык",
@@ -329,6 +331,8 @@
     authAndWord: "и",
     authPrivacyLink: "Политикой конфиденциальности",
     authRegisterBtn: "Создать аккаунт",
+    navExplore: "Исследовать",
+    navLogout: "Выйти",
 },
   ar: {
     pageTitle: "Turquaway - مخطط رحلات ذكي",
@@ -432,6 +436,8 @@
     authAndWord: "و",
     authPrivacyLink: "سياسة الخصوصية",
     authRegisterBtn: "إنشاء الحساب",
+    navExplore: "استكشف",
+    navLogout: "تسجيل الخروج",
 }
 };
 
