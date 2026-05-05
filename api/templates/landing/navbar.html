@@ -68,6 +68,29 @@
       >
         <span data-i18n="navDownload">Download</span>
       </a>
+
+      <!-- Auth buttons (unauthenticated) -->
+      <div id="nav-auth-guest" class="hidden items-center gap-2">
+        <a
+          href="/login/"
+          class="hidden px-4 py-2.5 text-sm font-medium text-slate-300 transition hover:text-white sm:inline-block"
+          data-i18n="navSignIn">Sign In</a>
+        <a
+          href="/register/"
+          class="inline-flex items-center rounded-xl border border-lagoon-500 bg-lagoon-500 px-4 py-2.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300"
+          data-i18n="navSignUp">Sign Up</a>
+      </div>
+
+      <!-- Auth buttons (authenticated) -->
+      <div id="nav-auth-user" class="hidden items-center gap-2">
+        <a
+          href="/hesabim/"
+          class="hidden items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/20 sm:inline-flex"
+        >
+          <i class="fa-regular fa-circle-user text-lagoon-300"></i>
+          <span id="nav-user-name"></span>
+        </a>
+      </div>
       <button
         id="nav-hamburger"
         class="flex h-10 w-10 flex-col items-center justify-center gap-1.5 border border-white/20 bg-white/10 lg:hidden"
@@ -110,6 +133,55 @@
         data-i18n="navTestimonials"
         >Testimonials</a
       >
+      <div class="border-t border-white/10 pt-2">
+        <a
+          href="/login/"
+          id="nav-mobile-signin"
+          class="block px-3 py-2 text-slate-200 transition hover:bg-white/10"
+          data-i18n="navSignIn">Sign In</a>
+        <a
+          href="/register/"
+          id="nav-mobile-signup"
+          class="mt-1 block rounded-xl bg-lagoon-500 px-3 py-2 text-center text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300"
+          data-i18n="navSignUp">Sign Up</a>
+        <a
+          href="/hesabim/"
+          id="nav-mobile-account"
+          class="hidden mt-1 block px-3 py-2 text-slate-200 transition hover:bg-white/10"
+        >
+          <i class="fa-regular fa-circle-user text-lagoon-300 mr-2"></i>
+          <span id="nav-mobile-user-name"></span>
+        </a>
+      </div>
     </div>
   </div>
 </nav>
+<script>
+(function () {
+  const token = localStorage.getItem('tw_access');
+  const userRaw = localStorage.getItem('tw_user');
+  const $guest = document.getElementById('nav-auth-guest');
+  const $user = document.getElementById('nav-auth-user');
+  const $mobileSignIn = document.getElementById('nav-mobile-signin');
+  const $mobileSignUp = document.getElementById('nav-mobile-signup');
+  const $mobileAccount = document.getElementById('nav-mobile-account');
+
+  if (token && userRaw) {
+    try {
+      const u = JSON.parse(userRaw);
+      const name = (u.full_name || '').split(' ')[0];
+      const $name = document.getElementById('nav-user-name');
+      const $mobileName = document.getElementById('nav-mobile-user-name');
+      if ($name) $name.textContent = name;
+      if ($mobileName) $mobileName.textContent = name;
+    } catch (_) {}
+    $guest?.classList.replace('hidden', 'flex');
+    $user?.classList.replace('hidden', 'flex');
+    if ($mobileSignIn) $mobileSignIn.classList.add('hidden');
+    if ($mobileSignUp) $mobileSignUp.classList.add('hidden');
+    if ($mobileAccount) $mobileAccount.classList.remove('hidden');
+  } else {
+    $guest?.classList.replace('hidden', 'flex');
+  }
+})();
+</script>

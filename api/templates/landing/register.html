@@ -1,0 +1,337 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - Turquaway{% endblock %}
+
+{% block content %}
+<main class="flex min-h-screen items-center justify-center px-4 pt-28 pb-16">
+  <div class="w-full max-w-lg animate-rise">
+
+    <!-- Heading -->
+    <div class="mb-8 text-center">
+      <h1 class="font-display text-3xl font-bold text-white" data-i18n="authRegisterHeading">Create Your Account</h1>
+      <p class="mt-2 text-slate-400 text-sm" data-i18n="authRegisterSubtitle">Join thousands discovering Türkiye</p>
+    </div>
+
+    <!-- Card -->
+    <div class="rounded-2xl border border-white/10 bg-slate-900/60 p-8 shadow-soft backdrop-blur-sm">
+
+      <!-- Error banner -->
+      <div id="register-error" class="mb-5 hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-400"></div>
+
+      <form id="register-form" novalidate class="space-y-5">
+
+        <!-- Full Name -->
+        <div>
+          <label for="reg-fullname" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authFullName">Full Name</label>
+          <input
+            id="reg-fullname"
+            type="text"
+            autocomplete="name"
+            required
+            data-i18n-placeholder="authFullNamePlaceholder"
+            placeholder="Your full name"
+            class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+          />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="reg-email" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authEmail">Email Address</label>
+          <input
+            id="reg-email"
+            type="email"
+            autocomplete="email"
+            required
+            data-i18n-placeholder="authEmailPlaceholder"
+            placeholder="you@example.com"
+            class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+          />
+        </div>
+
+        <!-- Phone + Country row -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="reg-phone" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authPhone">Phone</label>
+            <input
+              id="reg-phone"
+              type="tel"
+              autocomplete="tel"
+              required
+              data-i18n-placeholder="authPhonePlaceholder"
+              placeholder="+90 555 000 00 00"
+              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            />
+          </div>
+          <div>
+            <label for="reg-country" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authCountry">Country</label>
+            <select
+              id="reg-country"
+              required
+              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30 appearance-none"
+            >
+              <option value="" class="bg-slate-800" data-i18n="authCountryPlaceholder">Select country</option>
+              <option value="TR" class="bg-slate-800">Türkiye</option>
+              <option value="RU" class="bg-slate-800">Russia</option>
+              <option value="DE" class="bg-slate-800">Germany</option>
+              <option value="GB" class="bg-slate-800">United Kingdom</option>
+              <option value="FR" class="bg-slate-800">France</option>
+              <option value="US" class="bg-slate-800">United States</option>
+              <option value="SA" class="bg-slate-800">Saudi Arabia</option>
+              <option value="AE" class="bg-slate-800">United Arab Emirates</option>
+              <option value="KW" class="bg-slate-800">Kuwait</option>
+              <option value="QA" class="bg-slate-800">Qatar</option>
+              <option value="OM" class="bg-slate-800">Oman</option>
+              <option value="BH" class="bg-slate-800">Bahrain</option>
+              <option value="JO" class="bg-slate-800">Jordan</option>
+              <option value="EG" class="bg-slate-800">Egypt</option>
+              <option value="MA" class="bg-slate-800">Morocco</option>
+              <option value="DZ" class="bg-slate-800">Algeria</option>
+              <option value="TN" class="bg-slate-800">Tunisia</option>
+              <option value="LB" class="bg-slate-800">Lebanon</option>
+              <option value="IQ" class="bg-slate-800">Iraq</option>
+              <option value="PK" class="bg-slate-800">Pakistan</option>
+              <option value="IN" class="bg-slate-800">India</option>
+              <option value="CN" class="bg-slate-800">China</option>
+              <option value="JP" class="bg-slate-800">Japan</option>
+              <option value="KR" class="bg-slate-800">South Korea</option>
+              <option value="UA" class="bg-slate-800">Ukraine</option>
+              <option value="PL" class="bg-slate-800">Poland</option>
+              <option value="IT" class="bg-slate-800">Italy</option>
+              <option value="ES" class="bg-slate-800">Spain</option>
+              <option value="NL" class="bg-slate-800">Netherlands</option>
+              <option value="BE" class="bg-slate-800">Belgium</option>
+              <option value="SE" class="bg-slate-800">Sweden</option>
+              <option value="NO" class="bg-slate-800">Norway</option>
+              <option value="AT" class="bg-slate-800">Austria</option>
+              <option value="CH" class="bg-slate-800">Switzerland</option>
+              <option value="GR" class="bg-slate-800">Greece</option>
+              <option value="PT" class="bg-slate-800">Portugal</option>
+              <option value="CA" class="bg-slate-800">Canada</option>
+              <option value="AU" class="bg-slate-800">Australia</option>
+              <option value="NZ" class="bg-slate-800">New Zealand</option>
+              <option value="MX" class="bg-slate-800">Mexico</option>
+              <option value="BR" class="bg-slate-800">Brazil</option>
+              <option value="AZ" class="bg-slate-800">Azerbaijan</option>
+              <option value="KZ" class="bg-slate-800">Kazakhstan</option>
+              <option value="UZ" class="bg-slate-800">Uzbekistan</option>
+              <option value="GE" class="bg-slate-800">Georgia</option>
+              <option value="IL" class="bg-slate-800">Israel</option>
+              <option value="AM" class="bg-slate-800">Armenia</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="reg-password" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authPassword">Password</label>
+          <div class="relative">
+            <input
+              id="reg-password"
+              type="password"
+              autocomplete="new-password"
+              required
+              data-i18n-placeholder="authPasswordPlaceholder"
+              placeholder="Min. 8 characters"
+              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-4 text-slate-400 transition hover:text-lagoon-300"
+              aria-label="Toggle password visibility"
+              onclick="togglePw('reg-password', this)"
+            >
+              <i class="fa-regular fa-eye text-base"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label for="reg-password-confirm" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authPasswordConfirm">Confirm Password</label>
+          <div class="relative">
+            <input
+              id="reg-password-confirm"
+              type="password"
+              autocomplete="new-password"
+              required
+              data-i18n-placeholder="authPasswordConfirmPlaceholder"
+              placeholder="Repeat your password"
+              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-4 text-slate-400 transition hover:text-lagoon-300"
+              aria-label="Toggle password visibility"
+              onclick="togglePw('reg-password-confirm', this)"
+            >
+              <i class="fa-regular fa-eye text-base"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Consents -->
+        <div class="space-y-3 rounded-xl border border-white/10 bg-white/5 p-4">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input
+              id="reg-terms"
+              type="checkbox"
+              required
+              class="mt-0.5 h-4 w-4 shrink-0 rounded border-white/20 bg-slate-800 accent-lagoon-500"
+            />
+            <span class="text-sm text-slate-300">
+              <span data-i18n="authTermsAgree">I agree to the</span>
+              <a href="/terms/" target="_blank" class="ml-1 text-lagoon-300 underline hover:text-lagoon-500" data-i18n="authTermsLink">Terms of Service</a>
+              <span class="mx-1" data-i18n="authAndWord">and</span>
+              <a href="/privacy/" target="_blank" class="text-lagoon-300 underline hover:text-lagoon-500" data-i18n="authPrivacyLink">Privacy Policy</a>
+            </span>
+          </label>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="register-btn"
+          class="flex w-full items-center justify-center gap-2 rounded-xl bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 disabled:opacity-60"
+        >
+          <span data-i18n="authRegisterBtn">Create Account</span>
+          <i id="register-spinner" class="fa-solid fa-circle-notch fa-spin hidden text-base"></i>
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center gap-3">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <span class="text-xs text-slate-500" data-i18n="authOrDivider">or</span>
+        <div class="h-px flex-1 bg-white/10"></div>
+      </div>
+
+      <!-- Link to login -->
+      <p class="text-center text-sm text-slate-400">
+        <span data-i18n="authHaveAccount">Already have an account?</span>
+        <a href="/login/" class="ml-1 font-semibold text-lagoon-300 transition hover:text-lagoon-500" data-i18n="authSignIn">Sign In</a>
+      </p>
+
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fa-regular fa-eye-slash text-base';
+  } else {
+    input.type = 'password';
+    icon.className = 'fa-regular fa-eye text-base';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('register-error');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.getElementById('register-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const fullName = document.getElementById('reg-fullname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const country = document.getElementById('reg-country').value;
+  const password = document.getElementById('reg-password').value;
+  const passwordConfirm = document.getElementById('reg-password-confirm').value;
+  const termsChecked = document.getElementById('reg-terms').checked;
+
+  const errorEl = document.getElementById('register-error');
+  errorEl.classList.add('hidden');
+
+  if (!fullName || !email || !phone || !country || !password || !passwordConfirm) {
+    showError('Please fill in all fields.');
+    return;
+  }
+  if (password !== passwordConfirm) {
+    showError('Passwords do not match.');
+    return;
+  }
+  if (!termsChecked) {
+    showError('You must agree to the Terms of Service and Privacy Policy.');
+    return;
+  }
+
+  const btn = document.getElementById('register-btn');
+  const spinner = document.getElementById('register-spinner');
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+
+  const lang = localStorage.getItem('turquaway-language') || 'en';
+  const acceptedAt = new Date().toISOString();
+
+  const payload = {
+    full_name: fullName,
+    email: email,
+    phone: phone,
+    country: country,
+    password: password,
+    password_confirm: passwordConfirm,
+    language: lang,
+    consents: {
+      terms_accepted: true,
+      privacy_accepted: true,
+      accepted_at: acceptedAt,
+      version: 'v1',
+    },
+  };
+
+  try {
+    const resp = await fetch('/api/v1/auth/register/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      // Flatten field errors into readable message
+      let msg = data.detail || 'Registration failed.';
+      if (data.fields) {
+        const fieldErrors = Object.entries(data.fields)
+          .map(([k, v]) => {
+            const errs = Array.isArray(v) ? v : (typeof v === 'object' ? Object.values(v).flat() : [v]);
+            return errs.join(' ');
+          })
+          .join(' ');
+        if (fieldErrors) msg = fieldErrors;
+      }
+      showError(msg);
+      return;
+    }
+
+    localStorage.setItem('tw_access', data.tokens.access_token);
+    localStorage.setItem('tw_refresh', data.tokens.refresh_token);
+    localStorage.setItem('tw_user', JSON.stringify(data.user));
+
+    window.location.href = '/';
+
+  } catch (_) {
+    showError('Connection error. Please try again.');
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+});
+
+// Redirect if already logged in
+if (localStorage.getItem('tw_access')) {
+  window.location.replace('/');
+}
+</script>
+{% endblock %}

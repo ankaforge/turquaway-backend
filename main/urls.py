@@ -28,6 +28,8 @@ from drf_spectacular.views import (
 urlpatterns = [
     path('', TemplateView.as_view(template_name='landing/index.html'), name='landing'),
     path('download_demo/', TemplateView.as_view(template_name='landing/demo_apk.html'), name='demo-apk'),
+    path('login/', TemplateView.as_view(template_name='landing/login.html'), name='login'),
+    path('register/', TemplateView.as_view(template_name='landing/register.html'), name='register'),
     path('partner/', include('api.partner_urls')),
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -1,0 +1,158 @@
+{% extends 'landing/base.html' %}
+{% load static %}
+
+{% block title %}Sign In - Turquaway{% endblock %}
+
+{% block content %}
+<main class="flex min-h-screen items-center justify-center px-4 pt-28 pb-16">
+  <div class="w-full max-w-md animate-rise">
+
+    <!-- Heading -->
+    <div class="mb-8 text-center">
+      <h1 class="font-display text-3xl font-bold text-white" data-i18n="authLoginHeading">Welcome Back</h1>
+      <p class="mt-2 text-slate-400 text-sm" data-i18n="authLoginSubtitle">Sign in to your Turquaway account</p>
+    </div>
+
+    <!-- Card -->
+    <div class="rounded-2xl border border-white/10 bg-slate-900/60 p-8 shadow-soft backdrop-blur-sm">
+
+      <!-- Error banner -->
+      <div id="login-error" class="mb-5 hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-400"></div>
+
+      <form id="login-form" novalidate class="space-y-5">
+
+        <!-- Email -->
+        <div>
+          <label for="login-email" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authEmail">Email Address</label>
+          <input
+            id="login-email"
+            type="email"
+            autocomplete="email"
+            required
+            data-i18n-placeholder="authEmailPlaceholder"
+            placeholder="you@example.com"
+            class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="login-password" class="mb-1.5 block text-sm font-medium text-slate-300" data-i18n="authPassword">Password</label>
+          <div class="relative">
+            <input
+              id="login-password"
+              type="password"
+              autocomplete="current-password"
+              required
+              data-i18n-placeholder="authPasswordPlaceholder"
+              placeholder="••••••••"
+              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            />
+            <button
+              type="button"
+              class="absolute inset-y-0 right-4 text-slate-400 transition hover:text-lagoon-300"
+              aria-label="Toggle password visibility"
+              onclick="togglePw('login-password', this)"
+            >
+              <i class="fa-regular fa-eye text-base"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          id="login-btn"
+          class="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 disabled:opacity-60"
+        >
+          <span data-i18n="authLoginBtn">Sign In</span>
+          <i id="login-spinner" class="fa-solid fa-circle-notch fa-spin hidden text-base"></i>
+        </button>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="my-6 flex items-center gap-3">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <span class="text-xs text-slate-500" data-i18n="authOrDivider">or</span>
+        <div class="h-px flex-1 bg-white/10"></div>
+      </div>
+
+      <!-- Link to register -->
+      <p class="text-center text-sm text-slate-400">
+        <span data-i18n="authNoAccount">Don't have an account?</span>
+        <a href="/register/" class="ml-1 font-semibold text-lagoon-300 transition hover:text-lagoon-500" data-i18n="authSignUp">Sign Up</a>
+      </p>
+
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'fa-regular fa-eye-slash text-base';
+  } else {
+    input.type = 'password';
+    icon.className = 'fa-regular fa-eye text-base';
+  }
+}
+
+document.getElementById('login-form').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  const spinner = document.getElementById('login-spinner');
+  const errorEl = document.getElementById('login-error');
+
+  if (!email || !password) return;
+
+  btn.disabled = true;
+  spinner.classList.remove('hidden');
+  errorEl.classList.add('hidden');
+
+  try {
+    const resp = await fetch('/api/v1/auth/login/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await resp.json();
+
+    if (!resp.ok) {
+      const msg = data.detail || 'Login failed. Please check your credentials.';
+      errorEl.textContent = msg;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    localStorage.setItem('tw_access', data.tokens.access_token);
+    localStorage.setItem('tw_refresh', data.tokens.refresh_token);
+    localStorage.setItem('tw_user', JSON.stringify(data.user));
+
+    const next = new URLSearchParams(window.location.search).get('next') || '/';
+    window.location.href = next;
+
+  } catch (_) {
+    errorEl.textContent = 'Connection error. Please try again.';
+    errorEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+    spinner.classList.add('hidden');
+  }
+});
+
+// Redirect if already logged in
+if (localStorage.getItem('tw_access')) {
+  window.location.replace('/');
+}
+</script>
+{% endblock %}
