@@ -150,10 +150,16 @@ body[data-locale="ar"] .language-option {
   backdrop-filter: blur(10px);
 }
 
+/* Ensure hidden class always hides the dropdown (overrides display: grid above) */
+.language-menu-list.hidden {
+  display: none;
+}
+
 .language-option {
   border: 0;
   background: transparent;
   color: #cbd5e1;
+  text-decoration: none;
   font-size: 0.83rem;
   font-weight: 600;
   line-height: 1;
@@ -161,6 +167,11 @@ body[data-locale="ar"] .language-option {
   padding: 0.56rem 0.48rem;
   cursor: pointer;
   transition: background-color 200ms ease, color 200ms ease;
+}
+
+a.language-option {
+  color: #cbd5e1;
+  text-decoration: none;
 }
 
 .language-option:hover,
