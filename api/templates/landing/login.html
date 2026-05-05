@@ -14,10 +14,10 @@
     </div>
 
     <!-- Card -->
-    <div class="rounded-2xl border border-white/10 bg-slate-900/60 p-8 shadow-soft backdrop-blur-sm">
+    <div class="rounded-none border border-white/10 bg-slate-900/60 p-8 shadow-soft backdrop-blur-sm">
 
       <!-- Error banner -->
-      <div id="login-error" class="mb-5 hidden rounded-xl border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-400"></div>
+      <div id="login-error" class="mb-5 hidden rounded-none border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-400"></div>
 
       <form id="login-form" novalidate class="space-y-5">
 
@@ -31,7 +31,7 @@
             required
             data-i18n-placeholder="authEmailPlaceholder"
             placeholder="you@example.com"
-            class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            class="w-full rounded-none border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
           />
         </div>
 
@@ -46,7 +46,7 @@
               required
               data-i18n-placeholder="authPasswordPlaceholder"
               placeholder="••••••••"
-              class="w-full rounded-xl border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+              class="w-full rounded-none border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
             />
             <button
               type="button"
@@ -63,7 +63,7 @@
         <button
           type="submit"
           id="login-btn"
-          class="mt-1 flex w-full items-center justify-center gap-2 rounded-xl bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 disabled:opacity-60"
+          class="mt-1 flex w-full items-center justify-center gap-2 rounded-none bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 disabled:opacity-60"
         >
           <span data-i18n="authLoginBtn">Sign In</span>
           <i id="login-spinner" class="fa-solid fa-circle-notch fa-spin hidden text-base"></i>
@@ -79,7 +79,7 @@
       </div>
 
       <!-- Link to register -->
-      <p class="text-center text-sm text-slate-400">
+      <p class="text-center text-sm text-slate-200">
         <span data-i18n="authNoAccount">Don't have an account?</span>
         <a href="/register/" class="ml-1 font-semibold text-lagoon-300 transition hover:text-lagoon-500" data-i18n="authSignUp">Sign Up</a>
       </p>
