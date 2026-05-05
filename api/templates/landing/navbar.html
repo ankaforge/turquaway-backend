@@ -14,25 +14,25 @@
 
     <!-- Center: Explore dropdown (desktop) -->
     <div class="absolute left-1/2 hidden -translate-x-1/2 lg:block">
-      <div class="relative" data-nav-explore>
+      <div class="language-menu" data-nav-explore>
         <button
           id="nav-explore-btn"
           type="button"
-          class="inline-flex items-center gap-2 border border-slate-600/40 bg-slate-900/80 px-4 py-2.5 text-sm font-semibold text-slate-200 backdrop-blur transition-all hover:border-lagoon-500/60 hover:bg-slate-900 hover:text-white"
-          aria-haspopup="listbox"
+          class="language-menu-trigger"
+          aria-haspopup="true"
           aria-expanded="false"
+          aria-controls="nav-explore-list"
         >
           <span data-i18n="navExplore">Explore</span>
-          <i id="nav-explore-chevron" class="fa-solid fa-chevron-down text-xs text-lagoon-400 transition-transform duration-200" aria-hidden="true"></i>
+          <i class="fa-solid fa-chevron-down language-menu-chevron" aria-hidden="true"></i>
         </button>
         <div
           id="nav-explore-list"
-          class="absolute left-0 top-[calc(100%+0.45rem)] z-50 hidden min-w-full border border-slate-700/50 bg-slate-950 p-1.5 shadow-[0_18px_42px_rgba(2,6,23,0.65)] backdrop-blur-xl"
-          role="listbox"
+          class="language-menu-list hidden"
         >
-          <a href="/#features" class="block px-4 py-2.5 text-sm font-semibold text-slate-300 no-underline transition-colors hover:bg-lagoon-500/20 hover:text-teal-200" data-i18n="navFeatures">Features</a>
-          <a href="/#how-it-works" class="block px-4 py-2.5 text-sm font-semibold text-slate-300 no-underline transition-colors hover:bg-lagoon-500/20 hover:text-teal-200" data-i18n="navHowItWorks">How it Works</a>
-          <a href="/#testimonials" class="block px-4 py-2.5 text-sm font-semibold text-slate-300 no-underline transition-colors hover:bg-lagoon-500/20 hover:text-teal-200" data-i18n="navTestimonials">Testimonials</a>
+          <a href="/#features" class="language-option" data-i18n="navFeatures">Features</a>
+          <a href="/#how-it-works" class="language-option" data-i18n="navHowItWorks">How it Works</a>
+          <a href="/#testimonials" class="language-option" data-i18n="navTestimonials">Testimonials</a>
         </div>
       </div>
     </div>
@@ -215,12 +215,9 @@
   const $exploreList = document.getElementById('nav-explore-list');
   const $exploreMenu = document.querySelector('[data-nav-explore]');
 
-  const $exploreChevron = document.getElementById('nav-explore-chevron');
-
   function closeExplore() {
     $exploreList?.classList.add('hidden');
     $exploreBtn?.setAttribute('aria-expanded', 'false');
-    $exploreChevron?.classList.remove('rotate-180');
   }
 
   if ($exploreBtn && $exploreList) {
@@ -228,7 +225,6 @@
       const isOpen = $exploreBtn.getAttribute('aria-expanded') === 'true';
       $exploreList.classList.toggle('hidden', isOpen);
       $exploreBtn.setAttribute('aria-expanded', String(!isOpen));
-      $exploreChevron?.classList.toggle('rotate-180', !isOpen);
     });
     $exploreList.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', closeExplore);
