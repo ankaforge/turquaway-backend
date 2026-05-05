@@ -312,7 +312,7 @@ nav .text-slate-300 {
 }
 
 
-#features .group > div.bg-lagoon-500 {
+#features .group>div.bg-lagoon-500 {
   background: var(--surface-soft) !important;
   border: 1px solid rgba(14, 153, 111, 0.28);
   color: var(--brand-secondary) !important;
@@ -349,6 +349,7 @@ body nav.fixed.is-at-top {
   border-bottom-color: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 body nav a {
@@ -401,7 +402,8 @@ body #nav-mobile-menu {
 body nav.fixed.is-at-top #nav-mobile-menu {
   background: rgba(2, 6, 23, 0.82) !important;
   border-top-color: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 body nav.fixed.is-at-top #nav-mobile-menu a {
@@ -414,6 +416,8 @@ body #nav-mobile-menu a:hover {
 
 body nav.fixed.is-at-top #nav-mobile-menu a:hover {
   background: rgba(255, 255, 255, 0.08) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 body .language-menu-trigger {
@@ -494,20 +498,20 @@ body nav.fixed.is-at-top #nav-hamburger .hamburger-bar {
 }
 
 /* Store */
-main > section:first-of-type a[href="https://apps.apple.com"],
-main > section:first-of-type a[href="https://play.google.com"] {
+main>section:first-of-type a[href="https://apps.apple.com"],
+main>section:first-of-type a[href="https://play.google.com"] {
   border-color: rgba(14, 153, 111, 0.42) !important;
   background: #f6fffc !important;
   box-shadow: 0 8px 18px rgba(14, 153, 111, 0.1);
 }
 
-main > section:first-of-type a[href="https://apps.apple.com"]:hover,
-main > section:first-of-type a[href="https://play.google.com"]:hover {
+main>section:first-of-type a[href="https://apps.apple.com"]:hover,
+main>section:first-of-type a[href="https://play.google.com"]:hover {
   border-color: rgba(14, 153, 111, 0.62) !important;
   background: #ffffff !important;
 }
 
-main > section:first-of-type a[href="https://play.google.com"] .fa-google-play {
+main>section:first-of-type a[href="https://play.google.com"] .fa-google-play {
   background: linear-gradient(135deg, #34a853 0%, #4285f4 34%, #fbbc05 67%, #ea4335 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -520,7 +524,7 @@ main > section:first-of-type a[href="https://play.google.com"] .fa-google-play {
   padding-top: 1rem;
 }
 
-#cta > div {
+#cta>div {
   max-width: 100%;
   margin: 0;
   border-radius: 0;
@@ -567,18 +571,18 @@ main > section:first-of-type a[href="https://play.google.com"] .fa-google-play {
   padding-inline: 0 !important;
 }
 
-#how-it-works > div {
+#how-it-works>div {
   padding-inline: 1rem;
 }
 
 @media (min-width: 640px) {
-  #how-it-works > div {
+  #how-it-works>div {
     padding-inline: 1.5rem;
   }
 }
 
 @media (min-width: 1024px) {
-  #how-it-works > div {
+  #how-it-works>div {
     padding-inline: 2rem;
   }
 }
@@ -603,7 +607,7 @@ main > section:first-of-type a[href="https://play.google.com"] .fa-google-play {
   background: #ffffff !important;
 }
 
-#how-it-works .process-card > div:first-child {
+#how-it-works .process-card>div:first-child {
   border-bottom: 1px solid rgba(14, 153, 111, 0.28);
 }
 
@@ -616,7 +620,7 @@ main > section:first-of-type a[href="https://play.google.com"] .fa-google-play {
     width: min(92%, 24rem) !important;
   }
 
-  #how-it-works .process-card > div:first-child {
+  #how-it-works .process-card>div:first-child {
     height: 11rem;
   }
 
