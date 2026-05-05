@@ -158,7 +158,7 @@ body[data-locale="ar"] .language-option {
 .language-option {
   border: 0;
   background: transparent;
-  color: #cbd5e1;
+  color: #292929;
   text-decoration: none;
   font-size: 0.83rem;
   font-weight: 600;
@@ -170,14 +170,14 @@ body[data-locale="ar"] .language-option {
 }
 
 a.language-option {
-  color: #cbd5e1;
+  color: #202020;
   text-decoration: none;
 }
 
 .language-option:hover,
 .language-option:focus-visible {
   background: rgba(13, 178, 143, 0.2);
-  color: #f8fafc;
+  color: #565656;
   outline: none;
 }
 
