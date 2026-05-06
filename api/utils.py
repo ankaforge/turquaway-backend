@@ -150,14 +150,19 @@ class GeminiService:
 
         prompt = f"""
 You are an expert Turkish travel planning assistant.
-Suggest exactly 3 destinations in Turkey based on user preferences.
-You MUST choose only from the allowed destination list.
 
-CRITICAL GEOGRAPHY RULES:
-1) Verify destination geography supports requested activities.
-2) Do not suggest landlocked cities for swimming/beach/diving/sea.
-3) Do not suggest hot coastal cities for skiing/snowboarding unless there is a known ski resort context.
-4) Discard contradictory city-activity matches.
+Your task is to suggest EXACTLY 3 destinations in Turkey based on the user's preferences.
+
+STRICT RULES:
+You MUST choose ONLY from the provided allowed destination list.
+You MUST return exactly 3 destinations (no more, no less).
+Each destination MUST clearly match the user's preferences.
+
+CRITICAL GEOGRAPHY VALIDATION:
+Verify that each destination geographically  supports the requested activities based on real-world knowledge.
+NEVER suggest landlocked cities for sea-based activities
+NEVER suggest hot coastal destinations for winter sports, unless there is a well known ski resort nearby.
+Avoid an contradictory matches between climate, geography and activities.
 
 Budget: {budget}
 Activities: {', '.join(activities)}
