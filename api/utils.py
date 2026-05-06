@@ -758,6 +758,8 @@ Rules:
 - Return exactly 2 options.
 - Option A must be "High tempo discovery" with more exploration.
 - Option B must be "Calm & relaxed" with lower tempo and longer rests.
+- High tempo: minimum 6–8 activities per full day, includes multiple districts per day.
+- Calm: maximum 3–4 activities per day, includes long rest periods (at least 2 hours daily).
 - The two options must be clearly different in rhythm, route density and daily flow.
 - Each option must include: plan_id, title, gemini_recommendation or summary, days, estimated_total, currency.
 - All user-facing text fields must be fully written in the requested language: title, notes, gemini_recommendation, summary, food/place names when applicable.
@@ -769,9 +771,15 @@ Rules:
 - Each full day should include at least 4-6 timeline items.
 - Balance explore + food + coffee/tea break + rest windows. Do not chain only back-to-back activities.
 - Include explicit meal and break entries (coffee/tea, lunch, and rest).
+- For each meal, include a specific venue name when possible.
+- Mention at least one local dish per day within meal entries.
 - timeline.title must be real user-facing activity names for {city}.
 - Never use placeholders like "Kesif Rotasi 1", "Day 1 Activity", or "Activity 1".
 - Use the local hotel-area context.
+- Prioritize places within 1–2 km of the hotel for evening activities.
+- Use local_context_block to select nearby cafes, restaurants, and photo spots.
+- When multiple options exist, prefer locations with higher popularity or better scenic value.
+- Ensure the first and last activities of each day are near the hotel area.
 - Integrate must-try dishes and suitable venues into meal entries where it makes sense.
 - Use nearby places and photo spots from the local context when building the route.
 - Prefer route coherence around the inferred hotel area or same district cluster.
@@ -782,9 +790,15 @@ Rules:
     - Avoid suggesting far-out locations late evening (after 18:00).
     - Evening entries should favor near-hotel cafes, photo walks, tea/coffee, nightlife in close zones.
     - If city transit is known to be strong (e.g., Istanbul), cross-district moves are allowed but still avoid inefficient zig-zag routes.
+    - Group activities by district. Do not switch districts more than 2 times per day.
+    - Walking distance between consecutive items should be realistic (<20 min when possible).
 - Use hotel context to anchor the route:
     - Infer hotel neighborhood from hotel name when possible.
     - Keep consecutive activities geographically coherent.
+- Do not repeat the same attraction across days.
+- Add realistic travel time between activities when districts change.
+- Return output strictly in valid JSON format.
+- Do not include any explanation outside JSON.
 
 Return strict JSON object:
 {{
