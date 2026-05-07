@@ -27,6 +27,9 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='landing/index.html'), name='landing'),
+    path('about/', TemplateView.as_view(template_name='landing/about.html'), name='about'),
+    path('privacy/', TemplateView.as_view(template_name='landing/privacy.html'), name='privacy'),
+    path('terms/', TemplateView.as_view(template_name='landing/terms.html'), name='terms'),
     path('download_demo/', TemplateView.as_view(template_name='landing/demo_apk.html'), name='demo-apk'),
     path('login/', TemplateView.as_view(template_name='landing/login.html'), name='login'),
     path('register/', TemplateView.as_view(template_name='landing/register.html'), name='register'),

@@ -378,27 +378,27 @@ body nav.fixed.is-at-top a:hover {
   color: #ccfbf1 !important;
 }
 
-body nav a[href="#cta"] {
+body nav a[href$="#cta"] {
   border-color: rgba(14, 153, 111, 0.55) !important;
   background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary)) !important;
   color: #ffffff !important;
   box-shadow: 0 8px 18px rgba(14, 153, 111, 0.25);
 }
 
-body nav a[href="#cta"]:hover {
+body nav a[href$="#cta"]:hover {
   border-color: rgba(11, 120, 88, 0.85) !important;
   background: linear-gradient(135deg, var(--brand-secondary), #0b7858) !important;
   color: #ffffff !important;
 }
 
-body nav.fixed.is-at-top a[href="#cta"] {
+body nav.fixed.is-at-top a[href$="#cta"] {
   border-color: rgba(255, 255, 255, 0.45) !important;
   background: rgba(255, 255, 255, 0.1) !important;
   color: #ffffff !important;
   box-shadow: none;
 }
 
-body nav.fixed.is-at-top a[href="#cta"]:hover {
+body nav.fixed.is-at-top a[href$="#cta"]:hover {
   border-color: rgba(255, 255, 255, 0.7) !important;
   background: rgba(255, 255, 255, 0.18) !important;
   color: #ffffff !important;

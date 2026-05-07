@@ -45,7 +45,7 @@
       </div>
 
       <!-- Download -->
-      <a href="#cta"
+      <a href="{% url 'landing' %}#cta"
         class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 sm:inline-flex">
         <span data-i18n="navDownload">Download</span>
       </a>
@@ -62,7 +62,7 @@
 
       <!-- Auth: user (logged in) -->
       <div id="nav-auth-user" class="hidden items-center gap-2">
-        <a href="/hesabim/"
+        <a href="/hesabim/" title="Account" aria-label="Account"
           class="hidden items-center gap-2 rounded-none border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/20 sm:inline-flex">
           <i class="fa-regular fa-circle-user text-lagoon-300"></i>
           <span id="nav-user-name"></span>
@@ -102,7 +102,7 @@
           class="mt-1 block rounded-none bg-lagoon-500 px-3 py-2 text-center text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300"
           data-i18n="navSignUp">Sign Up</a>
         <!-- User links -->
-        <a href="/hesabim/" id="nav-mobile-account"
+        <a href="/hesabim/" id="nav-mobile-account" title="Account" aria-label="Account"
           class="hidden mt-1 flex items-center gap-2 px-3 py-2 text-slate-200 transition hover:bg-white/10">
           <i class="fa-regular fa-circle-user text-lagoon-300"></i>
           <span id="nav-mobile-user-name"></span>
