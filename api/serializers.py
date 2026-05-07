@@ -333,7 +333,7 @@ class HotelListItemSerializer(serializers.ModelSerializer):
 
 
 class TourSessionSlotSerializer(serializers.ModelSerializer):
-    session_id = serializers.UUIDField(source='id')
+    session_id = serializers.IntegerField(source='id')
     available_spots = serializers.SerializerMethodField()
 
     class Meta:

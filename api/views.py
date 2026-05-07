@@ -818,7 +818,7 @@ class ActivityListView(APIView):
 
 
 class SuggestCitiesView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         serializer = SuggestCitiesSerializer(data=request.data)

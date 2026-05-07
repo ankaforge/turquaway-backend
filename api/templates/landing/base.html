@@ -91,9 +91,35 @@
 
     {% block content %}{% endblock %}
 
+    <div id="plan-modal" class="fixed inset-0 z-[90] hidden bg-teal-700">
+      <div class="flex h-full flex-col">
+        <div class="flex items-start justify-between border-b border-teal-500/40 px-5 py-5 sm:px-8">
+          <div class="max-w-2xl">
+            <p id="plan-modal-step-label" class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200"></p>
+            <h2 id="plan-modal-title" class="mt-2 font-display text-3xl text-slate-100 sm:text-4xl"></h2>
+            <p id="plan-modal-subtitle" class="mt-3 text-sm leading-6 text-slate-200 sm:text-base"></p>
+          </div>
+          <button
+            id="plan-modal-close"
+            type="button"
+            class="inline-flex h-11 w-11 items-center justify-center border border-slate-200/30 text-slate-100 transition hover:bg-white/10"
+            aria-label="Close plan modal"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-5 py-6 sm:px-8 sm:py-8">
+          <div id="plan-modal-feedback" class="mx-auto mb-6 hidden w-full max-w-6xl border border-rose-300/40 bg-rose-950/20 px-4 py-3 text-sm text-slate-100"></div>
+          <div id="plan-modal-body" class="mx-auto w-full max-w-6xl"></div>
+        </div>
+      </div>
+    </div>
+
     {% include 'landing/footer.html' %}
 
     <script src="{% static 'landing/script.js' %}"></script>
+    <script src="{% static 'landing/plan-modal.js' %}"></script>
     {% block extra_scripts %}{% endblock %}
   </body>
 </html>

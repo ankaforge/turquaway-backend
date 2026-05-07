@@ -33,6 +33,7 @@ urlpatterns = [
     path('download_demo/', TemplateView.as_view(template_name='landing/demo_apk.html'), name='demo-apk'),
     path('login/', TemplateView.as_view(template_name='landing/login.html'), name='login'),
     path('register/', TemplateView.as_view(template_name='landing/register.html'), name='register'),
+    path('hesabim/', TemplateView.as_view(template_name='landing/account.html'), name='account'),
     path('partner/', include('api.partner_urls')),
     path('admin/', admin.site.urls),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),

@@ -6,6 +6,7 @@
     navHowItWorks: "How it Works",
     navTestimonials: "Testimonials",
     navDownload: "Download",
+    navCreatePlan: "Create Plan",
     heroTitle: "Explore Türkiye with Turquaway",
     heroSubtitle: "Discover the Magic of Every Corner of Türkiye",
     heroBody:
@@ -178,6 +179,7 @@
     navHowItWorks: "Nasıl Çalışır?",
     navTestimonials: "Yorumlar",
     navDownload: "İndir",
+    navCreatePlan: "Plan Oluştur",
     heroTitle: "Türkiye'yi Turquaway ile Keşfedin",
     heroSubtitle: "Türkiye'nin Büyülü Güzelliklerini Keşfedin",
     heroBody: "Ege'nin turkuaz kıyılarından Anadolu'nun tarihi zirvelerine kadar Turquaway, Türkiye'deki her destinasyon için kişiselleştirilmiş rotalar oluşturmak üzere yapay zekayı kullanır. Özel seyahat planları, seçilmiş otel önerileri ve anında rezervasyon imkanı sunan gerçek zamanlı fiyatlandırma—hepsi tek bir yerde.",
@@ -328,6 +330,7 @@
     navHowItWorks: "Как это работает",
     navTestimonials: "Отзывы",
     navDownload: "Скачать",
+    navCreatePlan: "Создать план",
     heroTitle: "Откройте Турцию с Turquaway",
     heroSubtitle: "Откройте магию каждого уголка Турции",
     heroBody: "От бирюзовых берегов Эгейского моря до исторических вершин Анатолии - Turquaway использует ИИ, чтобы создавать персональные маршруты для каждого направления в Турции.",
@@ -478,6 +481,7 @@
     navHowItWorks: "كيف يعمل؟",
     navTestimonials: "آراء المسافرين",
     navDownload: "تحميل",
+    navCreatePlan: "أنشئ خطة",
     heroTitle: "استكشف تركيا مع Turquaway",
     heroSubtitle: "اكتشف سحر كل زاوية في تركيا",
     heroBody: "يستخدم Turquaway الذكاء الاصطناعي لتصميم مسارات رحلات مخصصة لكل وجهة في تركيا، من السواحل الفيروزية إلى القمم التاريخية.",
@@ -712,6 +716,7 @@ function setLanguage(lang) {
   translatePage(selected);
   localStorage.setItem(LANG_STORAGE_KEY, selected);
   updateLangUI(selected);
+  document.dispatchEvent(new CustomEvent("turquaway:languagechange", { detail: { lang: selected } }));
   return true;
 }
 
