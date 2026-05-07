@@ -88,12 +88,14 @@ body[data-locale="ar"] .language-option {
 .language-menu-trigger {
   display: inline-flex;
   align-items: center;
+  justify-content: space-between;
+  width: 9.5rem;
   gap: 0.4rem;
   border: 1px solid rgba(148, 163, 184, 0.4);
   background: linear-gradient(145deg, rgba(15, 23, 42, 0.88), rgba(13, 178, 143, 0.18));
   color: #e2e8f0;
-  padding: 0.54rem 0.68rem;
-  min-width: 8.35rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
   transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease;
 }
 
@@ -187,8 +189,8 @@ a.language-option {
 
 @media (max-width: 640px) {
   .language-menu-trigger {
-    min-width: 7.45rem;
-    padding: 0.48rem 0.6rem;
+    width: auto;
+    padding: 0.5rem 0.75rem;
   }
 
   .language-menu-label {
