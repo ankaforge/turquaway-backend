@@ -3,62 +3,62 @@
 {% block title %}Turquaway - Account{% endblock %}
 
 {% block content %}
-<main class="px-4 pb-16 pt-32 sm:px-6 lg:px-8">
+<main class="bg-white px-4 pb-16 pt-32 sm:px-6 lg:px-8">
   <section class="mx-auto max-w-7xl space-y-8">
-    <div class="flex flex-col gap-4 border border-white/10 bg-white/[0.03] p-6 backdrop-blur sm:flex-row sm:items-end sm:justify-between">
+    <div class="flex flex-col gap-4 border border-teal-400 bg-white p-6 shadow-[0_20px_60px_rgba(13,148,136,0.08)] sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300">Account</p>
-        <h1 class="mt-3 font-display text-4xl text-slate-100 sm:text-5xl">My travel dashboard</h1>
-        <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-200">Profile details, active plan, and reservations are collected here so the booking flow can continue from one place.</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Account</p>
+        <h1 class="mt-3 font-display text-4xl text-slate-800 sm:text-5xl">My travel dashboard</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Profile details, active plan, and reservations are collected here so the booking flow can continue from one place.</p>
       </div>
-      <button id="account-create-plan" type="button" class="inline-flex items-center justify-center gap-2 border border-lagoon-500 bg-lagoon-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300">
+      <button id="account-create-plan" type="button" class="inline-flex items-center justify-center gap-2 border border-teal-400 bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-600">
         <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
         <span>Create Plan</span>
       </button>
     </div>
 
-    <div id="account-auth-error" class="hidden border border-rose-300/40 bg-rose-950/20 px-4 py-3 text-sm text-slate-100"></div>
+    <div id="account-auth-error" class="hidden border border-orange-600 bg-orange-50 px-4 py-3 text-sm text-slate-800"></div>
 
     <div class="grid gap-6 lg:grid-cols-[22rem_minmax(0,1fr)]">
       <aside class="space-y-6">
-        <section class="border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Profile</p>
-          <div id="account-profile" class="mt-5 space-y-4 text-sm text-slate-200">
+        <section class="border border-teal-400 bg-white p-6 shadow-[0_18px_50px_rgba(13,148,136,0.06)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Profile</p>
+          <div id="account-profile" class="mt-5 space-y-4 text-sm text-slate-600">
             <p>Loading profile...</p>
           </div>
         </section>
-        <section class="border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Account actions</p>
+        <section class="border border-teal-400 bg-white p-6 shadow-[0_18px_50px_rgba(13,148,136,0.06)]">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Account actions</p>
           <div class="mt-5 space-y-3">
-            <a href="/privacy/" class="block border border-white/10 px-4 py-3 text-sm font-medium text-slate-100 transition hover:bg-white/5">Privacy Policy</a>
-            <a href="/terms/" class="block border border-white/10 px-4 py-3 text-sm font-medium text-slate-100 transition hover:bg-white/5">Terms of Service</a>
+            <a href="/privacy/" class="block border border-teal-400 px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-teal-50">Privacy Policy</a>
+            <a href="/terms/" class="block border border-teal-400 px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-teal-50">Terms of Service</a>
           </div>
         </section>
       </aside>
 
       <div class="space-y-6">
-        <section class="border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
+        <section class="border border-teal-400 bg-white p-6 shadow-[0_18px_50px_rgba(13,148,136,0.06)]">
           <div class="flex items-center justify-between gap-4">
             <div>
-              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Active Plan</p>
-              <h2 class="mt-2 font-display text-3xl text-slate-100">Current itinerary</h2>
+              <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Active Plan</p>
+              <h2 class="mt-2 font-display text-3xl text-slate-800">Current itinerary</h2>
             </div>
           </div>
-          <div id="account-active-plan" class="mt-6 text-sm text-slate-200">
+          <div id="account-active-plan" class="mt-6 text-sm text-slate-600">
             <p>Loading active plan...</p>
           </div>
         </section>
 
         <section class="grid gap-6 xl:grid-cols-2">
-          <div class="border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Hotel Reservations</p>
-            <div id="account-hotel-reservations" class="mt-5 text-sm text-slate-200">
+          <div class="border border-teal-400 bg-white p-6 shadow-[0_18px_50px_rgba(13,148,136,0.06)]">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Hotel Reservations</p>
+            <div id="account-hotel-reservations" class="mt-5 text-sm text-slate-600">
               <p>Loading hotel reservations...</p>
             </div>
           </div>
-          <div class="border border-white/10 bg-white/[0.03] p-6 backdrop-blur">
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Tour Reservations</p>
-            <div id="account-tour-reservations" class="mt-5 text-sm text-slate-200">
+          <div class="border border-teal-400 bg-white p-6 shadow-[0_18px_50px_rgba(13,148,136,0.06)]">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Tour Reservations</p>
+            <div id="account-tour-reservations" class="mt-5 text-sm text-slate-600">
               <p>Loading tour reservations...</p>
             </div>
           </div>
@@ -109,52 +109,52 @@
     profileRoot.innerHTML = `
       <div class="space-y-4">
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Name</p>
-          <p class="mt-1 text-base font-semibold text-slate-100">${escapeHtml(user.full_name)}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Name</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">${escapeHtml(user.full_name)}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Email</p>
-          <p class="mt-1 text-base font-semibold text-slate-100">${escapeHtml(user.email)}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Email</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">${escapeHtml(user.email)}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Phone</p>
-          <p class="mt-1 text-base font-semibold text-slate-100">${escapeHtml(user.phone || '-')}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Phone</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">${escapeHtml(user.phone || '-')}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Country</p>
-          <p class="mt-1 text-base font-semibold text-slate-100">${escapeHtml(user.country || '-')}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Country</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">${escapeHtml(user.country || '-')}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Language</p>
-          <p class="mt-1 text-base font-semibold text-slate-100">${escapeHtml((user.language || '').toUpperCase())}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Language</p>
+          <p class="mt-1 text-base font-semibold text-slate-800">${escapeHtml((user.language || '').toUpperCase())}</p>
         </div>
       </div>`;
   }
 
   function renderPlan(plan) {
     if (!plan || !Array.isArray(plan.days)) {
-      activePlanRoot.innerHTML = '<p>No active plan yet. Create a new plan to start building your itinerary.</p>';
+      activePlanRoot.innerHTML = '<p class="text-slate-600">No active plan yet. Create a new plan to start building your itinerary.</p>';
       return;
     }
 
     activePlanRoot.innerHTML = `
       <div class="space-y-5">
-        <div class="border border-white/10 bg-white/[0.03] p-5">
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Destination</p>
-          <h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(plan.city)}</h3>
-          <p class="mt-2 text-sm text-slate-200">Plan ID: ${escapeHtml(plan.plan_id || '-')}</p>
+        <div class="border border-teal-400 bg-teal-50 p-5">
+          <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Destination</p>
+          <h3 class="mt-2 font-display text-3xl text-slate-800">${escapeHtml(plan.city)}</h3>
+          <p class="mt-2 text-sm text-orange-600">Plan ID: ${escapeHtml(plan.plan_id || '-')}</p>
         </div>
         <div class="space-y-4">${plan.days.map((day) => `
-          <article class="border border-white/10 p-5">
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-300">Day ${escapeHtml(day.day)}</p>
+          <article class="border border-teal-400 p-5">
+            <p class="text-xs uppercase tracking-[0.18em] text-teal-600">Day ${escapeHtml(day.day)}</p>
             <div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `
-              <div class="grid gap-2 border border-white/5 bg-white/[0.02] p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start">
-                <span class="text-sm font-semibold text-lagoon-300">${escapeHtml(item.time)}</span>
+              <div class="grid gap-2 border border-teal-400 bg-white p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start">
+                <span class="text-sm font-semibold text-orange-600">${escapeHtml(item.time)}</span>
                 <div>
-                  <p class="text-sm font-semibold text-slate-100">${escapeHtml(item.title)}</p>
-                  <p class="mt-1 text-sm text-slate-200">${escapeHtml(item.notes || '')}</p>
+                  <p class="text-sm font-semibold text-slate-800">${escapeHtml(item.title)}</p>
+                  <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.notes || '')}</p>
                 </div>
-              </div>`).join('') || '<p class="text-slate-200">No day items available.</p>'}
+              </div>`).join('') || '<p class="text-slate-600">No day items available.</p>'}
             </div>
           </article>`).join('')}
         </div>
@@ -163,7 +163,7 @@
 
   function renderReservationList(root, items, type) {
     if (!Array.isArray(items) || !items.length) {
-      root.innerHTML = '<p>No reservations yet.</p>';
+      root.innerHTML = '<p class="text-slate-600">No reservations yet.</p>';
       return;
     }
 
@@ -173,14 +173,14 @@
         ? `${escapeHtml(item.check_in)} - ${escapeHtml(item.check_out)}`
         : escapeHtml(item.tour_date || '-');
       return `
-        <article class="border border-white/10 bg-white/[0.02] p-4">
+        <article class="border border-teal-400 bg-white p-4">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-base font-semibold text-slate-100">${escapeHtml(title)}</p>
-              <p class="mt-1 text-sm text-slate-200">${escapeHtml(item.city || '-')}</p>
-              <p class="mt-2 text-xs uppercase tracking-[0.18em] text-slate-300">${dateLine}</p>
+              <p class="text-base font-semibold text-slate-800">${escapeHtml(title)}</p>
+              <p class="mt-1 text-sm text-slate-600">${escapeHtml(item.city || '-')}</p>
+              <p class="mt-2 text-xs uppercase tracking-[0.18em] text-orange-600">${dateLine}</p>
             </div>
-            <span class="border border-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100">${escapeHtml(item.status)}</span>
+            <span class="border border-teal-400 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-teal-700">${escapeHtml(item.status)}</span>
           </div>
         </article>`;
     }).join('')}</div>`;
@@ -204,10 +204,10 @@
     renderReservationList(tourRoot, tours.results, 'tour');
   }).catch(() => {
     showError('Your account data could not be loaded right now.');
-    profileRoot.innerHTML = '<p>Profile information is unavailable.</p>';
-    activePlanRoot.innerHTML = '<p>Active plan information is unavailable.</p>';
-    hotelRoot.innerHTML = '<p>Hotel reservations are unavailable.</p>';
-    tourRoot.innerHTML = '<p>Tour reservations are unavailable.</p>';
+    profileRoot.innerHTML = '<p class="text-slate-600">Profile information is unavailable.</p>';
+    activePlanRoot.innerHTML = '<p class="text-slate-600">Active plan information is unavailable.</p>';
+    hotelRoot.innerHTML = '<p class="text-slate-600">Hotel reservations are unavailable.</p>';
+    tourRoot.innerHTML = '<p class="text-slate-600">Tour reservations are unavailable.</p>';
   });
 })();
 </script>
