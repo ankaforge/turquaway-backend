@@ -152,7 +152,8 @@ document.getElementById('login-form').addEventListener('submit', async function 
 
 // Redirect if already logged in
 if (localStorage.getItem('tw_access')) {
-  window.location.replace('/');
+  const next = new URLSearchParams(window.location.search).get('next') || '/';
+  window.location.replace(next);
 }
 </script>
 {% endblock %}

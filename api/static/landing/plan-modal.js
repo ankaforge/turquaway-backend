@@ -73,6 +73,16 @@
     serverDraftLoaded: "Your account draft was loaded.",
     genericError: "Something went wrong. Please try again.",
     hotelReservedBody: "Your hotel reservation was created in the current backend flow. Agoda integration can replace this later.",
+    selectTour: "Select",
+    selectedState: "Selected",
+    adultLabel: "Adult",
+    childLabel: "Child",
+    availableLabel: "Available",
+    dayLabel: "Day",
+    planIdLabel: "Plan ID",
+    optionLabel: "Option",
+    viewDetails: "View details",
+    viewDetailsHint: "See full trip details in your account",
   };
 
   const STRINGS = {
@@ -152,9 +162,189 @@
       serverDraftLoaded: "Hesabındaki taslak yüklendi.",
       genericError: "Bir sorun oluştu. Lütfen tekrar dene.",
       hotelReservedBody: "Otel rezervasyonun mevcut backend akışında oluşturuldu. Agoda entegrasyonu geldiğinde bu adım değiştirilebilir.",
+      selectTour: "Seç",
+      selectedState: "Seçildi",
+      adultLabel: "Yetişkin",
+      childLabel: "Çocuk",
+      availableLabel: "Müsait",
+      dayLabel: "Gün",
+      planIdLabel: "Plan ID",
+      optionLabel: "Seçenek",
+      viewDetails: "Detayı Gör",
+      viewDetailsHint: "Tüm gezi detaylarını hesabında incele",
     },
-    ru: { ...BASE_STRINGS },
-    ar: { ...BASE_STRINGS },
+    ru: {
+      ...BASE_STRINGS,
+      stepDetails: "Детали поездки",
+      stepDestinations: "Рекомендуемые направления",
+      stepAccount: "Требуется аккаунт",
+      stepHotels: "Бронирование отеля",
+      stepTours: "Выбор туров",
+      stepPlans: "Варианты плана",
+      stepComplete: "План подтвержден",
+      titleDetails: "Соберите свой план поездки",
+      subtitleDetails: "Выберите даты, количество гостей, бюджет и активности. Черновик сохранится в браузере и продолжится после авторизации.",
+      titleDestinations: "Выберите направление",
+      subtitleDestinations: "Эти города предложены ИИ на основе ваших предпочтений.",
+      titleAccount: "Войдите, чтобы продолжить",
+      subtitleAccount: "Ваш черновик сохранен. Авторизуйтесь и продолжите с выбранного направления.",
+      titleHotels: "Выберите и забронируйте отель",
+      subtitleHotels: "Пока бронирование отеля использует текущую backend-модель. Позже этот шаг можно заменить Agoda Search и Book API.",
+      titleTours: "Выберите туры",
+      subtitleTours: "Выберите туры, которые должны войти в итоговый маршрут. Они будут забронированы при подтверждении плана.",
+      titlePlans: "Проверьте варианты маршрута",
+      subtitlePlans: "Сравните два варианта маршрута от ИИ и подтвердите наиболее подходящий.",
+      titleComplete: "Ваш план активен",
+      subtitleComplete: "Выбранный отель, туры и подтвержденный маршрут готовы. Все детали доступны в вашем аккаунте.",
+      datesLabel: "Даты поездки",
+      startDate: "Дата начала",
+      endDate: "Дата окончания",
+      adults: "Взрослые",
+      children: "Дети",
+      budgetLabel: "Бюджет",
+      budgetCheap: "Бюджетный",
+      budgetEconomy: "Стандарт",
+      budgetLuxury: "Люкс",
+      activitiesLabel: "Активности",
+      activitiesHint: "Выберите хотя бы одну активность.",
+      findDestinations: "Найти направления",
+      back: "Назад",
+      selectDestination: "Выбрать это направление",
+      loadingCities: "ИИ подбирает для вас лучшие направления...",
+      noCities: "Подходящие направления не найдены. Попробуйте изменить даты, бюджет или активности.",
+      signInToContinue: "Войти",
+      signUpToContinue: "Регистрация",
+      close: "Закрыть",
+      selectedDestination: "Выбранное направление",
+      destinationDescription: "Почему этот город подходит",
+      validationMessage: "Заполните даты поездки и выберите хотя бы одну активность.",
+      validationDateOrder: "Дата окончания не может быть раньше даты начала.",
+      draftRestored: "Ваш сохраненный черновик восстановлен.",
+      syncFailed: "Локальный черновик сохранен, но синхронизация с сервером сейчас недоступна.",
+      loadActivitiesFailed: "Сейчас не удалось загрузить активности.",
+      loadingHotels: "Ищем подходящие отели в этом городе...",
+      noHotels: "Сейчас не найдено отелей по вашим критериям.",
+      reserveHotel: "Забронировать этот отель",
+      reservedHotel: "Отель забронирован",
+      loadingTours: "Ищем туры рядом с выбранным отелем...",
+      noTours: "Для этого направления туры не найдены. Вы все равно можете продолжить без туров.",
+      generatePlans: "Сгенерировать варианты плана",
+      selectedHotel: "Выбранный отель",
+      selectedTours: "Выбранные туры",
+      optionalToursHint: "Выбор туров не обязателен. Если продолжить без туров, маршрут будет построен вокруг города и отеля.",
+      reservingHotel: "Бронирование отеля...",
+      generatingPlans: "Создаем варианты плана...",
+      confirmPlan: "Подтвердить этот план",
+      estimatedTotal: "Ориентировочная стоимость",
+      loadingPlan: "Подготавливаем итоговый маршрут...",
+      goToAccount: "Перейти в аккаунт",
+      createAnotherPlan: "Создать новый план",
+      hotelNightlyPrice: "Цена за ночь на человека",
+      hotelRating: "Рейтинг",
+      sponsoredBadge: "Выбор ИИ",
+      continueWithoutTours: "Продолжить без туров",
+      noActivePlan: "Подтвержденный план пока не сохранен.",
+      guestProfileMissing: "Не удалось получить данные профиля для бронирования отеля.",
+      serverDraftLoaded: "Черновик из аккаунта загружен.",
+      genericError: "Что-то пошло не так. Попробуйте еще раз.",
+      hotelReservedBody: "Ваше бронирование отеля создано в текущем backend-потоке. Позже этот шаг можно будет заменить интеграцией Agoda.",
+      selectTour: "Выбрать",
+      selectedState: "Выбрано",
+      adultLabel: "Взрослый",
+      childLabel: "Ребенок",
+      availableLabel: "Доступно",
+      dayLabel: "День",
+      planIdLabel: "ID плана",
+      optionLabel: "Вариант",
+      viewDetails: "Смотреть детали",
+      viewDetailsHint: "Откройте полный маршрут в аккаунте",
+    },
+    ar: {
+      ...BASE_STRINGS,
+      stepDetails: "تفاصيل الرحلة",
+      stepDestinations: "الوجهات المقترحة",
+      stepAccount: "الحساب مطلوب",
+      stepHotels: "حجز الفندق",
+      stepTours: "اختيار الجولات",
+      stepPlans: "خيارات الخطة",
+      stepComplete: "تم تأكيد الخطة",
+      titleDetails: "أنشئ خطة رحلتك",
+      subtitleDetails: "اختر التواريخ وعدد الضيوف والميزانية والأنشطة. سيتم حفظ المسودة في المتصفح ويمكنك المتابعة بعد تسجيل الدخول.",
+      titleDestinations: "اختر وجهتك",
+      subtitleDestinations: "هذه المدن تم اقتراحها بالذكاء الاصطناعي بناء على تفضيلاتك.",
+      titleAccount: "سجل الدخول للمتابعة",
+      subtitleAccount: "مسودتك محفوظة. قم بتسجيل الدخول أو إنشاء حساب ثم تابع من الوجهة التي اخترتها.",
+      titleHotels: "اختر الفندق واحجزه",
+      subtitleHotels: "حاليا يستخدم حجز الفندق نموذج الـ backend الحالي. لاحقا يمكن استبدال هذه الخطوة بواجهات Agoda Search و Book.",
+      titleTours: "اختر الجولات",
+      subtitleTours: "حدد الجولات التي تريد إضافتها إلى خطتك النهائية. سيتم حجزها عند تأكيد الخطة.",
+      titlePlans: "راجع خيارات الخطة",
+      subtitlePlans: "قارن بين خطتي الرحلة اللتين أنشأهما الذكاء الاصطناعي ثم أكد الأنسب لك.",
+      titleComplete: "خطتك أصبحت جاهزة",
+      subtitleComplete: "الفندق والجولات وخط السير المؤكد أصبحت جاهزة. يمكنك مراجعة كل التفاصيل من صفحة الحساب.",
+      datesLabel: "تواريخ الرحلة",
+      startDate: "تاريخ البداية",
+      endDate: "تاريخ النهاية",
+      adults: "البالغون",
+      children: "الأطفال",
+      budgetLabel: "الميزانية",
+      budgetCheap: "اقتصادي جدا",
+      budgetEconomy: "اقتصادي",
+      budgetLuxury: "فاخر",
+      activitiesLabel: "الأنشطة",
+      activitiesHint: "اختر نشاطا واحدا على الأقل.",
+      findDestinations: "ابحث عن وجهات",
+      back: "رجوع",
+      selectDestination: "اختر هذه الوجهة",
+      loadingCities: "الذكاء الاصطناعي يبحث عن أفضل الوجهات المناسبة لك...",
+      noCities: "لم يتم العثور على وجهات مناسبة. جرّب تعديل التواريخ أو الميزانية أو الأنشطة.",
+      signInToContinue: "تسجيل الدخول",
+      signUpToContinue: "إنشاء حساب",
+      close: "إغلاق",
+      selectedDestination: "الوجهة المختارة",
+      destinationDescription: "لماذا هذه المدينة مناسبة",
+      validationMessage: "أكمل تواريخ الرحلة واختر نشاطا واحدا على الأقل.",
+      validationDateOrder: "لا يمكن أن يكون تاريخ النهاية قبل تاريخ البداية.",
+      draftRestored: "تمت استعادة المسودة المحفوظة.",
+      syncFailed: "مسودتك المحلية محفوظة، لكن تعذر مزامنتها مع الخادم الآن.",
+      loadActivitiesFailed: "تعذر تحميل الأنشطة الآن.",
+      loadingHotels: "جار البحث عن الفنادق المناسبة في هذه المدينة...",
+      noHotels: "لا توجد فنادق مطابقة لمعاييرك حاليا.",
+      reserveHotel: "احجز هذا الفندق",
+      reservedHotel: "تم حجز الفندق",
+      loadingTours: "جار البحث عن الجولات القريبة من الفندق المختار...",
+      noTours: "لم يتم العثور على جولات لهذه الوجهة. يمكنك المتابعة بدون جولات.",
+      generatePlans: "أنشئ خيارات الخطة",
+      selectedHotel: "الفندق المختار",
+      selectedTours: "الجولات المختارة",
+      optionalToursHint: "اختيار الجولات اختياري. إذا تابعت بدونها فسيتم إنشاء الخطة حول المدينة والفندق فقط.",
+      reservingHotel: "جار حجز الفندق...",
+      generatingPlans: "جار إنشاء خيارات الخطة...",
+      confirmPlan: "أكد هذه الخطة",
+      estimatedTotal: "الإجمالي التقديري",
+      loadingPlan: "جار تجهيز خط السير النهائي...",
+      goToAccount: "اذهب إلى الحساب",
+      createAnotherPlan: "أنشئ خطة جديدة",
+      hotelNightlyPrice: "سعر الليلة للشخص",
+      hotelRating: "التقييم",
+      sponsoredBadge: "اختيار الذكاء الاصطناعي",
+      continueWithoutTours: "تابع بدون جولات",
+      noActivePlan: "لا توجد خطة مؤكدة محفوظة بعد.",
+      guestProfileMissing: "تعذر الوصول إلى بيانات الملف الشخصي اللازمة لحجز الفندق.",
+      serverDraftLoaded: "تم تحميل المسودة من حسابك.",
+      genericError: "حدث خطأ ما. حاول مرة أخرى.",
+      hotelReservedBody: "تم إنشاء حجز الفندق ضمن التدفق الحالي في الـ backend. يمكن لاحقا استبدال هذه الخطوة بتكامل Agoda.",
+      selectTour: "اختر",
+      selectedState: "تم الاختيار",
+      adultLabel: "بالغ",
+      childLabel: "طفل",
+      availableLabel: "المتاح",
+      dayLabel: "اليوم",
+      planIdLabel: "معرف الخطة",
+      optionLabel: "الخيار",
+      viewDetails: "عرض التفاصيل",
+      viewDetailsHint: "شاهد تفاصيل الرحلة كاملة في حسابك",
+    },
   };
 
   const API_BASE = "/api/v1";
@@ -736,7 +926,7 @@
       const active = state.draft.activities.includes(activity.key);
       return `<button type="button" data-plan-activity="${escapeHtml(activity.key)}" class="flex min-h-[4.5rem] items-center gap-3 border px-4 py-3 text-left transition ${
         active ? "border-slate-100 bg-slate-100 text-teal-700" : "border-slate-200/30 bg-white/5 text-slate-100 hover:bg-white/10"
-      }"><span class="inline-flex h-10 w-10 items-center justify-center border border-current/20 text-base"><i class="fa-solid ${escapeHtml(activity.icon || "fa-star")}"></i></span><span class="text-sm font-semibold">${escapeHtml(activity.name)}</span></button>`;
+      }"><span class="inline-flex h-10 w-10 items-center justify-center border border-current/20 text-base">${active ? '<i class="fa-solid fa-check"></i>' : `<i class="fa-solid ${escapeHtml(activity.icon || "fa-star")}"></i>`}</span><span class="text-sm font-semibold">${escapeHtml(activity.name)}</span></button>`;
     }).join("");
   }
 
@@ -830,7 +1020,7 @@
   function renderTourCard(tour) {
     const active = state.draft.selected_tour_ids.includes(tour.id);
     const firstSessions = Array.isArray(tour.available_sessions) ? tour.available_sessions.slice(0, 3) : [];
-    return `<article class="flex h-full flex-col border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex items-start justify-between gap-3"><div><h3 class="font-display text-2xl text-slate-100">${escapeHtml(tour.title)}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(tour.description || "")}</p></div><button type="button" data-plan-toggle-tour="${escapeHtml(tour.id)}" class="inline-flex items-center justify-center border px-3 py-2 text-sm font-semibold transition ${active ? "border-slate-100 bg-slate-100 text-teal-700" : "border-slate-200/30 text-slate-100 hover:bg-white/10"}">${active ? "Selected" : "Select"}</button></div><div class="mt-5 grid gap-3 sm:grid-cols-2"><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">Adult</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_adult)} ${escapeHtml(tour.currency || "TRY")}</p></div><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">Child</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_child)} ${escapeHtml(tour.currency || "TRY")}</p></div></div><div class="mt-5 space-y-2 text-sm text-slate-200">${firstSessions.length ? firstSessions.map((session) => `<div class="border border-slate-200/10 bg-white/[0.02] px-3 py-2"><p class="font-semibold text-slate-100">${escapeHtml(session.date)}</p><p class="mt-1">${escapeHtml(session.start_time)} - ${escapeHtml(session.end_time)}</p><p class="mt-1 text-slate-200">Available: ${escapeHtml(session.available_spots)}</p></div>`).join("") : `<p>${text("noTours")}</p>`}</div></article>`;
+    return `<article class="flex h-full flex-col border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex items-start justify-between gap-3"><div><h3 class="font-display text-2xl text-slate-100">${escapeHtml(tour.title)}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(tour.description || "")}</p></div><button type="button" data-plan-toggle-tour="${escapeHtml(tour.id)}" class="inline-flex items-center justify-center border px-3 py-2 text-sm font-semibold transition ${active ? "border-slate-100 bg-slate-100 text-teal-700" : "border-slate-200/30 text-slate-100 hover:bg-white/10"}">${active ? text("selectedState") : text("selectTour")}</button></div><div class="mt-5 grid gap-3 sm:grid-cols-2"><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("adultLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_adult)} ${escapeHtml(tour.currency || "TRY")}</p></div><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("childLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_child)} ${escapeHtml(tour.currency || "TRY")}</p></div></div><div class="mt-5 space-y-2 text-sm text-slate-200">${firstSessions.length ? firstSessions.map((session) => `<div class="border border-slate-200/10 bg-white/[0.02] px-3 py-2"><p class="font-semibold text-slate-100">${escapeHtml(session.date)}</p><p class="mt-1">${escapeHtml(session.start_time)} - ${escapeHtml(session.end_time)}</p><p class="mt-1 text-slate-200">${text("availableLabel")}: ${escapeHtml(session.available_spots)}</p></div>`).join("") : `<p>${text("noTours")}</p>`}</div></article>`;
   }
 
   function renderToursStep() {
@@ -856,7 +1046,7 @@
 
   function renderPlanOption(option) {
     const confirming = state.confirmingPlanId === option.plan_id;
-    return `<article class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex flex-col gap-4 border-b border-slate-200/10 pb-5 lg:flex-row lg:items-start lg:justify-between"><div><h3 class="font-display text-3xl text-slate-100">${escapeHtml(option.title || "Plan")}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p></div><div class="min-w-[12rem] border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("estimatedTotal")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.estimated_total || "-")} ${escapeHtml(option.currency || "TRY")}</p></div></div><div class="mt-5 space-y-4">${(option.days || []).map((day) => `<section class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">Day ${escapeHtml(day.day)}</p><div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `<div class="grid gap-2 border border-slate-200/5 bg-white/[0.02] p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start"><span class="text-sm font-semibold text-lagoon-300">${escapeHtml(item.time)}</span><div><p class="text-sm font-semibold text-slate-100">${escapeHtml(item.title)}</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(item.notes || "")}</p></div></div>`).join("")}</div></section>`).join("")}</div><button type="button" data-plan-confirm="${escapeHtml(option.plan_id)}" class="mt-6 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${confirming ? "opacity-60" : ""}" ${confirming ? "disabled" : ""}><i class="fa-solid fa-check"></i><span>${confirming ? text("loadingPlan") : text("confirmPlan")}</span></button></article>`;
+    return `<article class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex flex-col gap-4 border-b border-slate-200/10 pb-5 lg:flex-row lg:items-start lg:justify-between"><div><h3 class="font-display text-3xl text-slate-100">${escapeHtml(option.title || "Plan")}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p></div><div class="min-w-[12rem] border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("estimatedTotal")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.estimated_total || "-")} ${escapeHtml(option.currency || "TRY")}</p></div></div><div class="mt-5 space-y-4">${(option.days || []).map((day) => `<section class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("dayLabel")} ${escapeHtml(day.day)}</p><div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `<div class="grid gap-2 border border-slate-200/5 bg-white/[0.02] p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start"><span class="text-sm font-semibold text-lagoon-300">${escapeHtml(item.time)}</span><div><p class="text-sm font-semibold text-slate-100">${escapeHtml(item.title)}</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(item.notes || "")}</p></div></div>`).join("")}</div></section>`).join("")}</div><button type="button" data-plan-confirm="${escapeHtml(option.plan_id)}" class="mt-6 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${confirming ? "opacity-60" : ""}" ${confirming ? "disabled" : ""}><i class="fa-solid fa-check"></i><span>${confirming ? text("loadingPlan") : text("confirmPlan")}</span></button></article>`;
   }
 
   function renderPlansStep() {
@@ -873,7 +1063,7 @@
 
   function renderCompleteStep() {
     const option = selectedPlan();
-    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div class="space-y-5 border border-slate-200/20 bg-white/5 p-6 text-slate-100"><div><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-3 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p></div><div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("startDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.start_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("endDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.end_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("selectedTours")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.selected_tour_ids.length)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">Plan ID</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.confirmed_plan_id)}</p></div></div>${option ? `<div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">Option</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.title || "Plan")}</p><p class="mt-2 text-sm text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p></div>` : ""}</div><div class="space-y-3"><a href="/hesabim/" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("goToAccount")}</a><button id="plan-create-another" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("createAnotherPlan")}</button><button id="plan-complete-close" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("close")}</button></div></div>`;
+    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div class="space-y-5 border border-slate-200/20 bg-white/5 p-6 text-slate-100"><div><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-3 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p></div><div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("startDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.start_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("endDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.end_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("selectedTours")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.selected_tour_ids.length)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("planIdLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.confirmed_plan_id)}</p></div></div>${option ? `<div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("optionLabel")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.title || "Plan")}</p><p class="mt-2 text-sm text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p><a href="/hesabim/" class="mt-4 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${text("viewDetails")}</span></a><p class="mt-3 text-xs uppercase tracking-[0.16em] text-slate-300">${text("viewDetailsHint")}</p></div>` : ""}</div><div class="space-y-3"><a href="/hesabim/" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("goToAccount")}</a><button id="plan-create-another" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("createAnotherPlan")}</button><button id="plan-complete-close" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("close")}</button></div></div>`;
     document.getElementById("plan-complete-close")?.addEventListener("click", closeModal);
     document.getElementById("plan-create-another")?.addEventListener("click", () => {
       state.draft = normalizeDraft({ language: getLang() });
@@ -928,7 +1118,7 @@
     if (!modal.classList.contains("hidden")) render();
   });
   document.addEventListener("DOMContentLoaded", async () => {
-    if (localStorage.getItem(RESUME_KEY) === "1" && hasMeaningfulDraft()) {
+    if (localStorage.getItem(RESUME_KEY) === "1" && hasAuth() && hasMeaningfulDraft()) {
       localStorage.removeItem(RESUME_KEY);
       setFeedback(text("draftRestored"), "success");
       await openModal();

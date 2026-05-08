@@ -319,7 +319,8 @@ document.getElementById('register-form').addEventListener('submit', async functi
     localStorage.setItem('tw_refresh', data.tokens.refresh_token);
     localStorage.setItem('tw_user', JSON.stringify(data.user));
 
-    window.location.href = '/';
+    const next = new URLSearchParams(window.location.search).get('next') || '/';
+    window.location.href = next;
 
   } catch (_) {
     showError('Connection error. Please try again.');
@@ -331,7 +332,8 @@ document.getElementById('register-form').addEventListener('submit', async functi
 
 // Redirect if already logged in
 if (localStorage.getItem('tw_access')) {
-  window.location.replace('/');
+  const next = new URLSearchParams(window.location.search).get('next') || '/';
+  window.location.replace(next);
 }
 </script>
 {% endblock %}
