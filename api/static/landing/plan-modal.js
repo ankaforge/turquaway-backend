@@ -402,6 +402,7 @@
     syncing: false,
     feedback: "",
     feedbackType: "error",
+    authRedirectInFlight: false,
   };
 
   function getLang() {
@@ -491,6 +492,12 @@
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
+  function clearStoredAuth() {
+    localStorage.removeItem("tw_access");
+    localStorage.removeItem("tw_refresh");
+    localStorage.removeItem("tw_user");
+  }
+
   function hasMeaningfulDraft() {
     return Boolean(
       state.draft.start_date ||
@@ -568,7 +575,11 @@
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (response.status === 401 && authRequired) {
-        redirectToAuth("/login/");
+        clearStoredAuth();
+        if (!state.authRedirectInFlight) {
+          state.authRedirectInFlight = true;
+          redirectToAuth("/login/");
+        }
       }
       const error = new Error(payload.detail || text("genericError"));
       error.status = response.status;
