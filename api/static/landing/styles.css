@@ -735,7 +735,6 @@ body nav.fixed.is-at-top #nav-hamburger .hamburger-bar {
 
 #features .features-highlight-media {
   border-color: rgba(14, 153, 111, 0.2) !important;
-  border-radius: 0.9rem;
   min-height: 18rem;
 }
 
