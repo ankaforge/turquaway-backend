@@ -267,10 +267,6 @@ body.bg-slate-950 {
 }
 
 /* ThemeOverrides */
-main .text-white {
-  color: var(--text-strong);
-}
-
 main .text-slate-300,
 main .text-slate-400,
 footer .text-slate-300,
@@ -507,28 +503,6 @@ body #nav-hamburger .hamburger-bar {
 
 body nav.fixed.is-at-top #nav-hamburger .hamburger-bar {
   background: #ffffff;
-}
-
-/* Store */
-main>section:first-of-type a[href="https://apps.apple.com"],
-main>section:first-of-type a[href="https://play.google.com"] {
-  border-color: rgba(14, 153, 111, 0.42) !important;
-  background: #f6fffc !important;
-  box-shadow: 0 8px 18px rgba(14, 153, 111, 0.1);
-}
-
-main>section:first-of-type a[href="https://apps.apple.com"]:hover,
-main>section:first-of-type a[href="https://play.google.com"]:hover {
-  border-color: rgba(14, 153, 111, 0.62) !important;
-  background: #ffffff !important;
-}
-
-main>section:first-of-type a[href="https://play.google.com"] .fa-google-play {
-  background: linear-gradient(135deg, #34a853 0%, #4285f4 34%, #fbbc05 67%, #ea4335 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: #34a853;
 }
 
 /* CTA */
