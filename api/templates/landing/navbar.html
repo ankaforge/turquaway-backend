@@ -2,26 +2,32 @@
 <!-- Navigation -->
 <nav id="main-nav"
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl transition-colors duration-300">
-  <div class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 sm:px-6 lg:px-8">
+  <div id="main-nav-shell" class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 transition-all duration-300 sm:px-6 lg:px-8">
     <!-- Logo -->
     <a href="{% url 'landing' %}" class="shrink-0 flex items-center">
       <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
     </a>
 
-    <!-- middle side -->
-    <div class="absolute inset-x-0 hidden justify-center lg:flex">
-      <button
-        id="nav-create-plan-btn"
-        type="button"
-        class="inline-flex items-center gap-2 border border-lagoon-500 bg-lagoon-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300"
-      >
-        <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
-        <span data-i18n="navCreatePlan">Create Plan</span>
-      </button>
+    <!-- Desktop navigation -->
+    <div class="hidden items-center gap-1 lg:flex">
+      <a href="/#features" class="px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+        data-i18n="navFeatures">Features</a>
+      <a href="/#how-it-works" class="px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+        data-i18n="navHowItWorks">How it Works</a>
+      <a href="/#testimonials" class="px-3 py-2 text-sm font-medium text-slate-300 transition hover:bg-white/10 hover:text-white"
+        data-i18n="navTestimonials">Testimonials</a>
     </div>
 
     <!-- Right side -->
     <div class="ms-auto flex items-center gap-2 sm:gap-3">
+      <button
+        id="nav-create-plan-btn"
+        type="button"
+        class="hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex"
+      >
+        <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+        <span data-i18n="navCreatePlan">Create Plan</span>
+      </button>
 
       <!-- Language menu -->
       <div class="language-menu" data-language-menu>
@@ -37,7 +43,7 @@
 
       <!-- Download -->
       <a href="{% url 'landing' %}#cta"
-        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 sm:inline-flex">
+        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 xl:inline-flex">
         <span data-i18n="navDownload">Download</span>
       </a>
 
@@ -53,16 +59,27 @@
 
       <!-- Auth: user (logged in) -->
       <div id="nav-auth-user" class="hidden items-center gap-2">
-        <a href="{% url 'account' %}" title="Account" aria-label="Account"
-          class="hidden items-center gap-2 rounded-none border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/20 sm:inline-flex">
-          <i class="fa-regular fa-circle-user text-lagoon-300"></i>
-          <span id="nav-user-name"></span>
-        </a>
-        <button id="nav-logout-btn" type="button"
-          class="hidden items-center rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-slate-400 transition hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-400 sm:inline-flex"
-          aria-label="Sign Out">
-          <i class="fa-solid fa-right-from-bracket text-base"></i>
-        </button>
+        <div class="relative hidden sm:block">
+          <button id="nav-user-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="nav-user-dropdown"
+            class="inline-flex items-center gap-3 rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-sm font-medium text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/20">
+            <span id="nav-user-initial" class="flex h-8 w-8 items-center justify-center border border-lagoon-500/60 bg-lagoon-500/15 text-xs font-semibold uppercase text-lagoon-200">U</span>
+            <span id="nav-user-name"></span>
+            <i class="fa-solid fa-chevron-down text-[11px] text-slate-400 transition duration-200" id="nav-user-menu-chevron"></i>
+          </button>
+          <div id="nav-user-dropdown" class="absolute right-0 top-full z-20 mt-2 hidden min-w-[13rem] border border-white/15 bg-slate-950/95 p-2 text-sm shadow-[0_18px_42px_rgba(2,6,23,0.4)] backdrop-blur-xl" role="menu" aria-labelledby="nav-user-menu-btn">
+            <a href="{% url 'account' %}" title="Account" aria-label="Account"
+              class="flex items-center gap-3 px-3 py-3 text-slate-200 transition hover:bg-white/10 hover:text-white" role="menuitem">
+              <i class="fa-regular fa-circle-user text-lagoon-300"></i>
+              <span data-i18n="navAccount">Account</span>
+            </a>
+            <button id="nav-logout-btn" type="button"
+              class="flex w-full items-center gap-3 px-3 py-3 text-left text-rose-300 transition hover:bg-rose-500/10 hover:text-rose-200"
+              role="menuitem">
+              <i class="fa-solid fa-right-from-bracket text-sm"></i>
+              <span data-i18n="navLogout">Sign Out</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Hamburger -->
@@ -118,16 +135,60 @@
 
     // --- Navbar bg: transparent on home hero, solid everywhere else ---
     const $nav = document.getElementById('main-nav');
+    const $shell = document.getElementById('main-nav-shell');
     const isHome = window.location.pathname === '/';
+    const $desktopCreatePlan = document.getElementById('nav-create-plan-btn');
+    const $userMenuBtn = document.getElementById('nav-user-menu-btn');
+    const $userDropdown = document.getElementById('nav-user-dropdown');
+    const $userChevron = document.getElementById('nav-user-menu-chevron');
+    const $userInitial = document.getElementById('nav-user-initial');
+
+    function setCreatePlanTone(homeState) {
+      if (!$desktopCreatePlan) return;
+
+      if (homeState) {
+        $desktopCreatePlan.className = 'hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex';
+        return;
+      }
+
+      $desktopCreatePlan.className = 'hidden items-center gap-2 border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/10 hover:text-white lg:inline-flex';
+    }
 
     function setNavBg(solid) {
+      $nav.classList.toggle('is-at-top', !solid);
+
       if (solid) {
-        $nav.classList.remove('bg-transparent', 'border-transparent');
-        $nav.classList.add('bg-slate-950', 'border-white/10');
+        $nav.classList.remove('bg-transparent', 'border-transparent', 'shadow-none');
+        $nav.classList.add('bg-slate-950', 'border-white/10', 'shadow-[0_16px_38px_rgba(2,6,23,0.28)]');
+        $shell?.classList.remove('py-4');
+        $shell?.classList.add('py-3');
       } else {
-        $nav.classList.remove('bg-slate-950', 'bg-slate-950/75', 'border-white/10');
-        $nav.classList.add('bg-transparent', 'border-transparent');
+        $nav.classList.remove('bg-slate-950', 'bg-slate-950/75', 'border-white/10', 'shadow-[0_16px_38px_rgba(2,6,23,0.28)]');
+        $nav.classList.add('bg-transparent', 'border-transparent', 'shadow-none');
+        $shell?.classList.remove('py-3');
+        $shell?.classList.add('py-4');
       }
+
+      setCreatePlanTone(!solid && isHome);
+    }
+
+    function closeUserMenu() {
+      if (!$userDropdown || !$userMenuBtn) return;
+      $userDropdown.classList.add('hidden');
+      $userMenuBtn.setAttribute('aria-expanded', 'false');
+      $userChevron?.classList.remove('rotate-180');
+    }
+
+    function toggleUserMenu() {
+      if (!$userDropdown || !$userMenuBtn) return;
+      const willOpen = $userDropdown.classList.contains('hidden');
+      if (willOpen) {
+        $userDropdown.classList.remove('hidden');
+        $userMenuBtn.setAttribute('aria-expanded', 'true');
+        $userChevron?.classList.add('rotate-180');
+        return;
+      }
+      closeUserMenu();
     }
 
     if (isHome) {
@@ -137,6 +198,7 @@
     } else {
       $nav.classList.remove('bg-slate-950/75');
       $nav.classList.add('bg-slate-950');
+      setNavBg(true);
     }
 
     // --- Auth state ---
@@ -162,8 +224,10 @@
         const name = (u.full_name || '').split(' ')[0];
         const $name = document.getElementById('nav-user-name');
         const $mobileName = document.getElementById('nav-mobile-user-name');
+        const initial = (u.full_name || u.email || 'U').trim().charAt(0);
         if ($name) $name.textContent = name;
         if ($mobileName) $mobileName.textContent = name;
+        if ($userInitial) $userInitial.textContent = initial;
       } catch (_) { }
       // Logged in: show user panel only
       $guest?.classList.add('hidden');
@@ -177,6 +241,21 @@
       $guest?.classList.replace('hidden', 'flex');
       $authUser?.classList.add('hidden');
     }
+
+    $userMenuBtn?.addEventListener('click', (event) => {
+      event.stopPropagation();
+      toggleUserMenu();
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!$userDropdown || !$userMenuBtn) return;
+      if ($userDropdown.contains(event.target) || $userMenuBtn.contains(event.target)) return;
+      closeUserMenu();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeUserMenu();
+    });
 
     document.getElementById('nav-logout-btn')?.addEventListener('click', logout);
     document.getElementById('nav-mobile-logout')?.addEventListener('click', logout);
