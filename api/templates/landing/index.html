@@ -4,9 +4,7 @@
 {% block title %}Turquaway - AI Tour Planner{% endblock %}
 
 {% block content %}
-    <!-- Main -->
     <main>
-      <!-- Hero -->
       <section class="hero-section relative min-h-screen overflow-hidden">
         <video
           class="hero-video absolute inset-0 h-full w-full object-cover"
@@ -19,100 +17,140 @@
           <source src="{% static 'landing/video.mp4' %}" type="video/mp4" />
         </video>
 
-        <div class="absolute inset-0 bg-slate-950/55"></div>
+        <div class="absolute inset-0 bg-slate-950/60"></div>
 
-        <div class="relative z-10 px-4 pb-24 pt-32 sm:px-6 lg:px-8">
-          <div class="mx-auto flex min-h-[calc(100vh-8rem)] w-full max-w-7xl items-center">
-            <div class="animate-rise w-full max-w-3xl">
-            <p
-              class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/40 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-black"
-              data-page-title
-            >
-              Turquaway - AI Tour Planner
-            </p>
-            <h1
-              class="font-display text-4xl leading-tight !text-white !font-bold sm:text-5xl lg:text-6xl"
-              data-i18n="heroTitle"
-            >
-              Explore Türkiye with Turquaway
-            </h1>
-            <p
-              class="mt-5 font-display text-2xl !text-white sm:text-3xl"
-              data-i18n="heroSubtitle"
-            >
-              Discover the Magic of Every Corner of Türkiye
-            </p>
-            <p
-              class="mt-6 max-w-2xl text-sm leading-7 !text-white sm:text-base"
-              data-i18n="heroBody"
-            >
-              From the turquoise coasts of the Aegean to the historic peaks of
-              Anatolia, Turquaway uses AI to craft personalized itineraries for
-              every destination in Türkiye.
-            </p>
-            <div class="mt-8 flex flex-col gap-4 sm:flex-row">
-              <a
-                href="https://apps.apple.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+        <div class="relative z-10 px-4 pb-20 pt-32 sm:px-6 lg:px-8">
+          <div class="mx-auto grid min-h-[calc(100vh-8rem)] w-full max-w-7xl gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end">
+            <div class="animate-rise max-w-4xl">
+              <p
+                class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/35 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.24em] text-white"
+                data-i18n="heroEyebrow"
               >
-                <i class="fab fa-apple text-2xl"></i>
-                <div class="store-copy">
-                  <div
-                    class="text-xs text-slate-300"
-                    data-i18n="storeDownloadOn"
-                  >
-                    Download on the
-                  </div>
-                  <div
-                    class="text-base font-semibold"
-                    data-i18n="storeAppStore"
-                  >
-                    App Store
-                  </div>
-                </div>
-              </a>
-              <a
-                href="https://play.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+                AI Holiday Planner for Türkiye
+              </p>
+              <h1
+                class="font-display text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl"
+                data-i18n="heroTitle"
               >
-                <i class="fab fa-google-play text-2xl"></i>
-                <div class="store-copy">
-                  <div class="text-xs text-slate-300" data-i18n="storeGetItOn">
-                    Get it on
+                Start with your dates. Let AI choose the destination.
+              </h1>
+              <p
+                class="mt-5 max-w-3xl font-display text-2xl text-white sm:text-3xl"
+                data-i18n="heroSubtitle"
+              >
+                From destination match to hotel and tour flow, all on the web.
+              </p>
+              <p
+                class="mt-6 max-w-3xl text-sm leading-7 text-white/90 sm:text-base"
+                data-i18n="heroBody"
+              >
+                Choose your dates, budget, and activities. Turquaway matches a destination, lists the best-fit hotels in that region, lets you add tours if you want, then creates two AI plans you can act on.
+              </p>
+
+              <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+                <button
+                  id="hero-create-plan"
+                  type="button"
+                  class="landing-open-plan inline-flex items-center justify-center gap-3 bg-lagoon-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300"
+                  data-i18n="heroPrimaryCta"
+                >
+                  Build My Trip
+                </button>
+                <a
+                  href="#how-it-works"
+                  class="inline-flex items-center justify-center gap-3 border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/20"
+                  data-i18n="heroSecondaryCta"
+                >
+                  See the Flow
+                </a>
+              </div>
+
+              <div class="mt-8 grid gap-3 sm:grid-cols-3">
+                <article class="border border-white/15 bg-slate-950/35 px-4 py-4 backdrop-blur-sm">
+                  <p class="text-sm font-medium text-white" data-i18n="heroStat1">Dates, budget, activities</p>
+                </article>
+                <article class="border border-white/15 bg-slate-950/35 px-4 py-4 backdrop-blur-sm">
+                  <p class="text-sm font-medium text-white" data-i18n="heroStat2">Matched destination and hotel flow</p>
+                </article>
+                <article class="border border-white/15 bg-slate-950/35 px-4 py-4 backdrop-blur-sm">
+                  <p class="text-sm font-medium text-white" data-i18n="heroStat3">Two AI plan options before checkout</p>
+                </article>
+              </div>
+
+              <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+                <a
+                  href="https://apps.apple.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+                >
+                  <i class="fab fa-apple text-2xl"></i>
+                  <div class="store-copy">
+                    <div class="text-xs text-slate-300" data-i18n="storeDownloadOn">Download on the</div>
+                    <div class="text-base font-semibold" data-i18n="storeAppStore">App Store</div>
                   </div>
-                  <div
-                    class="text-base font-semibold"
-                    data-i18n="storeGooglePlay"
-                  >
-                    Play Store
+                </a>
+                <a
+                  href="https://play.google.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-3 border border-white/20 bg-white/10 px-5 py-3 text-white backdrop-blur transition hover:bg-white/20"
+                >
+                  <i class="fab fa-google-play text-2xl"></i>
+                  <div class="store-copy">
+                    <div class="text-xs text-slate-300" data-i18n="storeGetItOn">Get it on</div>
+                    <div class="text-base font-semibold" data-i18n="storeGooglePlay">Play Store</div>
                   </div>
-                </div>
-              </a>
+                </a>
+              </div>
             </div>
-          </div>
+
+            <aside class="animate-rise border border-white/15 bg-slate-950/55 p-6 shadow-soft backdrop-blur-xl [animation-delay:.12s]">
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="heroPanelLabel">Web Flow</p>
+              <h2 class="mt-4 font-display text-3xl text-white" data-i18n="heroPanelTitle">What happens after you click create plan</h2>
+              <p class="mt-4 text-sm leading-7 text-slate-300" data-i18n="heroPanelBody">You do not start with a city list. You start with your intent, and the flow builds the trip around it.</p>
+
+              <div class="mt-6 space-y-3">
+                <article class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border border-white/10 bg-white/[0.04] px-4 py-4">
+                  <span class="text-sm font-semibold text-lagoon-300">01</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white" data-i18n="step1Title">Choose dates, budget, and activities</p>
+                    <p class="mt-1 text-xs leading-6 text-slate-300" data-i18n="step1Body">Set travel timing, price level, and the experiences you care about.</p>
+                  </div>
+                </article>
+                <article class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border border-white/10 bg-white/[0.04] px-4 py-4">
+                  <span class="text-sm font-semibold text-lagoon-300">02</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white" data-i18n="step2Title">AI matches the destination and hotels</p>
+                    <p class="mt-1 text-xs leading-6 text-slate-300" data-i18n="step2Body">See the region that fits your trip and browse the strongest hotel options there.</p>
+                  </div>
+                </article>
+                <article class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border border-white/10 bg-white/[0.04] px-4 py-4">
+                  <span class="text-sm font-semibold text-lagoon-300">03</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white" data-i18n="step3Title">Reserve stay and add tours if you want</p>
+                    <p class="mt-1 text-xs leading-6 text-slate-300" data-i18n="step3Body">Hotel booking happens in the flow. Tours can be added now or skipped.</p>
+                  </div>
+                </article>
+                <article class="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border border-white/10 bg-white/[0.04] px-4 py-4">
+                  <span class="text-sm font-semibold text-lagoon-300">04</span>
+                  <div>
+                    <p class="text-sm font-semibold text-white" data-i18n="step4Title">Compare two AI plans and continue</p>
+                    <p class="mt-1 text-xs leading-6 text-slate-300" data-i18n="step4Body">Pick the itinerary that fits best, then continue with the matching tour plan.</p>
+                  </div>
+                </article>
+              </div>
+
+              <p class="mt-6 text-xs leading-6 text-slate-400" data-i18n="heroPanelNote">Tour participation is coordinated with verified local partners and can remain optional until the right point in the flow.</p>
+            </aside>
           </div>
         </div>
       </section>
 
-      <!-- Destinations -->
       <section id="destinations" class="py-16">
         <div class="w-full">
-          <p
-            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
-            data-i18n="destinationsLabel"
-          >
-            Destinations
-          </p>
-          <h2
-            class="mb-10 text-center font-display text-4xl text-white sm:text-5xl"
-            data-i18n="citiesTitle"
-          >
-            Explore Türkiye's Cities
-          </h2>
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500" data-i18n="destinationsLabel">Destination Matches</p>
+          <h2 class="mb-10 text-center font-display text-4xl text-white sm:text-5xl" data-i18n="citiesTitle">The type of trips AI can match for you</h2>
 
           <div
             class="city-carousel relative min-h-[34rem] overflow-hidden border border-white/15 bg-slate-900/80 shadow-soft"
@@ -185,12 +223,13 @@
                     Where East meets West. Ancient mosques, vibrant bazaars, and
                     breathtaking views.
                   </p>
-                  <a
-                    href="#features"
-                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                  <button
+                    type="button"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
-                    >Build my city plan</a
                   >
+                    Start with this vibe
+                  </button>
                 </div>
               </div>
             </article>
@@ -262,12 +301,13 @@
                     Magical fairy chimneys and hot air balloons floating over
                     otherworldly landscapes.
                   </p>
-                  <a
-                    href="#features"
-                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                  <button
+                    type="button"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
-                    >Build my city plan</a
                   >
+                    Start with this vibe
+                  </button>
                 </div>
               </div>
             </article>
@@ -339,12 +379,13 @@
                     Mediterranean paradise with turquoise waters, white sand
                     beaches, and ancient ruins.
                   </p>
-                  <a
-                    href="#features"
-                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                  <button
+                    type="button"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
-                    >Build my city plan</a
                   >
+                    Start with this vibe
+                  </button>
                 </div>
               </div>
             </article>
@@ -416,12 +457,13 @@
                     Charming coastal city with ancient Greek history, modern
                     cafes, and stunning sunsets.
                   </p>
-                  <a
-                    href="#features"
-                    class="city-cta inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                  <button
+                    type="button"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
-                    >Build my city plan</a
                   >
+                    Start with this vibe
+                  </button>
                 </div>
               </div>
             </article>
@@ -476,21 +518,10 @@
         </div>
       </section>
 
-      <!-- Features -->
       <section id="features" class="features-section px-4 py-20 sm:px-6 lg:px-8">
         <div class="mx-auto w-full max-w-6xl">
-          <p
-            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
-            data-i18n="featuresLabel"
-          >
-            Features
-          </p>
-          <h2
-            class="mb-14 text-center font-display text-4xl text-white sm:text-5xl"
-            data-i18n="featuresTitle"
-          >
-            Plan Your Turkish Adventure in Seconds
-          </h2>
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500" data-i18n="featuresLabel">Features</p>
+          <h2 class="mb-14 text-center font-display text-4xl text-white sm:text-5xl" data-i18n="featuresTitle">Everything from destination match to booking</h2>
 
           <div class="features-grid grid gap-6 md:grid-cols-3">
             <article
@@ -505,15 +536,13 @@
                 class="features-card-title mb-3 font-display text-2xl text-white"
                 data-i18n="feature1Title"
               >
-                AI-Powered Itineraries
+                AI Destination Match
               </h3>
               <p
                 class="features-card-body text-sm leading-7 text-slate-300"
                 data-i18n="feature1Body"
               >
-                Tell us which Turkish cities you want to visit, your dates, and
-                interests. Our AI creates a detailed day-by-day plan tailored to
-                you.
+                Start with dates, budget, and activities instead of choosing a city first. The system finds the destination shape that fits your trip.
               </p>
             </article>
             <article
@@ -528,15 +557,13 @@
                 class="features-card-title mb-3 font-display text-2xl text-white"
                 data-i18n="feature2Title"
               >
-                Hotels & Local Pricing
+                Ranked Hotels in the Matched Region
               </h3>
               <p
                 class="features-card-body text-sm leading-7 text-slate-300"
                 data-i18n="feature2Body"
               >
-                Browse verified hotels nationwide in Türkiye. Get live pricing,
-                read trusted reviews, and secure your stay with instant
-                confirmation.
+                Once the destination is clear, Turquaway lists the strongest hotel fits for that area so the reservation can continue inside the same flow.
               </p>
             </article>
             <article
@@ -551,14 +578,13 @@
                 class="features-card-title mb-3 font-display text-2xl text-white"
                 data-i18n="feature3Title"
               >
-                Complete Booking
+                Optional Tours and Two AI Plans
               </h3>
               <p
                 class="features-card-body text-sm leading-7 text-slate-300"
                 data-i18n="feature3Body"
               >
-                Plan your perfect trip to Türkiye. Book hotels and tours with
-                ease, all through one trusted source.
+                Add tours if they improve the trip, or skip them and continue. At the end, compare two AI-generated itinerary options before moving forward.
               </p>
             </article>
           </div>
@@ -566,83 +592,67 @@
           <div
             class="features-highlight relative mt-14 grid items-center gap-10 border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.02] to-transparent p-6 md:grid-cols-2 md:p-8"
           >
-            <div class="features-highlight-media overflow-hidden border border-white/15">
-              <img
-                src="https://idsb.tmgrup.com.tr/ly/uploads/images/2020/02/28/22673.jpg"
-                alt="Turkish traditional experience"
-                class="h-full w-full object-cover"
-                loading="lazy"
-              />
-            </div>
             <div class="features-highlight-content">
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewLabel">Preview</p>
               <h3
-                class="features-highlight-title mb-5 font-display text-3xl text-white sm:text-4xl"
+                class="features-highlight-title mb-5 mt-3 font-display text-3xl text-white sm:text-4xl"
                 data-i18n="personalizedTitle"
               >
-                Personalized Turkish Experiences
+                What your plan already includes
               </h3>
+              <p class="mb-6 max-w-2xl text-sm leading-7 text-slate-300" data-i18n="personalizedLead">Before you commit, you already see the structure of the trip, the stay logic, and the activity layer.</p>
               <ul class="features-list space-y-4">
                 <li class="experience-item flex gap-3">
                   <i
                     class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem1"
-                    >Discover hidden hammams, local kebab restaurants, and
-                    authentic Turkish experiences</span
-                  >
-                </li>
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem1">Destination matched to your dates, budget, and activity preferences</span></li>
                 <li class="experience-item flex gap-3">
                   <i
                     class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem2"
-                    >Adjust plans for ferry crossings, seasonal weather, and
-                    local festivals</span
-                  >
-                </li>
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem2">Hotel options ranked for the selected region before reservation</span></li>
                 <li class="experience-item flex gap-3">
                   <i
                     class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem3"
-                    >Find the best bazaars, beaches, and historical sites in
-                    each city</span
-                  >
-                </li>
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem3">Optional tours that can be added now or skipped without blocking the trip</span></li>
                 <li class="experience-item flex gap-3">
                   <i
                     class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem4"
-                    >Connect with other travelers for group tours and shared
-                    experiences</span
-                  >
-                </li>
+                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem4">Two AI itinerary options that turn the trip into a clear next decision</span></li>
               </ul>
+            </div>
+
+            <div class="grid gap-4">
+              <article class="border border-lagoon-500/35 bg-slate-950/70 p-5 shadow-soft">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewOption1Label">AI Option 1</p>
+                <h4 class="mt-3 font-display text-2xl text-white" data-i18n="previewOption1Title">Sea-first escape</h4>
+                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewOption1Body">A coastal plan with lighter activity density, earlier hotel check-in logic, and optional sea-view tours layered after stay selection.</p>
+              </article>
+              <article class="border border-white/15 bg-white/[0.04] p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewOption2Label">AI Option 2</p>
+                <h4 class="mt-3 font-display text-2xl text-white" data-i18n="previewOption2Title">Experience-heavy route</h4>
+                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewOption2Body">A denser version with more guided stops, stronger activity mix, and a route built around daily movement and partner tours.</p>
+              </article>
+              <article class="border border-white/15 bg-white/[0.04] p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewTrustTitle">Booking logic</p>
+                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewTrustBody">Hotel reservation is completed in the flow. Tours remain flexible, and local partner coordination continues around the activity day.</p>
+              </article>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- HowItWorks -->
       <section id="how-it-works" class="px-4 py-20 sm:px-6 lg:px-8">
         <div class="mx-auto w-full max-w-6xl">
-          <p
-            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
-            data-i18n="processLabel"
-          >
-            Process
-          </p>
-          <h2
-            class="mb-14 text-center font-display text-4xl text-white sm:text-5xl"
-            data-i18n="howItWorksTitle"
-          >
-            How Turquaway Works
-          </h2>
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500" data-i18n="processLabel">Process</p>
+          <h2 class="mb-14 text-center font-display text-4xl text-white sm:text-5xl" data-i18n="howItWorksTitle">The trip flow, step by step</h2>
           <div class="relative" data-process-carousel>
             <button
               class="process-nav process-nav-prev absolute left-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/70 text-white transition hover:bg-slate-900/95 md:left-3 md:h-11 md:w-11"
@@ -682,13 +692,13 @@
                       class="font-display text-4xl text-white"
                       data-i18n="step1Title"
                     >
-                      Set Your Dates
+                      Choose dates, budget, and activities
                     </h3>
                     <p
                       class="mt-4 text-base leading-8 text-slate-300"
                       data-i18n="step1Body"
                     >
-                      Tell us when you want to travel and your budget
+                      Set travel timing, price level, and the experiences you care about.
                     </p>
                   </div>
                 </article>
@@ -708,14 +718,13 @@
                       class="font-display text-4xl text-white"
                       data-i18n="step2Title"
                     >
-                      Choose Your Cities
+                      AI matches the destination and hotels
                     </h3>
                     <p
                       class="mt-4 text-base leading-8 text-slate-300"
                       data-i18n="step2Body"
                     >
-                      Browse destinations all across Turkey and select your
-                      favorites
+                      See the region that fits your trip and browse the strongest hotel options there.
                     </p>
                   </div>
                 </article>
@@ -735,13 +744,13 @@
                       class="font-display text-4xl text-white"
                       data-i18n="step3Title"
                     >
-                      Book & Travel
+                      Reserve stay and add tours if you want
                     </h3>
                     <p
                       class="mt-4 text-base leading-8 text-slate-300"
                       data-i18n="step3Body"
                     >
-                      One-click booking for hotels, tours, restaurants
+                      Hotel booking happens in the flow. Tours can be added now or skipped.
                     </p>
                   </div>
                 </article>
@@ -761,14 +770,13 @@
                       class="font-display text-4xl text-white"
                       data-i18n="step4Title"
                     >
-                      Get AI Itinerary
+                      Compare two AI plans and continue
                     </h3>
                     <p
                       class="mt-4 text-base leading-8 text-slate-300"
                       data-i18n="step4Body"
                     >
-                      Perfect day-by-day plans created instantly based on your
-                      preferences
+                      Pick the itinerary that fits best, then continue with the matching tour plan.
                     </p>
                   </div>
                 </article>
@@ -779,11 +787,11 @@
               class="mt-6 flex items-center justify-center gap-2"
               data-process-dots
             ></div>
+            <p class="mt-6 text-center text-sm leading-7 text-slate-400" data-i18n="processFootnote">Tour participation is coordinated with verified local partners, and it can remain optional until the right stage of the journey.</p>
           </div>
         </div>
       </section>
 
-      <!-- Testimonials -->
       <section id="testimonials" class="px-4 py-20 sm:px-6 lg:px-8">
         <div class="mx-auto w-full max-w-6xl">
           <p
@@ -802,7 +810,7 @@
             class="mx-auto mt-4 max-w-2xl text-center text-slate-300"
             data-i18n="testimonialsSubtitle"
           >
-            Join thousands who've discovered Turkey's beauty with Turquaway
+            Join travelers who planned and booked smarter routes with Turquaway
           </p>
 
           <div
@@ -902,7 +910,6 @@
         </div>
       </section>
 
-      <!-- CTA -->
       <section id="cta" class="pb-20">
         <div
           class="w-full border border-lagoon-500/30 bg-gradient-to-br from-lagoon-600 to-lagoon-700 p-8 text-slate-950 shadow-glow sm:p-12"
@@ -911,15 +918,30 @@
             class="text-center font-display text-4xl sm:text-5xl"
             data-i18n="ctaTitle"
           >
-            Ready to Discover Türkiye?
+            Start the trip flow on the web
           </h2>
           <p
             class="mx-auto mt-4 max-w-2xl text-center text-base/7"
             data-i18n="ctaBody"
           >
-            Start planning your perfect Turkish adventure today. Let Turquaway
-            handle all the details.
+            Tell us your dates, budget, and interests. We will return destination logic, hotel options, optional tours, and two AI plans in one sharp flow.
           </p>
+          <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+            <button
+              type="button"
+              class="landing-open-plan inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3 text-white transition hover:bg-slate-900"
+              data-i18n="heroPrimaryCta"
+            >
+              Build My Trip
+            </button>
+            <a
+              href="#how-it-works"
+              class="inline-flex items-center justify-center gap-3 border border-slate-950/20 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/10"
+              data-i18n="heroSecondaryCta"
+            >
+              See the Flow
+            </a>
+          </div>
           <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <a
               href="https://apps.apple.com"
@@ -955,5 +977,24 @@
         </div>
       </section>
     </main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function () {
+    const desktopTrigger = document.getElementById('nav-create-plan-btn');
+    const mobileTrigger = document.getElementById('nav-mobile-create-plan');
+
+    document.querySelectorAll('.landing-open-plan').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (desktopTrigger) {
+          desktopTrigger.click();
+          return;
+        }
+        mobileTrigger?.click();
+      });
+    });
+  })();
+</script>
 {% endblock %}
 
