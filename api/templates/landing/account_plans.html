@@ -1,0 +1,187 @@
+{% extends 'landing/base.html' %}
+
+{% block title %}Turquaway - Planlarim{% endblock %}
+
+{% block content %}
+<main class="min-h-screen bg-white px-4 pb-16 pt-32 sm:px-6 lg:px-10">
+  <section class="mx-auto max-w-[1280px] space-y-8">
+    <div class="flex items-center justify-between gap-4">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Account</p>
+        <h1 class="mt-3 font-display text-4xl text-slate-800 sm:text-5xl">Planlarim</h1>
+        <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Aktif, yaklasan ve tamamlanan planlarini tek yerde inceleyebilirsin.</p>
+      </div>
+      <a href="{% url 'account' %}" class="inline-flex items-center justify-center gap-2 border border-orange-600 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-orange-50">
+        <i class="fa-solid fa-arrow-left text-sm text-teal-600"></i>
+        <span>Account'a Don</span>
+      </a>
+    </div>
+
+    <div id="plans-auth-error" class="hidden border border-orange-600 bg-orange-50 px-4 py-3 text-sm text-slate-800"></div>
+
+    <section class="grid gap-5 md:grid-cols-3">
+      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Toplam Plan</p>
+        <p id="plans-stat-total" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
+        <p class="mt-3 text-sm text-slate-200">Hesabinda kayitli tum planlar.</p>
+      </article>
+      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Aktif / Yaklasan</p>
+        <p id="plans-stat-live" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
+        <p class="mt-3 text-sm text-slate-200">Devam eden veya yaklasan planlar.</p>
+      </article>
+      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Tamamlanan</p>
+        <p id="plans-stat-past" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
+        <p class="mt-3 text-sm text-slate-200">Tarihi gecmis planlar.</p>
+      </article>
+    </section>
+
+    <section class="space-y-6 border border-orange-600 bg-white px-6 py-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Plan Filters</p>
+          <h2 class="mt-3 font-display text-3xl text-slate-800">Tum planlar</h2>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-4">
+          <button type="button" data-plan-filter="all" class="plan-filter-btn border border-orange-600 bg-white px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-orange-50">Tumunu Goster</button>
+          <button type="button" data-plan-filter="ongoing" class="plan-filter-btn border border-orange-600 bg-white px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-orange-50">Devam Eden</button>
+          <button type="button" data-plan-filter="upcoming" class="plan-filter-btn border border-orange-600 bg-white px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-orange-50">Yaklasan</button>
+          <button type="button" data-plan-filter="past" class="plan-filter-btn border border-orange-600 bg-white px-4 py-3 text-sm font-medium text-slate-800 transition hover:bg-orange-50">Gecmis</button>
+        </div>
+      </div>
+
+      <div id="plans-list" class="grid gap-5 xl:grid-cols-2">
+        <article class="border border-orange-600 bg-white px-6 py-6 text-slate-700">
+          <p>Planlar yukleniyor...</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</main>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+  const token = localStorage.getItem('tw_access');
+  const errorRoot = document.getElementById('plans-auth-error');
+  const listRoot = document.getElementById('plans-list');
+  const statTotal = document.getElementById('plans-stat-total');
+  const statLive = document.getElementById('plans-stat-live');
+  const statPast = document.getElementById('plans-stat-past');
+  let activeFilter = 'all';
+
+  if (!token) {
+    window.location.href = `/login/?next=${encodeURIComponent(window.location.pathname)}`;
+    return;
+  }
+
+  function authHeaders() {
+    return {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  function escapeHtml(value) {
+    return String(value || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  function statusLabel(status, startDate, endDate) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (!startDate || !endDate) return 'Plan';
+    if (startDate <= today && endDate >= today) return 'Devam Eden';
+    if (startDate > today) return 'Yaklasan';
+    return status === 'completed' ? 'Tamamlandi' : 'Gecmis';
+  }
+
+  function renderStats(items) {
+    const today = new Date().toISOString().slice(0, 10);
+    const live = items.filter((item) => item.start_date >= today || (item.start_date <= today && item.end_date >= today));
+    const past = items.filter((item) => item.end_date < today);
+    statTotal.textContent = String(items.length);
+    statLive.textContent = String(live.length);
+    statPast.textContent = String(past.length);
+  }
+
+  function renderPlans(items) {
+    if (!Array.isArray(items) || !items.length) {
+      listRoot.innerHTML = `<article class="border border-orange-600 bg-white px-6 py-6 text-slate-700"><p>Bu filtre icin plan bulunamadi.</p></article>`;
+      return;
+    }
+
+    listRoot.innerHTML = items.map((item) => `
+      <article class="border border-orange-600 bg-white px-6 py-6">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">${escapeHtml(statusLabel(item.status, item.start_date, item.end_date))}</p>
+            <h3 class="mt-3 font-display text-3xl text-slate-800">${escapeHtml(item.city)}</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">${escapeHtml(item.gemini_recommendation || 'Bu plan icin ozet metin bulunmuyor.')}</p>
+          </div>
+          <div class="border border-orange-600 bg-teal-600 px-4 py-4 text-slate-100 lg:min-w-[12rem]">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Tarih</p>
+            <p class="mt-3 text-sm font-medium text-slate-100">${escapeHtml(item.start_date)} - ${escapeHtml(item.end_date)}</p>
+            <p class="mt-4 text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Gun</p>
+            <p class="mt-3 text-2xl font-semibold text-slate-100">${Array.isArray(item.days) ? item.days.length : 0}</p>
+          </div>
+        </div>
+        <div class="mt-6 border border-orange-600 bg-orange-50 px-4 py-4 text-sm text-slate-700">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Plan ID</p>
+          <p class="mt-2 break-all font-medium text-slate-800">${escapeHtml(item.plan_id)}</p>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function showError(message) {
+    errorRoot.classList.remove('hidden');
+    errorRoot.textContent = message;
+  }
+
+  async function loadPlans(status) {
+    activeFilter = status;
+    document.querySelectorAll('.plan-filter-btn').forEach((button) => {
+      const active = button.dataset.planFilter === status;
+      button.className = `plan-filter-btn border border-orange-600 px-4 py-3 text-sm font-medium transition ${active ? 'bg-teal-600 text-slate-100' : 'bg-white text-slate-800 hover:bg-orange-50'}`;
+    });
+
+    try {
+      const response = await fetch(`/api/v1/plans/?status=${encodeURIComponent(status)}`, { headers: authHeaders() });
+      if (!response.ok) throw new Error('Planlar yuklenemedi.');
+      const payload = await response.json();
+      renderPlans(payload.results || []);
+    } catch (_) {
+      showError('Planlarin su anda yuklenemiyor.');
+      listRoot.innerHTML = `<article class="border border-orange-600 bg-white px-6 py-6 text-slate-700"><p>Plan verisi gecici olarak kullanilamiyor.</p></article>`;
+    }
+  }
+
+  fetch('/api/v1/plans/?status=all', { headers: authHeaders() })
+    .then(async (response) => {
+      if (!response.ok) throw new Error();
+      return response.json();
+    })
+    .then((payload) => {
+      renderStats(payload.results || []);
+      return loadPlans(activeFilter);
+    })
+    .catch(() => {
+      statTotal.textContent = '-';
+      statLive.textContent = '-';
+      statPast.textContent = '-';
+      showError('Planlarin su anda yuklenemiyor.');
+      listRoot.innerHTML = `<article class="border border-orange-600 bg-white px-6 py-6 text-slate-700"><p>Plan verisi gecici olarak kullanilamiyor.</p></article>`;
+    });
+
+  document.querySelectorAll('.plan-filter-btn').forEach((button) => {
+    button.addEventListener('click', () => loadPlans(button.dataset.planFilter));
+  });
+})();
+</script>
+{% endblock %}
