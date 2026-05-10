@@ -23,7 +23,7 @@
       <button
         id="nav-create-plan-btn"
         type="button"
-        class="hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex"
+        class="hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-medium text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex"
       >
         <i class="fa-solid fa-wand-magic-sparkles text-md"></i>
         <span data-i18n="navCreatePlan">Create Plan</span>
@@ -43,7 +43,7 @@
 
       <!-- Download -->
       <a href="{% url 'landing' %}#cta"
-        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-md font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 xl:inline-flex">
+        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-md font-medium text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 xl:inline-flex">
         <span data-i18n="navDownload">Download</span>
       </a>
 
@@ -53,7 +53,7 @@
           class="hidden px-4 py-2.5 text-md font-medium text-slate-300 transition hover:text-white sm:inline-block"
           data-i18n="navSignIn">Sign In</a>
         <a href="/register/"
-          class="hidden items-center rounded-none border border-lagoon-500 bg-lagoon-500 px-4 py-2.5 text-md font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 sm:inline-flex"
+          class="hidden items-center rounded-none border border-lagoon-500 bg-lagoon-500 px-4 py-2.5 text-md font-medium text-slate-950 shadow-glow transition hover:bg-lagoon-300 sm:inline-flex"
           data-i18n="navSignUp">Sign Up</a>
       </div>
 
@@ -62,7 +62,7 @@
         <div class="relative hidden sm:block">
           <button id="nav-user-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="nav-user-dropdown"
             class="inline-flex items-center gap-3 rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-md font-medium text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/20">
-            <span id="nav-user-initial" class="flex h-8 w-8 items-center justify-center border border-lagoon-500/60 bg-lagoon-500/15 text-md font-semibold uppercase text-lagoon-200">U</span>
+            <span id="nav-user-initial" class="flex h-8 w-8 items-center justify-center border border-lagoon-500/60 bg-lagoon-500/15 text-md font-medium uppercase text-lagoon-200">U</span>
             <span id="nav-user-name"></span>
             <i class="fa-solid fa-chevron-down text-[11px] text-slate-400 transition duration-200" id="nav-user-menu-chevron"></i>
           </button>
@@ -97,7 +97,7 @@
   <div id="nav-mobile-menu" class="hidden border-t border-white/10 bg-slate-950/95 lg:hidden">
     <div class="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-4 sm:px-6">
       <button id="nav-mobile-create-plan" type="button"
-        class="mb-2 inline-flex items-center justify-center gap-2 rounded-none bg-lagoon-500 px-3 py-2 text-center text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300">
+        class="mb-2 inline-flex items-center justify-center gap-2 rounded-none bg-lagoon-500 px-3 py-2 text-center text-sm font-medium text-slate-950 transition hover:bg-lagoon-300">
         <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
         <span data-i18n="navCreatePlan">Create Plan</span>
       </button>
@@ -112,7 +112,7 @@
         <a href="/login/" id="nav-mobile-signin" class="block px-3 py-2 text-slate-200 transition hover:bg-white/10"
           data-i18n="navSignIn">Sign In</a>
         <a href="/register/" id="nav-mobile-signup"
-          class="mt-1 block rounded-none bg-lagoon-500 px-3 py-2 text-center text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300"
+          class="mt-1 block rounded-none bg-lagoon-500 px-3 py-2 text-center text-sm font-medium text-slate-950 transition hover:bg-lagoon-300"
           data-i18n="navSignUp">Sign Up</a>
         <!-- User links -->
         <a href="{% url 'account' %}" id="nav-mobile-account" title="Account" aria-label="Account"
@@ -147,11 +147,11 @@
       if (!$desktopCreatePlan) return;
 
       if (homeState) {
-        $desktopCreatePlan.className = 'hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex';
+        $desktopCreatePlan.className = 'hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-medium text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex';
         return;
       }
 
-      $desktopCreatePlan.className = 'hidden items-center gap-2 border border-white/15 bg-white/5 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/10 hover:text-white lg:inline-flex';
+      $desktopCreatePlan.className = 'hidden items-center gap-2 border border-white/15 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/10 hover:text-white lg:inline-flex';
     }
 
     function setNavBg(solid) {
