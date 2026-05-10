@@ -230,7 +230,7 @@ body.bg-slate-950 {
 
 /* Navigation */
 body nav.fixed {
-  background: linear-gradient(135deg, #a7d4c8 0%, #8bb6ab 46%, #a3b1af 100%) !important;
+  background: linear-gradient(135deg, #568d7e 0%, #8bb6ab 46%, #232928 100%) !important;
   border-bottom-color: var(--border-soft) !important;
 }
 
