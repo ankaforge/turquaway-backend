@@ -2,7 +2,7 @@
 <!-- Navigation -->
 <nav id="main-nav"
   class="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-slate-950/75 backdrop-blur-xl transition-colors duration-300 h-24">
-  <div id="main-nav-shell" class="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-4 transition-all duration-300 sm:px-6 lg:px-8">
+  <div id="main-nav-shell" class="mx-auto flex w-full items-center gap-4 px-4 py-4 transition-all duration-300 sm:px-6 lg:px-8">
     <!-- Logo -->
     <a href="{% url 'landing' %}" class="shrink-0 flex items-center">
       <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-10 w-auto" />
@@ -10,11 +10,11 @@
 
     <!-- Desktop navigation -->
     <div class="hidden items-center gap-1 lg:flex">
-      <a href="/#features" class="px-3 py-2 text-lg font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
+      <a href="/#features" class="px-3 py-2 text-md font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
         data-i18n="navFeatures">Features</a>
-      <a href="/#how-it-works" class="px-3 py-2 text-lg font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
+      <a href="/#how-it-works" class="px-3 py-2 text-md font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
         data-i18n="navHowItWorks">How it Works</a>
-      <a href="/#testimonials" class="px-3 py-2 text-lg font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
+      <a href="/#testimonials" class="px-3 py-2 text-md font-medium text-slate-200 transition hover:bg-white/10 hover:text-white"
         data-i18n="navTestimonials">Testimonials</a>
     </div>
 
@@ -25,12 +25,12 @@
         type="button"
         class="hidden items-center gap-2 border border-lagoon-500/60 bg-white/5 px-4 py-2.5 text-sm font-semibold text-lagoon-300 transition hover:border-lagoon-400 hover:bg-lagoon-500 hover:text-slate-950 lg:inline-flex"
       >
-        <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+        <i class="fa-solid fa-wand-magic-sparkles text-md"></i>
         <span data-i18n="navCreatePlan">Create Plan</span>
       </button>
 
       <!-- Language menu -->
-      <div class="language-menu" data-language-menu>
+      <div class="language-menub text-md" data-language-menu>
         <button id="language-menu-button" type="button" class="language-menu-trigger" aria-haspopup="listbox"
           aria-expanded="false" aria-controls="language-menu-list">
           <span class="language-menu-label" data-i18n="languageLabel">Language</span>
@@ -43,17 +43,17 @@
 
       <!-- Download -->
       <a href="{% url 'landing' %}#cta"
-        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-lg font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 xl:inline-flex">
+        class="hidden items-center gap-2 border border-lagoon-500 bg-lagoon-500/10 px-5 py-2.5 text-md font-semibold text-lagoon-300 transition hover:bg-lagoon-500 hover:text-slate-950 xl:inline-flex">
         <span data-i18n="navDownload">Download</span>
       </a>
 
       <!-- Auth: guest (not logged in) -->
       <div id="nav-auth-guest" class="hidden items-center gap-2">
         <a href="/login/"
-          class="hidden px-4 py-2.5 text-lg font-medium text-slate-300 transition hover:text-white sm:inline-block"
+          class="hidden px-4 py-2.5 text-md font-medium text-slate-300 transition hover:text-white sm:inline-block"
           data-i18n="navSignIn">Sign In</a>
         <a href="/register/"
-          class="hidden items-center rounded-none border border-lagoon-500 bg-lagoon-500 px-4 py-2.5 text-lg font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 sm:inline-flex"
+          class="hidden items-center rounded-none border border-lagoon-500 bg-lagoon-500 px-4 py-2.5 text-md font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 sm:inline-flex"
           data-i18n="navSignUp">Sign Up</a>
       </div>
 
@@ -61,8 +61,8 @@
       <div id="nav-auth-user" class="hidden items-center gap-2">
         <div class="relative hidden sm:block">
           <button id="nav-user-menu-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="nav-user-dropdown"
-            class="inline-flex items-center gap-3 rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-lg font-medium text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/20">
-            <span id="nav-user-initial" class="flex h-8 w-8 items-center justify-center border border-lagoon-500/60 bg-lagoon-500/15 text-lg font-semibold uppercase text-lagoon-200">U</span>
+            class="inline-flex items-center gap-3 rounded-none border border-white/20 bg-white/10 px-3 py-2.5 text-md font-medium text-slate-200 transition hover:border-lagoon-500/40 hover:bg-white/20">
+            <span id="nav-user-initial" class="flex h-8 w-8 items-center justify-center border border-lagoon-500/60 bg-lagoon-500/15 text-md font-semibold uppercase text-lagoon-200">U</span>
             <span id="nav-user-name"></span>
             <i class="fa-solid fa-chevron-down text-[11px] text-slate-400 transition duration-200" id="nav-user-menu-chevron"></i>
           </button>
