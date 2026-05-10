@@ -235,7 +235,7 @@ body nav.fixed {
 }
 
 body nav.fixed.is-at-top {
-  background: transparent !important;
+  background: rgba(1, 1, 1, 0.556) !important;
   border-bottom-color: transparent !important;
   box-shadow: none !important;
   -webkit-backdrop-filter: none !important;
