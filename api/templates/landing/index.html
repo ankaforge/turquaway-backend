@@ -4,7 +4,7 @@
 {% block title %}Turquaway - AI Tour Planner{% endblock %}
 
 {% block content %}
-    <main>
+    <main class="bg-lagoon-50 text-slate-950 font-sans antialiased">
       <section class="hero-section relative min-h-screen overflow-hidden">
         <video
           class="hero-video absolute inset-0 h-full w-full object-cover"
@@ -51,7 +51,7 @@
                 <button
                   id="hero-create-plan"
                   type="button"
-                  class="landing-open-plan inline-flex items-center justify-center gap-3 bg-lagoon-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-lagoon-300"
+                  class="landing-open-plan inline-flex items-center justify-center gap-3 bg-lagoon-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-lagoon-300"
                   data-i18n="heroPrimaryCta"
                 >
                   Build My Trip
@@ -96,85 +96,85 @@
         </div>
       </section>
 
-      <section id="flow-overview" class="px-4 py-20 sm:px-6 lg:px-8 bg-teal-700">
+      <section id="flow-overview" class="px-4 py-20 sm:px-6 lg:px-8 bg-white border-y border-lagoon-100">
         <div class="mx-auto w-full max-w-6xl space-y-8">
           <div class="max-w-3xl">
-            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-200" data-i18n="heroPanelLabel">Web Flow</p>
-            <h2 class="mt-4 font-display text-4xl text-white sm:text-5xl" data-i18n="heroPanelTitle">What happens after you click create plan</h2>
-            <p class="mt-4 text-sm leading-7 text-slate-100" data-i18n="heroPanelBody">You do not start with a city list. You start with your intent, and the flow builds the trip around it.</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-700" data-i18n="heroPanelLabel">Web Flow</p>
+            <h2 class="mt-4 font-display text-4xl text-slate-950 sm:text-5xl" data-i18n="heroPanelTitle">What happens after you click create plan</h2>
+            <p class="mt-4 text-sm leading-7 text-slate-700" data-i18n="heroPanelBody">You do not start with a city list. You start with your intent, and the flow builds the trip around it.</p>
           </div>
 
           <div class="grid gap-4 md:grid-cols-3">
-            <article class="border border-white/12 bg-white/[0.04] px-5 py-5">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-200">INPUT</p>
-              <p class="mt-3 text-sm font-medium leading-6 text-white" data-i18n="heroStat1">Dates, budget, activities</p>
+            <article class="border border-lagoon-100 bg-white px-5 py-5">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-500">INPUT</p>
+              <p class="mt-3 text-sm font-medium leading-6 text-slate-950" data-i18n="heroStat1">Dates, budget, activities</p>
             </article>
-            <article class="border border-white/12 bg-white/[0.04] px-5 py-5">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-200">MATCH</p>
-              <p class="mt-3 text-sm font-medium leading-6 text-white" data-i18n="heroStat2">Matched destination and hotel flow</p>
+            <article class="border border-lagoon-100 bg-white px-5 py-5">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-500">MATCH</p>
+              <p class="mt-3 text-sm font-medium leading-6 text-slate-950" data-i18n="heroStat2">Matched destination and hotel flow</p>
             </article>
-            <article class="border border-white/12 bg-white/[0.04] px-5 py-5">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-200">OUTPUT</p>
-              <p class="mt-3 text-sm font-medium leading-6 text-white" data-i18n="heroStat3">Two AI plan options before checkout</p>
+            <article class="border border-lagoon-100 bg-white px-5 py-5">
+              <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-lagoon-500">OUTPUT</p>
+              <p class="mt-3 text-sm font-medium leading-6 text-slate-950" data-i18n="heroStat3">Two AI plan options before checkout</p>
             </article>
           </div>
 
           <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem]">
             <div class="grid gap-4 md:grid-cols-2">
-              <article class="border border-white/10 bg-white/[0.03] px-5 py-5">
+              <article class="border border-lagoon-100 bg-white px-5 py-5">
                 <div class="flex items-start gap-4">
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/12 text-sm font-semibold text-lagoon-200">01</span>
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-lagoon-100 text-sm font-semibold text-lagoon-500">01</span>
                   <div>
-                    <p class="text-sm font-semibold text-white" data-i18n="step1Title">Choose dates, budget, and activities</p>
-                    <p class="mt-2 text-sm leading-6 text-slate-100" data-i18n="step1Body">Set travel timing, price level, and the experiences you care about.</p>
+                    <p class="text-sm font-semibold text-slate-950" data-i18n="step1Title">Choose dates, budget, and activities</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-700" data-i18n="step1Body">Set travel timing, price level, and the experiences you care about.</p>
                   </div>
                 </div>
               </article>
-              <article class="border border-white/10 bg-white/[0.03] px-5 py-5">
+              <article class="border border-lagoon-100 bg-white px-5 py-5">
                 <div class="flex items-start gap-4">
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/12 text-sm font-semibold text-lagoon-200">02</span>
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-lagoon-100 text-sm font-semibold text-lagoon-500">02</span>
                   <div>
-                    <p class="text-sm font-semibold text-white" data-i18n="step2Title">AI matches the destination and hotels</p>
-                    <p class="mt-2 text-sm leading-6 text-slate-100" data-i18n="step2Body">See the region that fits your trip and browse the strongest hotel options there.</p>
+                    <p class="text-sm font-semibold text-slate-950" data-i18n="step2Title">AI matches the destination and hotels</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-700" data-i18n="step2Body">See the region that fits your trip and browse the strongest hotel options there.</p>
                   </div>
                 </div>
               </article>
-              <article class="border border-white/10 bg-white/[0.03] px-5 py-5">
+              <article class="border border-lagoon-100 bg-white px-5 py-5">
                 <div class="flex items-start gap-4">
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/12 text-sm font-semibold text-lagoon-200">03</span>
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-lagoon-100 text-sm font-semibold text-lagoon-500">03</span>
                   <div>
-                    <p class="text-sm font-semibold text-white" data-i18n="step3Title">Reserve stay and add tours if you want</p>
-                    <p class="mt-2 text-sm leading-6 text-slate-100" data-i18n="step3Body">Hotel booking happens in the flow. Tours can be added now or skipped.</p>
+                    <p class="text-sm font-semibold text-slate-950" data-i18n="step3Title">Reserve stay and add tours if you want</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-700" data-i18n="step3Body">Hotel booking happens in the flow. Tours can be added now or skipped.</p>
                   </div>
                 </div>
               </article>
-              <article class="border border-white/10 bg-white/[0.03] px-5 py-5">
+              <article class="border border-lagoon-100 bg-white px-5 py-5">
                 <div class="flex items-start gap-4">
-                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-white/12 text-sm font-semibold text-lagoon-200">04</span>
+                  <span class="flex h-10 w-10 shrink-0 items-center justify-center border border-lagoon-100 text-sm font-semibold text-lagoon-500">04</span>
                   <div>
-                    <p class="text-sm font-semibold text-white" data-i18n="step4Title">Compare two AI plans and continue</p>
-                    <p class="mt-2 text-sm leading-6 text-slate-100" data-i18n="step4Body">Pick the itinerary that fits best, then continue with the matching tour plan.</p>
+                    <p class="text-sm font-semibold text-slate-950" data-i18n="step4Title">Compare two AI plans and continue</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-700" data-i18n="step4Body">Pick the itinerary that fits best, then continue with the matching tour plan.</p>
                   </div>
                 </div>
               </article>
             </div>
 
-            <aside class="border border-white/10 bg-slate-950/45 px-5 py-5">
-              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewTrustTitle">Booking logic</p>
-              <p class="mt-4 text-sm leading-7 text-slate-200" data-i18n="previewTrustBody">Hotel reservation is completed in the flow. Tours remain flexible, and local partner coordination continues around the activity day.</p>
-              <p class="mt-6 border-t border-white/10 pt-6 text-xs leading-6 text-slate-200" data-i18n="heroPanelNote">Tour participation is coordinated with verified local partners and can remain optional until the right point in the flow.</p>
+            <aside class="border border-lagoon-100 bg-lagoon-50 px-5 py-5">
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700" data-i18n="previewTrustTitle">Booking logic</p>
+              <p class="mt-4 text-sm leading-7 text-slate-700" data-i18n="previewTrustBody">Hotel reservation is completed in the flow. Tours remain flexible, and local partner coordination continues around the activity day.</p>
+              <p class="mt-6 border-t border-lagoon-100 pt-6 text-xs leading-6 text-slate-700" data-i18n="heroPanelNote">Tour participation is coordinated with verified local partners and can remain optional until the right point in the flow.</p>
             </aside>
           </div>
         </div>
       </section>
 
-      <section id="destinations" class="py-16 bg-white">
-        <div class="w-full">
-          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-500" data-i18n="destinationsLabel">Destination Matches</p>
-          <h2 class="mb-10 text-center font-display text-4xl text-lagoon-500 sm:text-5xl" data-i18n="citiesTitle">The type of trips AI can match for you</h2>
+      <section id="destinations" class="py-16 bg-white border-b border-lagoon-100">
+        <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-700" data-i18n="destinationsLabel">Destination Matches</p>
+          <h2 class="mb-10 text-center font-display text-4xl text-slate-950 sm:text-5xl" data-i18n="citiesTitle">The type of trips AI can match for you</h2>
 
           <div
-            class="city-carousel relative min-h-[34rem] overflow-hidden border border-white/15 bg-slate-900/80 shadow-soft"
+            class="city-carousel relative min-h-[34rem] overflow-hidden border border-lagoon-100 bg-white"
             data-city-carousel
           >
             <article
@@ -246,7 +246,7 @@
                   </p>
                   <button
                     type="button"
-                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-white transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
                   >
                     Start with this vibe
@@ -324,7 +324,7 @@
                   </p>
                   <button
                     type="button"
-                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-white transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
                   >
                     Start with this vibe
@@ -402,7 +402,7 @@
                   </p>
                   <button
                     type="button"
-                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-white transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
                   >
                     Start with this vibe
@@ -480,7 +480,7 @@
                   </p>
                   <button
                     type="button"
-                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-lagoon-300 md:w-fit"
+                    class="city-cta landing-open-plan inline-flex w-full shrink-0 justify-center bg-lagoon-500 px-5 py-3 font-semibold text-white transition hover:bg-lagoon-300 md:w-fit"
                     data-i18n="cityCarouselCta"
                   >
                     Start with this vibe
@@ -539,64 +539,64 @@
         </div>
       </section>
 
-      <section id="features" class="features-section px-4 py-20 sm:px-6 lg:px-8 bg-lagoon-600/60">
+      <section id="features" class="features-section px-4 py-20 sm:px-6 lg:px-8 bg-lagoon-50 border-b border-lagoon-100">
         <div class="mx-auto w-full max-w-6xl">
-          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-slate-500" data-i18n="featuresLabel">Features</p>
-          <h2 class="mb-14 text-center font-display text-4xl text-white sm:text-5xl" data-i18n="featuresTitle">Everything from destination match to booking</h2>
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-700" data-i18n="featuresLabel">Features</p>
+          <h2 class="mb-14 text-center font-display text-4xl text-slate-950 sm:text-5xl" data-i18n="featuresTitle">Everything from destination match to booking</h2>
 
           <div class="features-grid grid gap-6 md:grid-cols-3">
             <article
-              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+              class="features-card group border border-lagoon-100 bg-white p-7 shadow-soft transition hover:-translate-y-1"
             >
               <div
-                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-white"
               >
                 <i class="fa-solid fa-robot"></i>
               </div>
               <h3
-                class="features-card-title mb-3 font-display text-2xl text-white"
+                class="features-card-title mb-3 font-display text-2xl text-slate-950"
                 data-i18n="feature1Title"
               >
                 AI Destination Match
               </h3>
               <p
-                class="features-card-body text-sm leading-7 text-slate-300"
+                class="features-card-body text-sm leading-7 text-slate-700"
                 data-i18n="feature1Body"
               >
                 Start with dates, budget, and activities instead of choosing a city first. The system finds the destination shape that fits your trip.
               </p>
             </article>
             <article
-              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+              class="features-card group border border-lagoon-100 bg-white p-7 shadow-soft transition hover:-translate-y-1"
             >
               <div
-                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-white"
               >
                 <i class="fa-solid fa-hotel"></i>
               </div>
               <h3
-                class="features-card-title mb-3 font-display text-2xl text-white"
+                class="features-card-title mb-3 font-display text-2xl text-slate-950"
                 data-i18n="feature2Title"
               >
                 Ranked Hotels in the Matched Region
               </h3>
               <p
-                class="features-card-body text-sm leading-7 text-slate-300"
+                class="features-card-body text-sm leading-7 text-slate-700"
                 data-i18n="feature2Body"
               >
                 Once the destination is clear, Turquaway lists the strongest hotel fits for that area so the reservation can continue inside the same flow.
               </p>
             </article>
             <article
-              class="features-card group border border-white/15 bg-white/[0.04] p-7 shadow-soft backdrop-blur transition hover:-translate-y-1"
+              class="features-card group border border-lagoon-100 bg-white p-7 shadow-soft transition hover:-translate-y-1"
             >
               <div
-                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-slate-950"
+                class="features-icon mb-5 inline-flex h-12 w-12 items-center justify-center bg-lagoon-500 text-white"
               >
                 <i class="fa-solid fa-calendar-check"></i>
               </div>
               <h3
-                class="features-card-title mb-3 font-display text-2xl text-white"
+                class="features-card-title mb-3 font-display text-2xl text-slate-950"
                 data-i18n="feature3Title"
               >
                 Optional Tours and Two AI Plans
@@ -611,78 +611,78 @@
           </div>
 
           <div
-            class="features-highlight rounded-none relative mt-14 grid items-start gap-8 border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] p-6 shadow-[0_24px_64px_rgba(2,6,23,0.24)] md:grid-cols-[minmax(0,1fr)_24rem] md:p-8"
+            class="features-highlight rounded-none relative mt-14 grid items-start gap-8 border border-lagoon-100 bg-white p-6 shadow-[0_24px_64px_rgba(2,6,23,0.06)] md:grid-cols-[minmax(0,1fr)_24rem] md:p-8"
           >
-            <div class="features-highlight-content border border-white/10 bg-slate-950/35 p-6">
-              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewLabel">Preview</p>
+            <div class="features-highlight-content border border-lagoon-100 bg-lagoon-50 p-6">
+              <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700" data-i18n="previewLabel">Preview</p>
               <h3
-                class="features-highlight-title mb-5 mt-3 font-display text-3xl text-white sm:text-4xl"
+                class="features-highlight-title mb-5 mt-3 font-display text-3xl text-slate-950 sm:text-4xl"
                 data-i18n="personalizedTitle"
               >
                 What your plan already includes
               </h3>
-              <p class="mb-6 max-w-2xl text-sm leading-7 text-slate-300" data-i18n="personalizedLead">Before you commit, you already see the structure of the trip, the stay logic, and the activity layer.</p>
-              <ul class="features-list space-y-4 border-t border-white/10 pt-6">
+              <p class="mb-6 max-w-2xl text-sm leading-7 text-slate-700" data-i18n="personalizedLead">Before you commit, you already see the structure of the trip, the stay logic, and the activity layer.</p>
+              <ul class="features-list space-y-4 border-t border-lagoon-100 pt-6">
                 <li class="experience-item flex gap-3">
                   <i
-                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-500"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem1">Destination matched to your dates, budget, and activity preferences</span></li>
+                  ><span class="features-list-text text-slate-700" data-i18n="personalizedItem1">Destination matched to your dates, budget, and activity preferences</span></li>
                 <li class="experience-item flex gap-3">
                   <i
-                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-500"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem2">Hotel options ranked for the selected region before reservation</span></li>
+                  ><span class="features-list-text text-slate-700" data-i18n="personalizedItem2">Hotel options ranked for the selected region before reservation</span></li>
                 <li class="experience-item flex gap-3">
                   <i
-                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-500"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem3">Optional tours that can be added now or skipped without blocking the trip</span></li>
+                  ><span class="features-list-text text-slate-700" data-i18n="personalizedItem3">Optional tours that can be added now or skipped without blocking the trip</span></li>
                 <li class="experience-item flex gap-3">
                   <i
-                    class="fa-solid fa-check mt-1 text-xs text-lagoon-300"
+                    class="fa-solid fa-check mt-1 text-xs text-lagoon-500"
                     aria-hidden="true"
                   ></i
-                  ><span class="features-list-text text-slate-300" data-i18n="personalizedItem4">Two AI itinerary options that turn the trip into a clear next decision</span></li>
+                  ><span class="features-list-text text-slate-700" data-i18n="personalizedItem4">Two AI itinerary options that turn the trip into a clear next decision</span></li>
               </ul>
             </div>
 
             <div class="grid gap-4">
-              <article class="border border-lagoon-500/35 bg-slate-950/82 p-5 shadow-soft">
-                <div class="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
-                  <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewOption1Label">AI Option 1</p>
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">OPTION A</span>
+              <article class="border border-lagoon-500/35 bg-white p-5 shadow-soft">
+                <div class="flex items-start justify-between gap-4 border-b border-lagoon-100 pb-4">
+                  <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700" data-i18n="previewOption1Label">AI Option 1</p>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">OPTION A</span>
                 </div>
-                <h4 class="mt-3 font-display text-2xl text-white" data-i18n="previewOption1Title">Sea-first escape</h4>
-                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewOption1Body">A coastal plan with lighter activity density, earlier hotel check-in logic, and optional sea-view tours layered after stay selection.</p>
+                <h4 class="mt-3 font-display text-2xl text-slate-950" data-i18n="previewOption1Title">Sea-first escape</h4>
+                <p class="mt-3 text-sm leading-7 text-slate-700" data-i18n="previewOption1Body">A coastal plan with lighter activity density, earlier hotel check-in logic, and optional sea-view tours layered after stay selection.</p>
               </article>
-              <article class="border border-white/15 bg-white/[0.04] p-5">
-                <div class="flex items-start justify-between gap-4 border-b border-white/10 pb-4">
-                  <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewOption2Label">AI Option 2</p>
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/45">OPTION B</span>
+              <article class="border border-lagoon-100 bg-white p-5">
+                <div class="flex items-start justify-between gap-4 border-b border-lagoon-100 pb-4">
+                  <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700" data-i18n="previewOption2Label">AI Option 2</p>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">OPTION B</span>
                 </div>
-                <h4 class="mt-3 font-display text-2xl text-white" data-i18n="previewOption2Title">Experience-heavy route</h4>
-                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewOption2Body">A denser version with more guided stops, stronger activity mix, and a route built around daily movement and partner tours.</p>
+                <h4 class="mt-3 font-display text-2xl text-slate-950" data-i18n="previewOption2Title">Experience-heavy route</h4>
+                <p class="mt-3 text-sm leading-7 text-slate-700" data-i18n="previewOption2Body">A denser version with more guided stops, stronger activity mix, and a route built around daily movement and partner tours.</p>
               </article>
-              <article class="border border-white/15 bg-white/[0.04] p-5">
-                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-300" data-i18n="previewTrustTitle">Booking logic</p>
-                <p class="mt-3 text-sm leading-7 text-slate-300" data-i18n="previewTrustBody">Hotel reservation is completed in the flow. Tours remain flexible, and local partner coordination continues around the activity day.</p>
+              <article class="border border-lagoon-100 bg-white p-5">
+                <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700" data-i18n="previewTrustTitle">Booking logic</p>
+                <p class="mt-3 text-sm leading-7 text-slate-700" data-i18n="previewTrustBody">Hotel reservation is completed in the flow. Tours remain flexible, and local partner coordination continues around the activity day.</p>
               </article>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" class="px-4 py-20 sm:px-6 lg:px-8 bg-lagoon-700/60">
-        <div class="mx-auto w-full max-w-6xl">
-          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-900" data-i18n="processLabel">Process</p>
-          <h2 class="mb-14 text-center font-display text-4xl text-white sm:text-5xl" data-i18n="howItWorksTitle">The trip flow, step by step</h2>
-          <div class="relative" data-process-carousel>
+      <section id="how-it-works" class="px-4 py-20 sm:px-6 lg:px-8 bg-white border-b border-lagoon-100">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+          <p class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-700" data-i18n="processLabel">Process</p>
+          <h2 class="mb-14 text-center font-display text-4xl text-slate-950 sm:text-5xl" data-i18n="howItWorksTitle">The trip flow, step by step</h2>
+          <div class="relative max-w-7xl mx-auto" data-process-carousel>
             <button
-              class="process-nav process-nav-prev absolute left-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/70 text-white transition hover:bg-slate-900/95 md:left-3 md:h-11 md:w-11"
+              class="process-nav process-nav-prev absolute left-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-lagoon-100 bg-white text-lagoon-500 transition hover:bg-lagoon-50 md:left-3 md:h-11 md:w-11"
               type="button"
               aria-label="Previous process card"
               data-process-prev
@@ -690,7 +690,7 @@
               <i class="fa-solid fa-chevron-left"></i>
             </button>
             <button
-              class="process-nav process-nav-next absolute right-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-white/55 bg-slate-900/70 text-white transition hover:bg-slate-900/95 md:right-3 md:h-11 md:w-11"
+              class="process-nav process-nav-next absolute right-2 top-1/2 z-[3] inline-flex h-10 w-10 -translate-y-1/2 items-center justify-center border border-lagoon-100 bg-white text-lagoon-500 transition hover:bg-lagoon-50 md:right-3 md:h-11 md:w-11"
               type="button"
               aria-label="Next process card"
               data-process-next
@@ -699,15 +699,15 @@
             </button>
 
             <div
-              class="relative overflow-hidden border border-white/15 bg-white/[0.03] py-3 h-[30rem] sm:h-[33rem]"
+              class="relative overflow-hidden border border-lagoon-100 bg-lagoon-50 py-3 h-[30rem] sm:h-[33rem]"
               data-process-viewport
             >
               <div class="relative h-full" data-process-track>
                 <article
-                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white border border-lagoon-100 shadow-soft sm:w-[74%] lg:w-[60%]"
                 >
                   <div
-                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                    class="flex h-72 w-full items-center justify-center bg-lagoon-100 text-lagoon-500"
                   >
                     <i
                       class="fa-solid fa-calendar-days text-7xl"
@@ -716,13 +716,13 @@
                   </div>
                   <div class="p-6">
                     <h3
-                      class="font-display text-4xl text-white"
+                      class="font-display text-4xl text-slate-950"
                       data-i18n="step1Title"
                     >
                       Choose dates, budget, and activities
                     </h3>
                     <p
-                      class="mt-4 text-base leading-8 text-slate-300"
+                      class="mt-4 text-base leading-8 text-slate-700"
                       data-i18n="step1Body"
                     >
                       Set travel timing, price level, and the experiences you care about.
@@ -730,10 +730,10 @@
                   </div>
                 </article>
                 <article
-                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white border border-lagoon-100 shadow-soft sm:w-[74%] lg:w-[60%]"
                 >
                   <div
-                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                    class="flex h-72 w-full items-center justify-center bg-lagoon-100 text-lagoon-500"
                   >
                     <i
                       class="fa-solid fa-map-location-dot text-7xl"
@@ -742,13 +742,13 @@
                   </div>
                   <div class="p-6">
                     <h3
-                      class="font-display text-4xl text-white"
+                      class="font-display text-4xl text-slate-950"
                       data-i18n="step2Title"
                     >
                       AI matches the destination and hotels
                     </h3>
                     <p
-                      class="mt-4 text-base leading-8 text-slate-300"
+                      class="mt-4 text-base leading-8 text-slate-700"
                       data-i18n="step2Body"
                     >
                       See the region that fits your trip and browse the strongest hotel options there.
@@ -756,10 +756,10 @@
                   </div>
                 </article>
                 <article
-                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white border border-lagoon-100 shadow-soft sm:w-[74%] lg:w-[60%]"
                 >
                   <div
-                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                    class="flex h-72 w-full items-center justify-center bg-lagoon-100 text-lagoon-500"
                   >
                     <i
                       class="fa-solid fa-suitcase-rolling text-7xl"
@@ -768,13 +768,13 @@
                   </div>
                   <div class="p-6">
                     <h3
-                      class="font-display text-4xl text-white"
+                      class="font-display text-4xl text-slate-950"
                       data-i18n="step3Title"
                     >
                       Reserve stay and add tours if you want
                     </h3>
                     <p
-                      class="mt-4 text-base leading-8 text-slate-300"
+                      class="mt-4 text-base leading-8 text-slate-700"
                       data-i18n="step3Body"
                     >
                       Hotel booking happens in the flow. Tours can be added now or skipped.
@@ -782,10 +782,10 @@
                   </div>
                 </article>
                 <article
-                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white/[0.04] sm:w-[74%] lg:w-[60%]"
+                  class="process-card absolute left-1/2 top-0 w-[82%] bg-white border border-lagoon-100 shadow-soft sm:w-[74%] lg:w-[60%]"
                 >
                   <div
-                    class="flex h-72 w-full items-center justify-center bg-slate-900/55 text-lagoon-300"
+                    class="flex h-72 w-full items-center justify-center bg-lagoon-100 text-lagoon-500"
                   >
                     <i
                       class="fa-solid fa-robot text-7xl"
@@ -794,13 +794,13 @@
                   </div>
                   <div class="p-6">
                     <h3
-                      class="font-display text-4xl text-white"
+                      class="font-display text-4xl text-slate-950"
                       data-i18n="step4Title"
                     >
                       Compare two AI plans and continue
                     </h3>
                     <p
-                      class="mt-4 text-base leading-8 text-slate-300"
+                      class="mt-4 text-base leading-8 text-slate-700"
                       data-i18n="step4Body"
                     >
                       Pick the itinerary that fits best, then continue with the matching tour plan.
@@ -814,134 +814,134 @@
               class="mt-6 flex items-center justify-center gap-2"
               data-process-dots
             ></div>
-            <p class="mt-6 text-center text-sm leading-7 text-slate-400" data-i18n="processFootnote">Tour participation is coordinated with verified local partners, and it can remain optional until the right stage of the journey.</p>
+            <p class="mt-6 text-center text-sm leading-7 text-slate-500" data-i18n="processFootnote">Tour participation is coordinated with verified local partners, and it can remain optional until the right stage of the journey.</p>
           </div>
         </div>
       </section>
 
-      <section id="testimonials" class="px-4 py-20 sm:px-6 lg:px-8 bg-lagoon-700/60">
-        <div class="mx-auto w-full max-w-6xl">
+      <section id="testimonials" class="px-4 py-20 sm:px-6 lg:px-8 bg-lagoon-50 border-b border-lagoon-100">
+        <div class="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
           <p
-            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-500"
+            class="mb-3 text-center text-xs font-semibold uppercase tracking-[0.25em] text-lagoon-700"
             data-i18n="testimonialsLabel"
           >
             Testimonials
           </p>
           <h2
-            class="text-center font-display text-4xl text-white sm:text-5xl"
+            class="text-center font-display text-4xl text-slate-950 sm:text-5xl"
             data-i18n="testimonialsTitle"
           >
             Loved by Travelers in Turkey
           </h2>
           <p
-            class="mx-auto mt-4 max-w-2xl text-center text-slate-300"
+            class="mx-auto mt-4 max-w-2xl text-center text-slate-700"
             data-i18n="testimonialsSubtitle"
           >
             Join travelers who planned and booked smarter routes with Turquaway
           </p>
 
-          <div class="mt-12 overflow-hidden border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] shadow-[0_22px_56px_rgba(2,6,23,0.18)]" data-testimonial-carousel>
+          <div class="mt-12 overflow-hidden border border-lagoon-100 bg-white shadow-[0_22px_56px_rgba(2,6,23,0.06)]" data-testimonial-carousel>
             <div
               class="flex transition-transform duration-700 ease-out"
               data-testimonial-track
             >
               <article
-                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-slate-950/52 p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 border-r border-lagoon-100 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">WEB PLAN</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">WEB PLAN</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial1Quote"
                 >
                   "I visited all 4 cities in 10 days thanks to Turquaway."
                 </p>
-                <p class="mt-4 font-semibold text-white">Ayse Kaya</p>
-                <p class="text-xs text-slate-400">Istanbul</p>
+                <p class="mt-4 font-semibold text-slate-950">Ayse Kaya</p>
+                <p class="text-xs text-slate-500">Istanbul</p>
               </article>
               <article
-                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 border-r border-lagoon-100 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">HOTEL MATCH</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">HOTEL MATCH</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial2Quote"
                 >
                   "First time in Turkey, completely overwhelmed about planning."
                 </p>
-                <p class="mt-4 font-semibold text-white">Eulogia Chaves</p>
-                <p class="text-xs text-slate-400">Spain</p>
+                <p class="mt-4 font-semibold text-slate-950">Eulogia Chaves</p>
+                <p class="text-xs text-slate-500">Spain</p>
               </article>
               <article
-                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 border-r border-lagoon-100 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">TWO AI OPTIONS</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">TWO AI OPTIONS</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial3Quote"
                 >
                   "The Kapadokya hot air balloon experience was unreal."
                 </p>
-                <p class="mt-4 font-semibold text-white">Finnley Crawford</p>
-                <p class="text-xs text-slate-400">UK</p>
+                <p class="mt-4 font-semibold text-slate-950">Finnley Crawford</p>
+                <p class="text-xs text-slate-500">UK</p>
               </article>
               <article
-                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 border-r border-lagoon-100 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">FAMILY FLOW</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">FAMILY FLOW</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial4Quote"
                 >
                   "Two weeks in Turkey with my family. Turquaway created perfect
                   itineraries."
                 </p>
-                <p class="mt-4 font-semibold text-white">Fatih Yilmaz</p>
-                <p class="text-xs text-slate-400">Ankara</p>
+                <p class="mt-4 font-semibold text-slate-950">Fatih Yilmaz</p>
+                <p class="text-xs text-slate-500">Ankara</p>
               </article>
               <article
-                class="testimonial-card w-full shrink-0 border-r border-white/10 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 border-r border-lagoon-100 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">OPTIONAL TOURS</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">OPTIONAL TOURS</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial5Quote"
                 >
                   "Solo trip to Izmir and Antalya. Best travel experience ever!"
                 </p>
-                <p class="mt-4 font-semibold text-white">Éliette Maurin</p>
-                <p class="text-xs text-slate-400">France</p>
+                <p class="mt-4 font-semibold text-slate-950">Éliette Maurin</p>
+                <p class="text-xs text-slate-500">France</p>
               </article>
               <article
-                class="testimonial-card w-full shrink-0 bg-white/[0.04] p-6 md:w-1/2 lg:w-1/3"
+                class="testimonial-card w-full shrink-0 bg-white p-6 md:w-1/2 lg:w-1/3"
               >
                 <div class="mb-4 flex items-center justify-between gap-3">
-                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-300">CLEAR DECISION</span>
+                  <span class="text-[11px] font-semibold uppercase tracking-[0.22em] text-lagoon-500">CLEAR DECISION</span>
                   <span class="text-lagoon-500">★★★★★</span>
                 </div>
                 <p
-                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-300"
+                  class="border-l border-lagoon-500/40 pl-4 text-sm leading-7 text-slate-700"
                   data-i18n="testimonial6Quote"
                 >
                   "From Istanbul's bustling streets to Kapadokya's fairy
                   chimneys - one perfect journey."
                 </p>
-                <p class="mt-4 font-semibold text-white">Shaaban Gaber</p>
-                <p class="text-xs text-slate-400">Egypt</p>
+                <p class="mt-4 font-semibold text-slate-950">Shaaban Gaber</p>
+                <p class="text-xs text-slate-500">Egypt</p>
               </article>
             </div>
           </div>
@@ -952,69 +952,71 @@
         </div>
       </section>
 
-      <section id="cta" class="pb-20">
-        <div
-          class="w-full border border-lagoon-500/30 bg-gradient-to-br from-lagoon-600 to-lagoon-700 p-8 text-slate-950 shadow-glow sm:p-12"
-        >
-          <h2
-            class="text-center font-display text-4xl sm:text-5xl"
-            data-i18n="ctaTitle"
+      <section id="cta" class="pb-20 bg-lagoon-50">
+        <div class="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-20">
+          <div
+            class="w-full border border-lagoon-100 bg-white p-8 text-slate-950 shadow-soft sm:p-12"
           >
-            Start the trip flow on the web
-          </h2>
-          <p
-            class="mx-auto mt-4 max-w-2xl text-center text-base/7"
-            data-i18n="ctaBody"
-          >
-            Tell us your dates, budget, and interests. We will return destination logic, hotel options, optional tours, and two AI plans in one sharp flow.
-          </p>
-          <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <button
-              type="button"
-              class="landing-open-plan inline-flex items-center justify-center gap-3 bg-slate-950 px-6 py-3 text-white transition hover:bg-slate-900"
-              data-i18n="heroPrimaryCta"
+            <h2
+              class="text-center font-display text-4xl sm:text-5xl"
+              data-i18n="ctaTitle"
             >
-              Build My Trip
-            </button>
-            <a
-              href="#how-it-works"
-              class="inline-flex items-center rounded-none justify-center gap-3 border border-slate-950/20 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-white/10"
-              data-i18n="heroSecondaryCta"
+              Start the trip flow on the web
+            </h2>
+            <p
+              class="mx-auto mt-4 max-w-2xl text-center text-base/7 text-slate-700"
+              data-i18n="ctaBody"
             >
-              See the Flow
-            </a>
-          </div>
-          <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <a
-              href="https://apps.apple.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center rounded-none justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900"
-              ><i class="fab fa-apple text-2xl"></i>
-              <div class="store-copy text-left">
-                <div class="text-xs text-slate-300" data-i18n="storeDownloadOn">
-                  Download on the
-                </div>
-                <div class="font-semibold" data-i18n="storeAppStore">
-                  App Store
-                </div>
-              </div></a
-            >
-            <a
-              href="https://play.google.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center rounded-none justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900"
-              ><i class="fab fa-google-play text-2xl"></i>
-              <div class="store-copy text-left">
-                <div class="text-xs text-slate-300" data-i18n="storeGetItOn">
-                  Get it on
-                </div>
-                <div class="font-semibold" data-i18n="storeGooglePlay">
-                  Play Store
-                </div>
-              </div></a
-            >
+              Tell us your dates, budget, and interests. We will return destination logic, hotel options, optional tours, and two AI plans in one sharp flow.
+            </p>
+            <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <button
+                type="button"
+                class="landing-open-plan inline-flex items-center justify-center gap-3 bg-lagoon-500 px-6 py-3 text-white transition hover:bg-lagoon-300 shadow-glow"
+                data-i18n="heroPrimaryCta"
+              >
+                Build My Trip
+              </button>
+              <a
+                href="#how-it-works"
+                class="inline-flex items-center rounded-none justify-center gap-3 border border-lagoon-100 px-6 py-3 text-sm font-semibold text-lagoon-700 transition hover:bg-lagoon-50"
+                data-i18n="heroSecondaryCta"
+              >
+                See the Flow
+              </a>
+            </div>
+            <div class="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <a
+                href="https://apps.apple.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center rounded-none justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900 shadow-glow"
+                ><i class="fab fa-apple text-2xl"></i>
+                <div class="store-copy text-left">
+                  <div class="text-xs text-slate-300" data-i18n="storeDownloadOn">
+                    Download on the
+                  </div>
+                  <div class="font-semibold" data-i18n="storeAppStore">
+                    App Store
+                  </div>
+                </div></a
+              >
+              <a
+                href="https://play.google.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center rounded-none justify-center gap-3 bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-900 shadow-glow"
+                ><i class="fab fa-google-play text-2xl"></i>
+                <div class="store-copy text-left">
+                  <div class="text-xs text-slate-300" data-i18n="storeGetItOn">
+                    Get it on
+                  </div>
+                  <div class="font-semibold" data-i18n="storeGooglePlay">
+                    Play Store
+                  </div>
+                </div></a
+              >
+            </div>
           </div>
         </div>
       </section>
@@ -1039,4 +1041,3 @@
   })();
 </script>
 {% endblock %}
-
