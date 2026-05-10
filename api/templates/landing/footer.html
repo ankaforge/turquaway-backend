@@ -1,74 +1,93 @@
 {% load static %}
 <!-- Footer -->
-<footer class="border-t border-white/10 px-4 py-10 sm:px-6 lg:px-8">
+<footer class="border-t border-slate-500/30 bg-slate-400/80 px-4 py-10 sm:px-6 lg:px-8">
   <div
-    class="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-6 md:flex-row"
+    class="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.1fr_0.9fr_0.9fr_0.9fr]"
   >
-    <div class="text-center md:text-left">
+    <div class="text-center lg:text-left">
       <img src="{% static 'landing/turquaway-logo.png' %}" alt="Turquaway" class="h-9 w-auto" />
-      <p class="mt-1 text-sm text-slate-400" data-i18n="footerCopyright">
+      <p class="mt-1 text-sm text-slate-700" data-i18n="footerCopyright">
         © 2026 Turquaway.
       </p>
+      <p class="mt-4 max-w-sm text-sm leading-6 text-slate-700">
+        AI trip planning, hotel matching, and optional tours in one sharp flow.
+      </p>
     </div>
-    <div
-      class="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-300"
-    >
-      <a
-        href="{% url 'demo-apk' %}"
-        class="transition hover:text-lagoon-300"
-        data-i18n="footerDemoApk"
-        >Demo APK</a
-      >
-      <a
-        href="/partner/login/"
-        class="transition hover:text-lagoon-300"
-        data-i18n="footerPartner"
-        >Partner</a
-      >
-      <a
-        href="{% url 'about' %}"
-        class="transition hover:text-lagoon-300"
-        data-i18n="footerCompany1"
-        >About Us</a
-      >
-      <a
-        href="{% url 'privacy' %}"
-        class="transition hover:text-lagoon-300"
-        data-i18n="footerLegal1"
-        >Privacy Policy</a
-      >
-      <a
-        href="{% url 'terms' %}"
-        class="transition hover:text-lagoon-300"
-        data-i18n="footerLegal2"
-        >Terms of Service</a
-      >
+    <div class="space-y-4 text-sm text-slate-700">
+      <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-700" data-i18n="footerContactTitle">Contact</p>
+      <div class="space-y-3">
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-700/80" data-i18n="footerContactEmailLabel">Email</p>
+          <a href="mailto:support@turquaway.com" class="mt-1 inline-block transition hover:text-teal-600">support@turquaway.com</a>
+        </div>
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-700/80" data-i18n="footerContactWhatsappLabel">WhatsApp</p>
+          <a href="https://wa.me/905442555993" target="_blank" rel="noopener noreferrer" class="mt-1 inline-block transition hover:text-teal-600">+90 544 255 59 93</a>
+        </div>
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-700/80" data-i18n="footerContactAddressLabel">Address</p>
+          <p class="mt-1 leading-6">Cevizli Mah. Zuhal Cad. A Blok No: 46, Maltepe / ISTANBUL</p>
+        </div>
+      </div>
     </div>
-    <div class="flex items-center gap-3 text-lg text-slate-300">
+
+    <div class="space-y-4 text-sm text-slate-700">
+      <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-700" data-i18n="footerQuickLinksTitle">Quick Access</p>
+      <div class="grid gap-3">
+        <a href="{% url 'landing' %}" class="transition hover:text-teal-600" data-i18n="footerQuickHome">Home</a>
+        <a href="{% url 'account' %}" class="transition hover:text-teal-600" data-i18n="footerQuickAccount">Account</a>
+        <a href="/partner/login/" class="transition hover:text-teal-600" data-i18n="footerPartner">Partner</a>
+        <a href="{% url 'demo-apk' %}" class="transition hover:text-teal-600" data-i18n="footerDemoApk">Demo APK</a>
+      </div>
+    </div>
+
+    <div class="space-y-4 text-sm text-slate-700">
+      <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-700" data-i18n="footerSocialTitle">Social</p>
+      <div class="grid gap-3">
+        <a
+          href="https://instagram.com/turquaway"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+          class="inline-flex items-center gap-3 transition hover:text-teal-600"
+        >
+          <i class="fa-brands fa-instagram text-lg"></i>
+          <span>turquaway</span>
+        </a>
       <a
-        href="https://youtube.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="YouTube"
-        class="transition hover:text-lagoon-300"
-        ><i class="fa-brands fa-youtube"></i
-      ></a>
-      <a
-        href="https://instagram.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Instagram"
-        class="transition hover:text-lagoon-300"
-        ><i class="fa-brands fa-instagram"></i
-      ></a>
-      <a
-        href="https://facebook.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Facebook"
-        class="transition hover:text-lagoon-300"
-        ><i class="fa-brands fa-facebook"></i
-      ></a>
+          href="https://facebook.com/turquaway"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+          class="inline-flex items-center gap-3 transition hover:text-teal-600"
+        >
+          <i class="fa-brands fa-facebook text-lg"></i>
+          <span>turquaway</span>
+        </a>
+      </div>
+
+      <div class="border-t border-slate-500/30 pt-4">
+        <div class="flex flex-wrap items-center gap-4 text-sm text-slate-700">
+          <a
+            href="{% url 'about' %}"
+            class="transition hover:text-teal-600"
+            data-i18n="footerCompany1"
+            >About Us</a
+          >
+          <a
+            href="{% url 'privacy' %}"
+            class="transition hover:text-teal-600"
+            data-i18n="footerLegal1"
+            >Privacy Policy</a
+          >
+          <a
+            href="{% url 'terms' %}"
+            class="transition hover:text-teal-600"
+            data-i18n="footerLegal2"
+            >Terms of Service</a
+          >
+        </div>
+      </div>
     </div>
   </div>
 </footer>
