@@ -7,23 +7,19 @@
 <main class="flex min-h-screen items-center justify-center px-4 pt-28 pb-16">
   <div class="w-full max-w-md animate-rise">
 
-    <!-- Heading -->
     <div class="mb-8 text-center">
-      <h1 class="font-display text-3xl font-bold text-white" data-i18n="authLoginHeading">Welcome Back</h1>
-      <p class="mt-2 text-slate-400 text-sm" data-i18n="authLoginSubtitle">Sign in to your Turquaway account</p>
+      <h1 class="font-display text-3xl font-bold text-slate-950" data-i18n="authLoginHeading">Welcome Back</h1>
+      <p class="mt-2 text-slate-600 text-sm" data-i18n="authLoginSubtitle">Sign in to your Turquaway account</p>
     </div>
 
-    <!-- Card -->
-    <div class="rounded-none border border-white/10 bg-slate-900/60 p-8 shadow-soft backdrop-blur-sm">
+    <div class="rounded-none border border-lagoon-100 bg-white p-8 shadow-soft backdrop-blur-sm">
 
-      <!-- Error banner -->
-      <div id="login-error" class="mb-5 hidden rounded-none border border-rose-500/40 bg-rose-500/10 px-4 py-3 text-sm text-rose-400"></div>
+      <div id="login-error" class="mb-5 hidden rounded-none border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600"></div>
 
       <form id="login-form" novalidate class="space-y-5">
 
-        <!-- Email -->
         <div>
-          <label for="login-email" class="mb-1.5 block text-sm font-medium text-slate-100" data-i18n="authEmail">Email Address</label>
+          <label for="login-email" class="mb-1.5 block text-sm font-medium text-slate-700" data-i18n="authEmail">Email Address</label>
           <input
             id="login-email"
             type="email"
@@ -31,13 +27,12 @@
             required
             data-i18n-placeholder="authEmailPlaceholder"
             placeholder="you@example.com"
-            class="w-full rounded-none border border-white/10 bg-slate-800/60 px-4 py-3 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+            class="w-full rounded-none border border-lagoon-100 bg-lagoon-50/50 px-4 py-3 text-slate-950 placeholder-slate-400 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/20"
           />
         </div>
 
-        <!-- Password -->
         <div>
-          <label for="login-password" class="mb-1.5 block text-sm font-medium text-slate-100" data-i18n="authPassword">Password</label>
+          <label for="login-password" class="mb-1.5 block text-sm font-medium text-slate-700" data-i18n="authPassword">Password</label>
           <div class="relative">
             <input
               id="login-password"
@@ -46,11 +41,11 @@
               required
               data-i18n-placeholder="authPasswordPlaceholder"
               placeholder="••••••••"
-              class="w-full rounded-none border border-white/10 bg-slate-800/60 px-4 py-3 pr-12 text-slate-100 placeholder-slate-500 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/30"
+              class="w-full rounded-none border border-lagoon-100 bg-lagoon-50/50 px-4 py-3 pr-12 text-slate-950 placeholder-slate-400 outline-none transition focus:border-lagoon-500 focus:ring-2 focus:ring-lagoon-500/20"
             />
             <button
               type="button"
-              class="absolute inset-y-0 right-4 text-slate-400 transition hover:text-lagoon-300"
+              class="absolute inset-y-0 right-4 text-slate-400 transition hover:text-lagoon-600"
               aria-label="Toggle password visibility"
               onclick="togglePw('login-password', this)"
             >
@@ -59,11 +54,10 @@
           </div>
         </div>
 
-        <!-- Submit -->
         <button
           type="submit"
           id="login-btn"
-          class="mt-1 flex w-full items-center justify-center gap-2 rounded-none bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-slate-950 shadow-glow transition hover:bg-lagoon-300 disabled:opacity-60"
+          class="mt-1 flex w-full items-center justify-center gap-2 rounded-none bg-lagoon-500 px-6 py-3.5 text-sm font-semibold text-white shadow-glow transition hover:bg-lagoon-600 disabled:opacity-60"
         >
           <span data-i18n="authLoginBtn">Sign In</span>
           <i id="login-spinner" class="fa-solid fa-circle-notch fa-spin hidden text-base"></i>
@@ -71,17 +65,15 @@
 
       </form>
 
-      <!-- Divider -->
       <div class="my-6 flex items-center gap-3">
-        <div class="h-px flex-1 bg-white/10"></div>
-        <span class="text-xs text-slate-500" data-i18n="authOrDivider">or</span>
-        <div class="h-px flex-1 bg-white/10"></div>
+        <div class="h-px flex-1 bg-lagoon-100"></div>
+        <span class="text-xs text-slate-400" data-i18n="authOrDivider">or</span>
+        <div class="h-px flex-1 bg-lagoon-100"></div>
       </div>
 
-      <!-- Link to register -->
-      <p class="text-center text-sm text-slate-200">
+      <p class="text-center text-sm text-slate-600">
         <span data-i18n="authNoAccount">Don't have an account?</span>
-        <a href="/register/" class="ml-1 font-semibold text-lagoon-300 transition hover:text-lagoon-500" data-i18n="authSignUp">Sign Up</a>
+        <a href="/register/" class="ml-1 font-semibold text-lagoon-600 transition hover:text-lagoon-700" data-i18n="authSignUp">Sign Up</a>
       </p>
 
     </div>

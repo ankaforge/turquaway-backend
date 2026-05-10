@@ -7,42 +7,42 @@
   <section class="mx-auto max-w-[1280px] space-y-8">
     <div class="flex items-center justify-between gap-4">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Account</p>
-        <h1 class="mt-3 font-display text-4xl text-slate-800 sm:text-5xl">My travel dashboard</h1>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Account</p>
+        <h1 class="mt-3 font-display text-4xl text-slate-950 sm:text-5xl">My travel dashboard</h1>
       </div>
-      <button id="account-create-plan" type="button" class="inline-flex items-center justify-center gap-2 border border-teal-400 bg-teal-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-teal-600">
+      <button id="account-create-plan" type="button" class="inline-flex items-center justify-center gap-2 bg-lagoon-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-lagoon-600">
         <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
         <span>Create Plan</span>
       </button>
     </div>
 
-    <div id="account-auth-error" class="hidden border border-orange-600 bg-orange-50 px-4 py-3 text-sm text-slate-800"></div>
+    <div id="account-auth-error" class="hidden border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600"></div>
 
     <div class="grid gap-8 xl:grid-cols-[20rem_minmax(0,1fr)_15rem] xl:items-start">
-      <section class="flex min-h-[30rem] flex-col justify-between border border-teal-400 bg-teal-500 px-7 py-8 text-white shadow-[0_24px_60px_rgba(13,148,136,0.18)]">
+      <section class="flex min-h-[30rem] flex-col justify-between border border-lagoon-100 bg-white px-7 py-8 text-slate-950 shadow-soft">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-white/75">Personal Info</p>
-          <div id="account-profile" class="mt-10 space-y-5 text-sm text-white/90">
+          <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Personal Info</p>
+          <div id="account-profile" class="mt-10 space-y-5 text-sm text-slate-700">
             <p>Loading profile...</p>
           </div>
         </div>
         <div class="space-y-3 pt-8">
-          <a href="/privacy/" class="block border border-white/35 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10">Privacy Policy</a>
-          <a href="/terms/" class="block border border-white/35 px-4 py-3 text-sm font-medium text-white transition hover:bg-white/10">Terms of Service</a>
+          <a href="/privacy/" class="block border border-lagoon-100 bg-lagoon-50 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-lagoon-100/60">Privacy Policy</a>
+          <a href="/terms/" class="block border border-lagoon-100 bg-lagoon-50 px-4 py-3 text-sm font-medium text-slate-950 transition hover:bg-lagoon-100/60">Terms of Service</a>
         </div>
       </section>
 
-      <section class="min-h-[30rem] border border-teal-400 bg-teal-500 px-7 py-8 text-slate-950 shadow-[0_24px_60px_rgba(13,148,136,0.18)]">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-950/65">Active Plan</p>
-        <div id="account-active-plan" class="mt-10 text-sm text-slate-950/80">
+      <section class="min-h-[30rem] border border-lagoon-100 bg-white px-7 py-8 text-slate-950 shadow-soft">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Active Plan</p>
+        <div id="account-active-plan" class="mt-10 text-sm text-slate-700">
           <p>Loading active plan...</p>
         </div>
       </section>
 
       <nav class="space-y-6 xl:pt-0" aria-label="Account sections">
-        <a href="{% url 'account-plans' %}" class="flex min-h-[5.5rem] items-center justify-center border border-teal-400 bg-teal-500 px-6 text-center text-sm font-medium text-slate-950 shadow-[0_18px_40px_rgba(13,148,136,0.16)] transition hover:bg-teal-400">Planlarim</a>
-        <a href="{% url 'account-hotel-reservations' %}" class="flex min-h-[5.5rem] items-center justify-center border border-teal-400 bg-teal-500 px-6 text-center text-sm font-medium text-slate-950 shadow-[0_18px_40px_rgba(13,148,136,0.16)] transition hover:bg-teal-400">Otel Rezervasyonlarim</a>
-        <a href="{% url 'account-tour-reservations' %}" class="flex min-h-[5.5rem] items-center justify-center border border-teal-400 bg-teal-500 px-6 text-center text-sm font-medium text-slate-950 shadow-[0_18px_40px_rgba(13,148,136,0.16)] transition hover:bg-teal-400">Tur Rezervasyonlarim</a>
+        <a href="{% url 'account-plans' %}" class="flex min-h-[5.5rem] items-center justify-center border border-lagoon-100 bg-white px-6 text-center text-sm font-medium text-slate-950 shadow-soft transition hover:bg-lagoon-50">Planlarim</a>
+        <a href="{% url 'account-hotel-reservations' %}" class="flex min-h-[5.5rem] items-center justify-center border border-lagoon-100 bg-white px-6 text-center text-sm font-medium text-slate-950 shadow-soft transition hover:bg-lagoon-50">Otel Rezervasyonlarim</a>
+        <a href="{% url 'account-tour-reservations' %}" class="flex min-h-[5.5rem] items-center justify-center border border-lagoon-100 bg-white px-6 text-center text-sm font-medium text-slate-950 shadow-soft transition hover:bg-lagoon-50">Tur Rezervasyonlarim</a>
       </nav>
     </div>
   </section>
@@ -87,52 +87,52 @@
     profileRoot.innerHTML = `
       <div class="space-y-4">
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-white/70">Name</p>
-          <p class="mt-1 text-base font-semibold text-white">${escapeHtml(user.full_name)}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Name</p>
+          <p class="mt-1 text-base font-semibold text-slate-950">${escapeHtml(user.full_name)}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-white/70">Email</p>
-          <p class="mt-1 text-base font-semibold text-white">${escapeHtml(user.email)}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Email</p>
+          <p class="mt-1 text-base font-semibold text-slate-950">${escapeHtml(user.email)}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-white/70">Phone</p>
-          <p class="mt-1 text-base font-semibold text-white">${escapeHtml(user.phone || '-')}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Phone</p>
+          <p class="mt-1 text-base font-semibold text-slate-950">${escapeHtml(user.phone || '-')}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-white/70">Country</p>
-          <p class="mt-1 text-base font-semibold text-white">${escapeHtml(user.country || '-')}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Country</p>
+          <p class="mt-1 text-base font-semibold text-slate-950">${escapeHtml(user.country || '-')}</p>
         </div>
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-white/70">Language</p>
-          <p class="mt-1 text-base font-semibold text-white">${escapeHtml((user.language || '').toUpperCase())}</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Language</p>
+          <p class="mt-1 text-base font-semibold text-slate-950">${escapeHtml((user.language || '').toUpperCase())}</p>
         </div>
       </div>`;
   }
 
   function renderPlan(plan) {
     if (!plan || !Array.isArray(plan.days)) {
-      activePlanRoot.innerHTML = '<p class="text-base text-slate-950/80">No active plan yet. Create a new plan to start building your itinerary.</p>';
+      activePlanRoot.innerHTML = '<p class="text-base text-slate-700">No active plan yet. Create a new plan to start building your itinerary.</p>';
       return;
     }
 
     activePlanRoot.innerHTML = `
       <div class="space-y-5">
         <div>
-          <p class="text-xs uppercase tracking-[0.18em] text-slate-950/65">Destination</p>
+          <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Destination</p>
           <h3 class="mt-2 font-display text-5xl text-slate-950">${escapeHtml(plan.city)}</h3>
-          <p class="mt-3 text-base font-medium text-slate-950/80">Plan ID: ${escapeHtml(plan.plan_id || '-')}</p>
+          <p class="mt-3 text-base font-medium text-slate-700">Plan ID: ${escapeHtml(plan.plan_id || '-')}</p>
         </div>
         <div class="space-y-4">${plan.days.map((day) => `
-          <article class="border border-slate-950/20 bg-white/10 p-5 backdrop-blur-sm">
-            <p class="text-xs uppercase tracking-[0.18em] text-slate-950/65">Day ${escapeHtml(day.day)}</p>
+          <article class="border border-lagoon-100 bg-lagoon-50 p-5">
+            <p class="text-xs uppercase tracking-[0.18em] text-lagoon-700">Day ${escapeHtml(day.day)}</p>
             <div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `
-              <div class="grid gap-2 border border-slate-950/15 bg-white/20 p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start">
+              <div class="grid gap-2 border border-lagoon-100 bg-white p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start">
                 <span class="text-sm font-semibold text-slate-950">${escapeHtml(item.time)}</span>
                 <div>
                   <p class="text-sm font-semibold text-slate-950">${escapeHtml(item.title)}</p>
-                  <p class="mt-1 text-sm text-slate-950/75">${escapeHtml(item.notes || '')}</p>
+                  <p class="mt-1 text-sm text-slate-700">${escapeHtml(item.notes || '')}</p>
                 </div>
-              </div>`).join('') || '<p class="text-slate-950/75">No day items available.</p>'}
+              </div>`).join('') || '<p class="text-slate-700">No day items available.</p>'}
             </div>
           </article>`).join('')}
         </div>
@@ -153,8 +153,8 @@
     renderPlan(currentPlan);
   }).catch(() => {
     showError('Your account data could not be loaded right now.');
-    profileRoot.innerHTML = '<p class="text-white/90">Profile information is unavailable.</p>';
-    activePlanRoot.innerHTML = '<p class="text-slate-950/80">Active plan information is unavailable.</p>';
+    profileRoot.innerHTML = '<p class="text-slate-700">Profile information is unavailable.</p>';
+    activePlanRoot.innerHTML = '<p class="text-slate-700">Active plan information is unavailable.</p>';
   });
 })();
 </script>

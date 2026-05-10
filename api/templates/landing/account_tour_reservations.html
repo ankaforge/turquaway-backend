@@ -7,43 +7,43 @@
   <section class="mx-auto max-w-[1280px] space-y-8">
     <div class="flex items-center justify-between gap-4">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Account</p>
-        <h1 class="mt-3 font-display text-4xl text-slate-800 sm:text-5xl">Tur Rezervasyonlarim</h1>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Account</p>
+        <h1 class="mt-3 font-display text-4xl text-slate-950 sm:text-5xl">Tur Rezervasyonlarim</h1>
         <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600">Satin aldigin, onay bekleyen veya tamamlanan tum tur rezervasyonlarini burada gorebilirsin.</p>
       </div>
-      <a href="{% url 'account' %}" class="inline-flex items-center justify-center gap-2 border border-orange-600 bg-white px-5 py-3 text-sm font-semibold text-slate-800 transition hover:bg-orange-50">
-        <i class="fa-solid fa-arrow-left text-sm text-teal-600"></i>
+      <a href="{% url 'account' %}" class="inline-flex items-center justify-center gap-2 border border-lagoon-100 bg-white px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-lagoon-50">
+        <i class="fa-solid fa-arrow-left text-sm text-lagoon-700"></i>
         <span>Account'a Don</span>
       </a>
     </div>
 
-    <div id="tour-auth-error" class="hidden border border-orange-600 bg-orange-50 px-4 py-3 text-sm text-slate-800"></div>
+    <div id="tour-auth-error" class="hidden border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-600"></div>
 
     <section class="grid gap-5 md:grid-cols-3">
-      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Toplam</p>
-        <p id="tour-stat-total" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
-        <p class="mt-3 text-sm text-slate-200">Tum tur rezervasyonlari.</p>
+      <article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-950 shadow-soft">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Toplam</p>
+        <p id="tour-stat-total" class="mt-4 text-4xl font-semibold text-slate-950">0</p>
+        <p class="mt-3 text-sm text-slate-700">Tum tur rezervasyonlari.</p>
       </article>
-      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Yaklasan</p>
-        <p id="tour-stat-upcoming" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
-        <p class="mt-3 text-sm text-slate-200">Tarihi henuz gelmemis rezervasyonlar.</p>
+      <article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-950 shadow-soft">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Yaklasan</p>
+        <p id="tour-stat-upcoming" class="mt-4 text-4xl font-semibold text-slate-950">0</p>
+        <p class="mt-3 text-sm text-slate-700">Tarihi henuz gelmemis rezervasyonlar.</p>
       </article>
-      <article class="border border-orange-600 bg-teal-600 px-6 py-6 text-slate-100">
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-slate-200">Tamamlanan</p>
-        <p id="tour-stat-done" class="mt-4 text-4xl font-semibold text-slate-100">0</p>
-        <p class="mt-3 text-sm text-slate-200">Tarihi gecmis tur kayitlari.</p>
+      <article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-950 shadow-soft">
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Tamamlanan</p>
+        <p id="tour-stat-done" class="mt-4 text-4xl font-semibold text-slate-950">0</p>
+        <p class="mt-3 text-sm text-slate-700">Tarihi gecmis tur kayitlari.</p>
       </article>
     </section>
 
-    <section class="space-y-6 border border-orange-600 bg-white px-6 py-6">
+    <section class="space-y-6 border border-lagoon-100 bg-white px-6 py-6 shadow-soft">
       <div>
-        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Tour Reservations</p>
-        <h2 class="mt-3 font-display text-3xl text-slate-800">Rezervasyon listesi</h2>
+        <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Tour Reservations</p>
+        <h2 class="mt-3 font-display text-3xl text-slate-950">Rezervasyon listesi</h2>
       </div>
       <div id="tour-reservations-list" class="grid gap-5 xl:grid-cols-2">
-        <article class="border border-orange-600 bg-white px-6 py-6 text-slate-700">
+        <article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-700">
           <p>Tur rezervasyonlari yukleniyor...</p>
         </article>
       </div>
@@ -99,26 +99,26 @@
 
   function renderItems(items) {
     if (!Array.isArray(items) || !items.length) {
-      listRoot.innerHTML = `<article class="border border-orange-600 bg-white px-6 py-6 text-slate-700"><p>Henuz tur rezervasyonu bulunmuyor.</p></article>`;
+      listRoot.innerHTML = `<article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-700"><p>Henuz tur rezervasyonu bulunmuyor.</p></article>`;
       return;
     }
 
     listRoot.innerHTML = items.map((item) => `
-      <article class="border border-orange-600 bg-white px-6 py-6">
+      <article class="border border-lagoon-100 bg-white px-6 py-6 shadow-soft">
         <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-teal-600">Tour</p>
-            <h3 class="mt-3 font-display text-3xl text-slate-800">${escapeHtml(item.title)}</h3>
+            <p class="text-xs font-semibold uppercase tracking-[0.24em] text-lagoon-700">Tour</p>
+            <h3 class="mt-3 font-display text-3xl text-slate-950">${escapeHtml(item.title)}</h3>
             <p class="mt-3 text-sm text-slate-600">${escapeHtml(item.city || '-')}</p>
           </div>
-          <span class="border border-orange-600 bg-orange-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-800">${escapeHtml(item.status)}</span>
+          <span class="border border-lagoon-100 bg-lagoon-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-lagoon-700">${escapeHtml(item.status)}</span>
         </div>
-        <div class="mt-6 border border-orange-600 bg-teal-600 px-4 py-4 text-slate-100">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-200">Tour Date</p>
-          <p class="mt-3 text-base font-medium text-slate-100">${escapeHtml(item.tour_date || '-')}</p>
+        <div class="mt-6 border border-lagoon-100 bg-lagoon-50 px-4 py-4 text-slate-950">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-lagoon-700">Tour Date</p>
+          <p class="mt-3 text-base font-medium text-slate-950">${escapeHtml(item.tour_date || '-')}</p>
         </div>
-        <div class="mt-6 border border-orange-600 bg-orange-50 px-4 py-4">
-          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-teal-600">Reservation ID</p>
+        <div class="mt-6 border border-lagoon-100 bg-lagoon-50 px-4 py-4">
+          <p class="text-xs font-semibold uppercase tracking-[0.22em] text-lagoon-700">Reservation ID</p>
           <p class="mt-2 break-all text-sm font-medium text-slate-700">${escapeHtml(item.reservation_id)}</p>
         </div>
       </article>
@@ -137,7 +137,7 @@
     })
     .catch(() => {
       showError('Tur rezervasyonlari su anda yuklenemiyor.');
-      listRoot.innerHTML = `<article class="border border-orange-600 bg-white px-6 py-6 text-slate-700"><p>Rezervasyon verisi gecici olarak kullanilamiyor.</p></article>`;
+      listRoot.innerHTML = `<article class="border border-lagoon-100 bg-white px-6 py-6 text-slate-700"><p>Rezervasyon verisi gecici olarak kullanilamiyor.</p></article>`;
       statTotal.textContent = '-';
       statUpcoming.textContent = '-';
       statDone.textContent = '-';
