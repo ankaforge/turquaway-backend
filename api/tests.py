@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from api.models import (
+	ActivityCategory,
 	Destination,
 	Hotel,
 	HotelReservation,
@@ -17,6 +18,42 @@ from api.models import (
 	TourSession,
 	User,
 )
+
+
+class ActivityListViewTests(APITestCase):
+	def test_activities_returns_slug_and_normalized_icon(self):
+		ActivityCategory.objects.create(
+			key='boat_tour',
+			name_tr='Tekne Turu',
+			name_en='Boat Tour',
+			name_ru='Boat Tour',
+			name_ar='Boat Tour',
+			icon='ship-wheel',
+			active=True,
+		)
+
+		response = self.client.get(reverse('activities') + '?lang=tr')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['results'][0]['slug'], 'boat_tour')
+		self.assertEqual(response.data['results'][0]['name'], 'Tekne Turu')
+		self.assertEqual(response.data['results'][0]['icon'], 'ShipWheel')
+
+	def test_activities_normalizes_custom_admin_icon_input(self):
+		ActivityCategory.objects.create(
+			key='custom_activity',
+			name_tr='Ozel Aktivite',
+			name_en='Custom Activity',
+			name_ru='Custom Activity',
+			name_ar='Custom Activity',
+			icon='not-a-real-lucide-icon',
+			active=True,
+		)
+
+		response = self.client.get(reverse('activities'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['results'][0]['icon'], 'NotARealLucideIcon')
 
 
 class ProfileModuleTests(APITestCase):

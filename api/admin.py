@@ -1,6 +1,8 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
+from api.icon_utils import normalize_activity_icon_name
 from api.models import (
 	ActivityCategory,
 	Destination,
@@ -20,6 +22,19 @@ from api.models import (
 admin.site.site_header = 'Turquaway Yonetim Paneli'
 admin.site.site_title = 'Turquaway Yonetim Paneli'
 admin.site.index_title = 'Turquaway Yonetim Paneline Hos Geldiniz'
+
+
+class ActivityCategoryAdminForm(forms.ModelForm):
+	class Meta:
+		model = ActivityCategory
+		fields = '__all__'
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['icon'].help_text = 'Lucide React Native ikon adini girin. Ornek: ShipWheel, Camera, Landmark.'
+
+	def clean_icon(self):
+		return normalize_activity_icon_name(self.cleaned_data.get('icon'))
 
 
 @admin.register(User)
@@ -83,6 +98,7 @@ class FunnelDraftAdmin(admin.ModelAdmin):
 
 @admin.register(ActivityCategory)
 class ActivityCategoryAdmin(admin.ModelAdmin):
+	form = ActivityCategoryAdminForm
 	list_display = ('id', 'key', 'name_tr', 'name_en', 'name_ru', 'name_ar', 'icon', 'active')
 	list_filter = ('active',)
 	search_fields = ('key', 'name_tr', 'name_en', 'name_ru', 'name_ar')

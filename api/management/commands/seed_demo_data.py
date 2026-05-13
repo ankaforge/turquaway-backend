@@ -90,7 +90,7 @@ class Command(BaseCommand):
                 "name_en": "Safari",
                 "name_ru": "Safari",
                 "name_ar": "Safari",
-                "icon": "binoculars",
+                "icon": "Binoculars",
             },
             {
                 "key": "diving",
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                 "name_en": "Diving",
                 "name_ru": "Diving",
                 "name_ar": "Diving",
-                "icon": "waves",
+                "icon": "Waves",
             },
             {
                 "key": "boat",
@@ -106,7 +106,7 @@ class Command(BaseCommand):
                 "name_en": "Boat",
                 "name_ru": "Boat",
                 "name_ar": "Boat",
-                "icon": "ship-wheel",
+                "icon": "ShipWheel",
             },
             {
                 "key": "culture",
@@ -114,7 +114,7 @@ class Command(BaseCommand):
                 "name_en": "Culture",
                 "name_ru": "Culture",
                 "name_ar": "Culture",
-                "icon": "landmark",
+                "icon": "Landmark",
             },
             {
                 "key": "nature",
@@ -122,7 +122,7 @@ class Command(BaseCommand):
                 "name_en": "Nature",
                 "name_ru": "Nature",
                 "name_ar": "Nature",
-                "icon": "trees",
+                "icon": "Trees",
             },
         ]
 

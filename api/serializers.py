@@ -4,6 +4,7 @@ from django.utils import timezone
 from rest_framework import serializers
 import re
 
+from api.icon_utils import normalize_activity_icon_name
 from api.models import (
     ActivityCategory,
     Destination,
@@ -197,10 +198,12 @@ class FunnelDraftSerializer(serializers.ModelSerializer):
 
 class ActivityListItemSerializer(serializers.ModelSerializer):
     name = serializers.SerializerMethodField()
+    slug = serializers.CharField(source='key', read_only=True)
+    icon = serializers.SerializerMethodField()
 
     class Meta:
         model = ActivityCategory
-        fields = ['key', 'name', 'icon', 'active']
+        fields = ['key', 'slug', 'name', 'icon', 'active']
 
     def get_name(self, obj):
         lang = self.context.get('lang', 'en')
@@ -211,6 +214,9 @@ class ActivityListItemSerializer(serializers.ModelSerializer):
         if lang == 'ar':
             return obj.name_ar
         return obj.name_en
+
+    def get_icon(self, obj):
+        return normalize_activity_icon_name(obj.icon)
 
 
 class SuggestCitiesSerializer(serializers.Serializer):
