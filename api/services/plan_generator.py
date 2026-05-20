@@ -114,7 +114,7 @@ class PlanGeneratorService:
                 deduped.append(issue)
         return deduped
 
-    def generate_plan_text(
+    def generate_plan_options(
         self,
         city: str,
         start_date: str,
@@ -128,7 +128,9 @@ class PlanGeneratorService:
         hotel_lng: float | None = None,
         selected_tours: List[Dict[str, Any]] | None = None,
         partner_tours: List[Dict[str, Any]] | None = None,
-    ) -> str:
+    ) -> List[Dict[str, Any]]:
+        hotel_block = f"Accommodation: {hotel_name}" if hotel_name else ""
+
         area_ctx = self.hotel_area_resolver.resolve(
             city=city,
             hotel_name=hotel_name,
@@ -136,24 +138,129 @@ class PlanGeneratorService:
             hotel_lng=hotel_lng,
         )
 
-        # Sadeleştirilmiş, doğal metin odaklı prompt
-        prompt = f"""
-Sen bir seyahat planlama uzmanısın. Kullanıcı için Alanya'da, {hotel_name} otelinde {start_date} - {end_date} tarihleri arasında, {budget} bütçeyle, {', '.join(activities)} odaklı, iki kişilik bir tatil planı oluşturacaksın.
+        catalog = self.experience_catalog_service.build_catalog(
+            city=city,
+            zone=area_ctx.zone,
+            budget=budget,
+            activities=activities,
+            language=language,
+            partner_tours=partner_tours,
+        )
 
-Kullanıcı istekleri:
-- Otel rezervasyonu yapılmış.
-- 4 yıldızın altında kafe ve restoran önermemelisin.
-- Otelden çok uzak turlar ve mekanlar önermemelisin.
-- Turlar için gezi turu düzenleyen şirketlerin adını da belirt.
-- Akşam 18:00 sonrası otel çevresinden çok uzaklaştırma.
-- Yöresel yeme içme, arada kahve/soğuk içecek molaları, tekne turu, Alanya civarındaki antik kentlere arkeolojik gezi, tüplü dalış isteniyor.
+        tour_block = ""
+        if selected_tours:
+            lines = ["Pre-booked tours (must be integrated into daily schedule):"]
+            for tour in selected_tours:
+                line = f"- {tour.get('title', 'Tour')}"
+                if tour.get("session_date"):
+                    line += f" on {tour['session_date']}"
+                if tour.get("start_time") and tour.get("end_time"):
+                    line += f" from {tour['start_time']} to {tour['end_time']}"
+                extras = []
+                if tour.get("includes_food"):
+                    extras.append("free meals included")
+                if tour.get("includes_transfer"):
+                    extras.append("hotel pick-up/drop-off included")
+                if extras:
+                    line += f" ({', '.join(extras)})"
+                lines.append(line)
+            tour_block = "\\n".join(lines)
 
-Planı, insan gibi, akıcı ve detaylı şekilde, gün gün başlıklarla yaz. Her gün için sabah, öğle, akşam ve mola önerilerini, mekan isimleriyle birlikte belirt. Bütçe ve zaman kısıtlarını göz önünde bulundur. Akşamları otel çevresine yakın öneriler ver. Her gün için önerdiğin mekanların kısa açıklamasını ve neden önerdiğini de ekle. Turlar ve aktiviteler için mümkünse şirket adı ve tahmini fiyat belirt. Planı tamamen doğal, akıcı metin olarak üret. JSON, tablo veya madde işareti kullanma. Sadece metin olarak yaz.
+        local_context = self.context_service.build_local_experience_context(
+            city=city,
+            hotel_name=hotel_name,
+            activities=activities,
+            language=language,
+            selected_tours=selected_tours,
+            area_zone=area_ctx.zone,
+            area_district=area_ctx.district,
+        )
+        local_context_block = json.dumps(local_context, ensure_ascii=False)
+        experience_catalog_block = catalog.get("catalog_json", "{}")
+        catalog_lists_block = self._catalog_lists_block(catalog)
 
-Kullanıcı dili: {language}
+        quality_feedback = ""
+        options: List[Dict[str, Any]] = []
+
+        for _ in range(3):
+            prompt = f"""
+You are an expert travel planner.
+Generate exactly 2 itinerary options for this trip and return valid JSON only.
+
+City: {city}
+Start date: {start_date}
+End date: {end_date}
+Budget: {budget}
+Activities: {', '.join(activities)}
+Language: {language}
+Family mode: {str(family_mode).lower()}
+{hotel_block}
+{tour_block}
+Local hotel-area context JSON: {local_context_block}
+Detected area zone: {area_ctx.zone}
+Detected district: {area_ctx.district}
+Area confidence: {area_ctx.confidence}
+Experience catalog JSON: {experience_catalog_block}
+Experience shortlist:\n{catalog_lists_block}
+{quality_feedback}
+
+Rules:
+- Return exactly 2 options.
+- Option A title must imply higher pace; Option B title must imply relaxed pace.
+- Keep all user-facing text in requested language.
+- Do not produce generic placeholders.
+- Use real venue names from shortlist/context where possible.
+- Day 1 includes check-in around 14:00; final day includes check-out around 12:00.
+- After 18:00, keep activities close to hotel area.
+- Keep route geographically coherent and avoid unnecessary zig-zag.
+- Include explicit food/coffee breaks and local dishes.
+- Restaurant/cafe notes should include rating hints like "Rating: 4.x" where possible.
+- Tour/activity notes should include source hints like "Source: Partner" or "Source: External".
+- Respect avoid_duplicates from local context.
+
+Output schema:
+{{
+  "items": [
+    {{
+      "plan_id": "string",
+      "title": "string",
+      "gemini_recommendation": "string",
+      "summary": "string",
+      "days": [
+        {{
+          "day": 1,
+          "timeline": [
+            {{"time": "09:00", "type": "activity", "title": "string", "notes": "string"}}
+          ]
+        }}
+      ],
+      "estimated_total": 12000,
+      "currency": "TRY"
+    }}
+  ]
+}}
 """.strip()
+            payload = self.client.chat_json(prompt=prompt, temperature=0.45)
+            options = payload.get("items", [])
+            if not isinstance(options, list):
+                quality_feedback = "\nQuality errors to fix in regeneration: plan items must be a JSON list.\n"
+                continue
 
-        response = self.client.chat_json(prompt=prompt, temperature=0.45)
-        # Modelin döndürdüğü metni doğrudan al
-        plan_text = response.get("text") or next(iter(response.values()), "")
-        return plan_text
+            if len(options) != 2:
+                quality_feedback = f"\nQuality errors to fix in regeneration: Must return exactly 2 plan options, got {len(options)}.\n"
+                continue
+
+            issues = self._validate_quality(options=options, city=city)
+            if not issues:
+                break
+            quality_feedback = "\nQuality errors to fix in regeneration:\n- " + "\n- ".join(issues[:8]) + "\n"
+
+        if not isinstance(options, list) or len(options) != 2:
+            raise ValueError("Plan generation failed quality gate after retries.")
+
+        return self.post_processor.enforce_plan_variation_and_balance(
+            options=options,
+            city=city,
+            activities=activities,
+            language=language,
+        )

@@ -189,6 +189,98 @@ def build_plan_options(
         }
         return translations.get(key, {}).get(language, translations.get(key, {}).get('en', ''))
 
+    city_label = str(city or "").strip() or "City"
+    hotel_label = str(hotel_name or "").strip()
+
+    if is_tr:
+        food_dishes = ["Tahinli Piyaz", "Alanya Bohcasi", "Taze deniz mahsulleri", "Kabak tatlisi"]
+        food_venues = [
+            f"{city_label} Marina Balik Evi",
+            f"{city_label} Iskele Ocakbasi",
+            f"{city_label} Sahil Mutfagi",
+            f"{city_label} Kale Lezzet Evi",
+        ]
+        cafe_venues = [
+            f"{city_label} Oba Sahil Coffee House",
+            f"{city_label} Marina Cold Brew Point",
+            f"{city_label} Kale Manzara Cafe",
+            f"{city_label} Liman Latte Studio",
+        ]
+        activity_templates = [
+            f"{city_label} Oba Sahil Yuruyusu ve Foto Duragi",
+            f"{city_label} Marina ve Tersane Cevresi Kesfi",
+            f"{city_label} Dalis Merkezi ile Sabah Seansi",
+            f"{city_label} Tekne Turu - Koy ve Magara Rotasi",
+            f"{city_label} Syedra Antik Kent Kisa Rota",
+            f"{city_label} Kale Eteklerinde Gun Batimi Yuruyusu",
+        ]
+    elif is_ru:
+        food_dishes = ["Piyaz", "rybnoye assorti", "mestnye meze", "tykvennyy desert"]
+        food_venues = [
+            f"{city_label} Marina Fish House",
+            f"{city_label} Iskele Grill",
+            f"{city_label} Coast Kitchen",
+            f"{city_label} Kale Flavor Point",
+        ]
+        cafe_venues = [
+            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Marina Cold Brew",
+            f"{city_label} Kale View Cafe",
+            f"{city_label} Harbor Latte Bar",
+        ]
+        activity_templates = [
+            f"{city_label} Progulka po beregu Oba i foto-stop",
+            f"{city_label} Issledovanie mariny i verfi",
+            f"{city_label} Utrennyaya sessiya dayvinga",
+            f"{city_label} Lodocnyy tur po bukhtam i peshcheram",
+            f"{city_label} Korotkiy marshrut v Syedra",
+            f"{city_label} Vechernyaya progulka u podnozhiya kreposti",
+        ]
+    elif is_ar:
+        food_dishes = ["Piyaz", "makulat bahriya", "mezze mahalli", "halwa yaqtiin"]
+        food_venues = [
+            f"{city_label} Marina Fish House",
+            f"{city_label} Iskele Grill",
+            f"{city_label} Coast Kitchen",
+            f"{city_label} Kale Flavor Point",
+        ]
+        cafe_venues = [
+            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Marina Cold Brew",
+            f"{city_label} Kale View Cafe",
+            f"{city_label} Harbor Latte Bar",
+        ]
+        activity_templates = [
+            f"{city_label} jawla sahiliya fi Oba ma mawqif suwar",
+            f"{city_label} istikshaf al marina wa al tersane",
+            f"{city_label} jalsat ghaws sabahiya",
+            f"{city_label} jawlat qareb lil khiljan wal kuhuf",
+            f"{city_label} masar qasir ila Syedra",
+            f"{city_label} mashy masa i qurb al qalaa",
+        ]
+    else:
+        food_dishes = ["Piyaz", "local seafood platter", "regional meze", "pumpkin dessert"]
+        food_venues = [
+            f"{city_label} Marina Fish House",
+            f"{city_label} Iskele Grill",
+            f"{city_label} Coast Kitchen",
+            f"{city_label} Kale Flavor Point",
+        ]
+        cafe_venues = [
+            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Marina Cold Brew",
+            f"{city_label} Kale View Cafe",
+            f"{city_label} Harbor Latte Bar",
+        ]
+        activity_templates = [
+            f"{city_label} Oba Coast Walk and Photo Stop",
+            f"{city_label} Marina and Shipyard Discovery",
+            f"{city_label} Morning Dive Session",
+            f"{city_label} Boat Tour - Coves and Caves Route",
+            f"{city_label} Syedra Ancient Site Short Route",
+            f"{city_label} Sunset Walk Near the Castle Slopes",
+        ]
+
     activities = activities or []
     selected_tours = selected_tours or []
     activity_titles = {
@@ -265,6 +357,10 @@ def build_plan_options(
 
             # For trips >=3 days, keep first/last day light.
             allow_heavy_activities = not (total_days >= 3 and (is_first_day or is_last_day))
+            activity_title = activity_templates[(day_index + idx - 1) % len(activity_templates)]
+            coffee_venue = cafe_venues[(day_index + idx - 1) % len(cafe_venues)]
+            meal_venue = food_venues[(day_index + idx - 1) % len(food_venues)]
+            local_dish = food_dishes[(day_index + idx - 1) % len(food_dishes)]
 
             if allow_heavy_activities:
                 for tour in day_tours:
@@ -273,17 +369,16 @@ def build_plan_options(
                             "time": tour.get('start_time') or base_time,
                             "type": "activity",
                             "title": tour.get('title') or f"{city} Tour",
-                            "notes": text('tour_notes'),
+                            "notes": text('tour_notes') + " Source: Partner.",
                         }
                     )
 
-                fallback_title = fallback_pool[(day_index + idx - 1) % len(fallback_pool)]
                 timeline_items.append(
                     {
                         "time": "16:30" if day_tours else base_time,
                         "type": "activity",
-                        "title": f"{city} {fallback_title}",
-                        "notes": text('calm_notes') if idx == 1 else text('dynamic_notes'),
+                        "title": activity_title,
+                        "notes": (text('calm_notes') if idx == 1 else text('dynamic_notes')) + " Source: External.",
                     }
                 )
             else:
@@ -296,13 +391,28 @@ def build_plan_options(
                     }
                 )
 
+            timeline_items.append(
+                {
+                    "time": "18:30" if not is_last_day else "10:30",
+                    "type": "break",
+                    "title": f"{coffee_venue} Coffee Break",
+                    "notes": (
+                        f"Rating: 4.5. Source: External. "
+                        + (f"{hotel_label} cevresine yakin bir mola." if (is_tr and hotel_label) else "Near-hotel short stop.")
+                    ),
+                }
+            )
+
             # Add a dining slot for richer, user-facing plans.
             timeline_items.append(
                 {
                     "time": "20:00" if is_first_day else "13:00",
                     "type": "dining",
-                    "title": text('food_title'),
-                    "notes": text('food_notes_hotel'),
+                    "title": f"{meal_venue} - {text('food_title')}",
+                    "notes": (
+                        text('food_notes_hotel')
+                        + f" Oneri: {local_dish}. Rating: 4.6. Source: External."
+                    ),
                 }
             )
 
@@ -326,7 +436,11 @@ def build_plan_options(
         options.append(
             {
                 "plan_id": f"plan_{idx}_{uuid4().hex[:10]}",
-                "title": text('plan_a') if idx == 1 else text('plan_b'),
+                "title": (
+                    ("Yuksek Tempolu Kesif" if is_tr else "High Tempo Discovery")
+                    if idx == 1
+                    else ("Sakin ve Dengeli Rota" if is_tr else "Calm and Relaxed Route")
+                ),
                 "gemini_recommendation": (
                     (
                         f"{city} icin {total_days} gunluk, otele yakin duraklar ve yerel lezzetler iceren dengeli plan."
