@@ -1176,11 +1176,32 @@ class PlanGenerateOptionsView(APIView):
 
         # Resolve hotel name for Gemini context
         hotel_name = ''
+        hotel_lat = None
+        hotel_lng = None
         hotel_reservation_id = payload.get("hotel_reservation_id")
         if hotel_reservation_id:
             hotel_res = HotelReservation.objects.filter(uuid=hotel_reservation_id).select_related('hotel').first()
             if hotel_res:
                 hotel_name = hotel_res.hotel.name
+                hotel_lat = hotel_res.hotel.lat
+                hotel_lng = hotel_res.hotel.lng
+
+        # Candidate partner tours for requested city/activity scope.
+        candidate_partner_tours = []
+        partner_qs = Tour.objects.filter(destination__name__iexact=payload["city"], is_approved=True)
+        activity_keys = payload.get("activities") or []
+        if activity_keys:
+            partner_qs = partner_qs.filter(categories__key__in=activity_keys).distinct()
+        for partner_tour in partner_qs.select_related('destination').order_by('title')[:40]:
+            primary_category = partner_tour.categories.values_list('key', flat=True).first() or 'general'
+            candidate_partner_tours.append(
+                {
+                    'title': partner_tour.title,
+                    'category': primary_category,
+                    'area': partner_tour.destination.name if partner_tour.destination else payload["city"],
+                    'price_level': payload.get("budget_type", "economy"),
+                }
+            )
 
         # Resolve selected tour details with sessions within travel dates for Gemini context
         selected_tours_detail = []
@@ -1212,7 +1233,10 @@ class PlanGenerateOptionsView(APIView):
                 language=normalize_lang(payload.get("language")),
                 family_mode=payload.get("family_mode", False),
                 hotel_name=hotel_name,
+                hotel_lat=hotel_lat,
+                hotel_lng=hotel_lng,
                 selected_tours=selected_tours_detail,
+                partner_tours=candidate_partner_tours,
             )
         except Exception as e:
             print(f"CRITICAL GEMINI ERROR: {e}")
