@@ -1,4 +1,5 @@
 import json
+import re
 from typing import Any, Dict, List
 
 from api.services.openai_client import OpenAIJsonClient
@@ -15,6 +16,103 @@ class PlanGeneratorService:
         self.post_processor = post_processor
         self.hotel_area_resolver = HotelAreaResolver()
         self.experience_catalog_service = ExperienceCatalogService(client)
+
+    def _catalog_lists_block(self, catalog: Dict[str, Any]) -> str:
+        external = catalog.get("external") or {}
+        partner = catalog.get("partner_tours") or []
+
+        def fmt(items: List[Dict[str, Any]], key: str = "name", limit: int = 8) -> str:
+            lines: List[str] = []
+            for item in items[:limit]:
+                if not isinstance(item, dict):
+                    continue
+                value = str(item.get(key) or "").strip()
+                area = str(item.get("area") or "").strip()
+                rating = str(item.get("rating") or "").strip()
+                price_hint = str(item.get("price_hint") or "").strip()
+                transfer_hint = str(item.get("transfer_hint") or "").strip()
+                extras = ", ".join([x for x in [area, rating, price_hint, transfer_hint] if x])
+                if value:
+                    lines.append(f"- {value}" + (f" ({extras})" if extras else ""))
+            return "\\n".join(lines) if lines else "- none"
+
+        return (
+            "Partner Tours:\n"
+            + fmt(partner, key="title")
+            + "\n\nRestaurants 4+ :\n"
+            + fmt(external.get("restaurants_4plus") or [])
+            + "\n\nCafes/Bistros 4+ :\n"
+            + fmt(external.get("cafes_bistros_4plus") or [])
+            + "\n\nYacht Tours:\n"
+            + fmt(external.get("yacht_tours") or [])
+            + "\n\nDiving Tours:\n"
+            + fmt(external.get("diving_tours") or [])
+            + "\n\nArchaeology Day Trips:\n"
+            + fmt(external.get("archaeology_day_trips") or [])
+            + "\n\nCalm Beach Coves:\n"
+            + fmt(external.get("calm_beach_coves") or [])
+        )
+
+    def _is_generic_title(self, title: str, city: str) -> bool:
+        t = (title or "").strip().lower()
+        c = (city or "").strip().lower()
+        generic_patterns = [
+            r"^day\s*\d+\s*activity",
+            r"^activity\s*\d+",
+            r"kesif\s*rotasi",
+            r"serbest\s*zaman",
+            r"yerel\s*lezzet\s*duragi",
+            r"local\s*food\s*stop",
+            r"archaeology$",
+            r"diving$",
+        ]
+        if any(re.search(p, t) for p in generic_patterns):
+            return True
+        if c and t in {c, f"{c} archaeology", f"{c} diving", f"{c} local food stop"}:
+            return True
+        return len(t.split()) < 2
+
+    def _validate_quality(self, options: List[Dict[str, Any]], city: str) -> List[str]:
+        issues: List[str] = []
+        titles: List[str] = []
+        notes_blob: List[str] = []
+
+        for option in options:
+            days = option.get("days") or []
+            if not isinstance(days, list) or not days:
+                issues.append("days list is empty")
+                continue
+            for day in days:
+                timeline = (day or {}).get("timeline") or []
+                if len(timeline) < 3:
+                    issues.append("a day has fewer than 3 timeline items")
+                for item in timeline:
+                    if not isinstance(item, dict):
+                        issues.append("timeline item is not an object")
+                        continue
+                    title = str(item.get("title") or "").strip()
+                    notes = str(item.get("notes") or "").strip()
+                    titles.append(title)
+                    notes_blob.append(notes)
+                    if self._is_generic_title(title, city):
+                        issues.append(f"generic title detected: {title}")
+
+        non_empty_titles = [t for t in titles if t]
+        unique_ratio = (len(set(non_empty_titles)) / len(non_empty_titles)) if non_empty_titles else 0.0
+        if unique_ratio < 0.6:
+            issues.append("too many repeated titles across itinerary")
+
+        joined_notes = " ".join(notes_blob).lower()
+        if not re.search(r"source\s*:\s*(partner|external)", joined_notes):
+            issues.append("missing Source: Partner/External annotation in notes")
+        if not re.search(r"rating\s*[:]?\s*4", joined_notes):
+            issues.append("missing 4+ rating signals in notes for food/cafe suggestions")
+
+        deduped: List[str] = []
+        for issue in issues:
+            if issue not in deduped:
+                deduped.append(issue)
+        return deduped
 
     def generate_plan_options(
         self,
@@ -77,8 +175,13 @@ class PlanGeneratorService:
         )
         local_context_block = json.dumps(local_context, ensure_ascii=False)
         experience_catalog_block = catalog.get("catalog_json", "{}")
+        catalog_lists_block = self._catalog_lists_block(catalog)
 
-        prompt = f"""
+        quality_feedback = ""
+        options: List[Dict[str, Any]] = []
+
+        for _ in range(3):
+            prompt = f"""
 You are an expert travel planner.
 Generate exactly 2 plan options for this trip.
 
@@ -96,6 +199,8 @@ Detected area zone: {area_ctx.zone}
 Detected district: {area_ctx.district}
 Area confidence: {area_ctx.confidence}
 Experience catalog JSON: {experience_catalog_block}
+Experience shortlist:\n{catalog_lists_block}
+{quality_feedback}
 
 Rules:
 - Return exactly 2 options.
@@ -115,8 +220,12 @@ Rules:
 - Balance explore + food + coffee/tea break + rest windows. Do not chain only back-to-back activities.
 - Include explicit meal and break entries (coffee/tea, lunch, and rest).
 - For each meal, include a specific venue name when possible.
+- Dining and cafe entries must include "Rating: 4.x" in notes where possible.
+- Each tour/experience item notes must include "Source: Partner" or "Source: External".
+- Avoid repeated titles across days. Prefer unique venue names and varied route composition.
 - Mention at least one local dish per day within meal entries.
 - timeline.title must be real user-facing activity names for {city}.
+- timeline.title must include explicit place/venue names from Experience shortlist where possible.
 - Never use placeholders like "Kesif Rotasi 1", "Day 1 Activity", or "Activity 1".
 - Use the local hotel-area context.
 - You must stay within detected area zone: {area_ctx.zone} unless explicitly marked as a day-trip.
@@ -169,14 +278,23 @@ Return strict JSON object:
   ]
 }}
 """.strip()
+            payload = self.client.chat_json(prompt=prompt, temperature=0.45)
+            options = payload.get("items", [])
+            if not isinstance(options, list):
+                quality_feedback = "\nQuality errors to fix in regeneration: plan items must be a JSON list.\n"
+                continue
 
-        payload = self.client.chat_json(prompt=prompt, temperature=0.6)
-        options = payload.get("items", [])
-        if not isinstance(options, list):
-            raise ValueError("Plan options payload is not a list.")
+            if len(options) != 2:
+                quality_feedback = f"\nQuality errors to fix in regeneration: Must return exactly 2 plan options, got {len(options)}.\n"
+                continue
 
-        if len(options) != 2:
-            raise ValueError(f"Must return exactly 2 plan options, got {len(options)}.")
+            issues = self._validate_quality(options=options, city=city)
+            if not issues:
+                break
+            quality_feedback = "\nQuality errors to fix in regeneration:\n- " + "\n- ".join(issues[:8]) + "\n"
+
+        if not isinstance(options, list) or len(options) != 2:
+            raise ValueError("Plan generation failed quality gate after retries.")
 
         return self.post_processor.enforce_plan_variation_and_balance(
             options=options,
