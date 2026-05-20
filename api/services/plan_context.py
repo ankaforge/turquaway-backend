@@ -91,6 +91,43 @@ class PlanContextService:
         }
         return texts.get(code, texts["en"]).get(key, texts["en"].get(key, ""))
 
+    def _normalize_text(self, value: Any) -> str:
+        return str(value or "").strip()
+
+    def _dedupe_dict_items(self, items: List[Dict[str, Any]], key: str, limit: int) -> List[Dict[str, Any]]:
+        seen: set[str] = set()
+        cleaned: List[Dict[str, Any]] = []
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            value = self._normalize_text(item.get(key))
+            if not value:
+                continue
+            normalized = value.lower()
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            cleaned.append(item)
+            if len(cleaned) >= limit:
+                break
+        return cleaned
+
+    def _dedupe_text_items(self, items: List[Any], limit: int) -> List[str]:
+        seen: set[str] = set()
+        cleaned: List[str] = []
+        for item in items:
+            value = self._normalize_text(item)
+            if not value:
+                continue
+            normalized = value.lower()
+            if normalized in seen:
+                continue
+            seen.add(normalized)
+            cleaned.append(value)
+            if len(cleaned) >= limit:
+                break
+        return cleaned
+
     def build_local_experience_context(
         self,
         city: str,
@@ -98,8 +135,12 @@ class PlanContextService:
         activities: List[str],
         language: str = "en",
         selected_tours: List[Dict[str, Any]] | None = None,
+        area_zone: str = "",
+        area_district: str = "",
     ) -> Dict[str, Any]:
-        if not str(hotel_name or "").strip():
+        has_hotel = bool(self._normalize_text(hotel_name))
+        has_area_hint = bool(self._normalize_text(area_zone) or self._normalize_text(area_district))
+        if not has_hotel and not has_area_hint:
             return {
                 "hotel_area": "",
                 "must_try_foods": [],
@@ -127,6 +168,8 @@ Use general knowledge and provide practical, itinerary-friendly recommendations.
 
 City: {city}
 Hotel name: {hotel_name}
+Detected zone hint: {area_zone}
+Detected district hint: {area_district}
 Preferred activities: {', '.join(activities)}
 Response language: {language}
 Already booked tours or reserved experiences: {json.dumps(tour_lines, ensure_ascii=False)}
@@ -140,6 +183,9 @@ Requirements:
 - Avoid duplicates with already booked tours and avoid closely overlapping recommendations.
 - If a booked tour likely already covers ruins, an ancient city, a boat trip, a museum block, or a canyon, do not recommend the same attraction again.
 - Prefer human-friendly, itinerary-usable wording.
+- Keep suggestions strictly around detected zone/district hints when provided.
+- If zone-level confidence is weak, return fewer items instead of broad city-wide generic suggestions.
+- Return at most 3 must_try_foods, 4 nearby_places, and 3 photo_spots.
 
 Return strict JSON object:
 {{
@@ -158,21 +204,19 @@ Return strict JSON object:
 """.strip()
 
         payload = self.client.chat_json(prompt=prompt, temperature=0.3)
+        hotel_area = self._normalize_text(payload.get("hotel_area"))
+        if not hotel_area:
+            hotel_area = self._normalize_text(area_district) or self._normalize_text(area_zone)
+
+        must_try_foods = self._dedupe_dict_items(payload.get("must_try_foods") or [], key="dish", limit=3)
+        nearby_places = self._dedupe_dict_items(payload.get("nearby_places") or [], key="name", limit=4)
+        photo_spots = self._dedupe_dict_items(payload.get("photo_spots") or [], key="name", limit=3)
+        avoid_duplicates = self._dedupe_text_items(payload.get("avoid_duplicates") or [], limit=10)
+
         return {
-            "hotel_area": str(payload.get("hotel_area") or "").strip(),
-            "must_try_foods": [
-                item for item in (payload.get("must_try_foods") or [])
-                if isinstance(item, dict) and str(item.get("dish") or "").strip()
-            ][:6],
-            "nearby_places": [
-                item for item in (payload.get("nearby_places") or [])
-                if isinstance(item, dict) and str(item.get("name") or "").strip()
-            ][:8],
-            "photo_spots": [
-                item for item in (payload.get("photo_spots") or [])
-                if isinstance(item, dict) and str(item.get("name") or "").strip()
-            ][:6],
-            "avoid_duplicates": [
-                str(item).strip() for item in (payload.get("avoid_duplicates") or []) if str(item).strip()
-            ][:10],
+            "hotel_area": hotel_area,
+            "must_try_foods": must_try_foods,
+            "nearby_places": nearby_places,
+            "photo_spots": photo_spots,
+            "avoid_duplicates": avoid_duplicates,
         }
