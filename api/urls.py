@@ -49,6 +49,7 @@ urlpatterns = [
     path('tour-reservations/', TourReservationCreateView.as_view(), name='tour-reservation-create'),
     path('plans/', PlanListView.as_view(), name='plans-list'),
     path('plans/generate-options/', PlanGenerateOptionsView.as_view(), name='plans-generate-options'),
+    path('ai/plans/generate/', PlanGenerateOptionsView.as_view(), name='plans-generate-legacy'),
     path('plans/confirm/', PlanConfirmView.as_view(), name='plans-confirm'),
     path('plans/current/', PlanCurrentView.as_view(), name='plans-current'),
     path('plans/restart/', PlanRestartView.as_view(), name='plans-restart'),

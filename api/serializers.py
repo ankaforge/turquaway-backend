@@ -289,7 +289,7 @@ class PlanGenerateOptionsSerializer(serializers.Serializer):
     children = serializers.IntegerField(min_value=0)
     budget_type = serializers.ChoiceField(choices=['luxury', 'economy', 'cheap'])
     activities = serializers.ListField(child=serializers.CharField(), allow_empty=False)
-    hotel_reservation_id = serializers.UUIDField()
+    hotel_reservation_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     selected_tour_ids = serializers.ListField(child=serializers.UUIDField(), required=False, default=list)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
     family_mode = serializers.BooleanField()

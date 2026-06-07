@@ -1,4 +1,5 @@
 from datetime import date as date_type, timedelta
+from typing import Any
 from uuid import uuid4
 
 from django.contrib.auth import authenticate
@@ -471,6 +472,42 @@ def build_plan_options(
             }
         )
     return options
+
+
+def _is_valid_timeline_item(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    required_keys = ["time", "type", "title", "notes"]
+    return all(bool(str(item.get(key, "")).strip()) for key in required_keys)
+
+
+def _is_valid_day_item(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    if "day" not in item or not isinstance(item.get("timeline"), list):
+        return False
+    return all(_is_valid_timeline_item(timeline_item) for timeline_item in item["timeline"])
+
+
+def _is_valid_plan_option(item: Any) -> bool:
+    if not isinstance(item, dict):
+        return False
+    required_keys = ["plan_id", "title", "estimated_total", "currency", "days"]
+    if not all(key in item for key in required_keys):
+        return False
+    if not str(item.get("plan_id", "")).strip() or not str(item.get("title", "")).strip():
+        return False
+    if "summary" not in item and "description" not in item:
+        return False
+    if not isinstance(item.get("days"), list):
+        return False
+    return all(_is_valid_day_item(day_item) for day_item in item["days"])
+
+
+def _is_valid_options_payload(options: Any) -> bool:
+    if not isinstance(options, list) or not options:
+        return False
+    return all(_is_valid_plan_option(option) for option in options)
 
 
 class RegisterView(APIView):
@@ -1294,11 +1331,22 @@ class PlanGenerateOptionsView(APIView):
         hotel_lng = None
         hotel_reservation_id = payload.get("hotel_reservation_id")
         if hotel_reservation_id:
-            hotel_res = HotelReservation.objects.filter(uuid=hotel_reservation_id).select_related('hotel').first()
-            if hotel_res:
-                hotel_name = hotel_res.hotel.name
-                hotel_lat = hotel_res.hotel.lat
-                hotel_lng = hotel_res.hotel.lng
+            hotel_res = (
+                HotelReservation.objects
+                .filter(uuid=hotel_reservation_id, user=request.user)
+                .select_related('hotel')
+                .first()
+            )
+            if not hotel_res:
+                return error_response(
+                    code="not_found",
+                    detail="hotel_reservation_id not found or does not belong to you.",
+                    fields={"hotel_reservation_id": ["Invalid value."]},
+                    status_code=status.HTTP_404_NOT_FOUND,
+                )
+            hotel_name = hotel_res.hotel.name
+            hotel_lat = hotel_res.hotel.lat
+            hotel_lng = hotel_res.hotel.lng
 
         # Candidate partner tours for requested city/activity scope.
         candidate_partner_tours = []
@@ -1352,6 +1400,8 @@ class PlanGenerateOptionsView(APIView):
                 selected_tours=selected_tours_detail,
                 partner_tours=candidate_partner_tours,
             )
+            if not _is_valid_options_payload(options):
+                raise ValueError("Invalid or empty options payload from AI provider.")
         except Exception as e:
             print(f"CRITICAL GEMINI ERROR: {e}")
             options = build_plan_options(
@@ -1376,7 +1426,7 @@ class PlanGenerateOptionsView(APIView):
                 "children": payload["children"],
                 "budget_type": payload["budget_type"],
                 "activities": payload["activities"],
-                "hotel_reservation_id": str(payload["hotel_reservation_id"]),
+                "hotel_reservation_id": str(hotel_reservation_id) if hotel_reservation_id else None,
                 "selected_tour_ids": [str(x) for x in payload.get("selected_tour_ids", [])],
                 "language": payload["language"],
                 "family_mode": payload["family_mode"],

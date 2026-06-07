@@ -1,4 +1,5 @@
 from datetime import timedelta
+from unittest.mock import patch
 
 from django.urls import reverse
 from django.utils import timezone
@@ -390,6 +391,122 @@ class ProfileModuleTests(APITestCase):
 		self.assertEqual(upcoming_response.data['results'][0]['city'], 'Mugla')
 		self.assertEqual(past_response.data['count'], 1)
 		self.assertEqual(past_response.data['results'][0]['city'], 'Istanbul')
+
+
+class PlanContractTests(APITestCase):
+	def setUp(self):
+		self.user = User.objects.create_user(
+			email='plan-user@example.com',
+			password='StrongPass123!',
+			full_name='Plan User',
+			phone='+905551117777',
+			country='TR',
+			language='en',
+		)
+
+		refresh = RefreshToken.for_user(self.user)
+		self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {str(refresh.access_token)}')
+
+		self.destination = Destination.objects.create(name='Antalya', active=True)
+
+	def _payload(self):
+		return {
+			'city': 'Antalya',
+			'start_date': (timezone.localdate() + timedelta(days=2)).isoformat(),
+			'end_date': (timezone.localdate() + timedelta(days=4)).isoformat(),
+			'adults': 2,
+			'children': 0,
+			'budget_type': 'economy',
+			'activities': ['culture', 'food'],
+			'selected_tour_ids': [],
+			'language': 'en',
+			'family_mode': False,
+		}
+
+	def test_generate_options_accepts_missing_hotel_reservation_id(self):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertIsInstance(response.data.get('options'), list)
+		self.assertGreater(len(response.data['options']), 0)
+		first_option = response.data['options'][0]
+		self.assertIn('plan_id', first_option)
+		self.assertIn('title', first_option)
+		self.assertTrue('summary' in first_option or 'description' in first_option)
+		self.assertIn('estimated_total', first_option)
+		self.assertIn('currency', first_option)
+		self.assertIsInstance(first_option.get('days'), list)
+
+		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
+		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
+
+	def test_generate_options_activities_empty_returns_field_error(self):
+		payload = self._payload()
+		payload['activities'] = []
+
+		response = self.client.post(reverse('plans-generate-options'), payload, format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertEqual(response.data['code'], 'validation_error')
+		self.assertIn('activities', response.data['fields'])
+
+	def test_generate_options_invalid_date_format_returns_field_error(self):
+		payload = self._payload()
+		payload['start_date'] = '06/07/2026'
+
+		response = self.client.post(reverse('plans-generate-options'), payload, format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertEqual(response.data['code'], 'validation_error')
+		self.assertIn('start_date', response.data['fields'])
+
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_generate_options_falls_back_when_ai_returns_empty(self, _mock_generate):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertIsInstance(response.data.get('options'), list)
+		self.assertGreater(len(response.data['options']), 0)
+		self.assertIn('days', response.data['options'][0])
+
+	def test_current_plan_returns_plan_city_and_days_timeline(self):
+		TravelPlan.objects.create(
+			user=self.user,
+			destination=self.destination,
+			source_payload={'city': 'Antalya'},
+			options_payload=[
+				{
+					'plan_id': 'contract-plan-1',
+					'title': 'Plan',
+					'summary': 'Summary',
+					'estimated_total': 1000,
+					'currency': 'TRY',
+					'days': [
+						{
+							'day': 1,
+							'timeline': [
+								{
+									'time': '09:00',
+									'type': 'activity',
+									'title': 'Old Town Walk',
+									'notes': 'Visit old town area.',
+								}
+							],
+						},
+					],
+				},
+			],
+			confirmed_plan_id='contract-plan-1',
+			status=TravelPlan.Status.ACTIVE,
+		)
+
+		response = self.client.get(reverse('plans-current'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['plan_id'], 'contract-plan-1')
+		self.assertEqual(response.data['city'], 'Antalya')
+		self.assertIsInstance(response.data['days'], list)
+		self.assertIsInstance(response.data['days'][0]['timeline'], list)
 
 
 class PartnerSessionViewTests(APITestCase):
