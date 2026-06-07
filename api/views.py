@@ -1324,6 +1324,7 @@ class PlanGenerateOptionsView(APIView):
         payload = serializer.validated_data
         start_d = payload["start_date"]
         end_d = payload["end_date"]
+        effective_language = normalize_lang(getattr(request.user, "language", None) or payload.get("language"))
 
         # Resolve hotel name for Gemini context
         hotel_name = ''
@@ -1356,12 +1357,21 @@ class PlanGenerateOptionsView(APIView):
             partner_qs = partner_qs.filter(categories__key__in=activity_keys).distinct()
         for partner_tour in partner_qs.select_related('destination').order_by('title')[:40]:
             primary_category = partner_tour.categories.values_list('key', flat=True).first() or 'general'
+            provider_phone = ''
+            provider_name = ''
+            if partner_tour.provider:
+                provider_name = partner_tour.provider.company_name
+                if getattr(partner_tour.provider, 'user_id', None):
+                    provider_phone = str(getattr(partner_tour.provider.user, 'phone', '') or '').strip()
             candidate_partner_tours.append(
                 {
                     'title': partner_tour.title,
                     'category': primary_category,
                     'area': partner_tour.destination.name if partner_tour.destination else payload["city"],
                     'price_level': payload.get("budget_type", "economy"),
+                    'provider_name': provider_name,
+                    'phone': provider_phone,
+                    'website': partner_tour.location_link or '',
                 }
             )
 
@@ -1392,7 +1402,9 @@ class PlanGenerateOptionsView(APIView):
                 end_date=end_d.isoformat(),
                 budget=payload["budget_type"],
                 activities=payload["activities"],
-                language=normalize_lang(payload.get("language")),
+                adults=payload["adults"],
+                children=payload["children"],
+                language=effective_language,
                 family_mode=payload.get("family_mode", False),
                 hotel_name=hotel_name,
                 hotel_lat=hotel_lat,
@@ -1410,7 +1422,7 @@ class PlanGenerateOptionsView(APIView):
                 payload["city"],
                 activities=payload.get("activities"),
                 selected_tours=selected_tours_detail,
-                language=normalize_lang(payload.get("language")),
+                language=effective_language,
                 hotel_name=hotel_name,
             )
 
@@ -1428,7 +1440,7 @@ class PlanGenerateOptionsView(APIView):
                 "activities": payload["activities"],
                 "hotel_reservation_id": str(hotel_reservation_id) if hotel_reservation_id else None,
                 "selected_tour_ids": [str(x) for x in payload.get("selected_tour_ids", [])],
-                "language": payload["language"],
+                "language": effective_language,
                 "family_mode": payload["family_mode"],
             },
             options_payload=options,

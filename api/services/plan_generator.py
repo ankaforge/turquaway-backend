@@ -20,6 +20,7 @@ class PlanGeneratorService:
     def _catalog_lists_block(self, catalog: Dict[str, Any]) -> str:
         external = catalog.get("external") or {}
         partner = catalog.get("partner_tours") or []
+        providers = external.get("activity_providers") or []
 
         def fmt(items: List[Dict[str, Any]], key: str = "name", limit: int = 8) -> str:
             lines: List[str] = []
@@ -31,7 +32,9 @@ class PlanGeneratorService:
                 rating = str(item.get("rating") or "").strip()
                 price_hint = str(item.get("price_hint") or "").strip()
                 transfer_hint = str(item.get("transfer_hint") or "").strip()
-                extras = ", ".join([x for x in [area, rating, price_hint, transfer_hint] if x])
+                phone = str(item.get("phone") or "").strip()
+                website = str(item.get("website") or "").strip()
+                extras = ", ".join([x for x in [area, rating, price_hint, transfer_hint, phone, website] if x])
                 if value:
                     lines.append(f"- {value}" + (f" ({extras})" if extras else ""))
             return "\\n".join(lines) if lines else "- none"
@@ -39,6 +42,8 @@ class PlanGeneratorService:
         return (
             "Partner Tours:\n"
             + fmt(partner, key="title")
+            + "\n\nActivity Providers (with contact):\n"
+            + fmt(providers, key="name")
             + "\n\nRestaurants 4+ :\n"
             + fmt(external.get("restaurants_4plus") or [])
             + "\n\nCafes/Bistros 4+ :\n"
@@ -52,6 +57,12 @@ class PlanGeneratorService:
             + "\n\nCalm Beach Coves:\n"
             + fmt(external.get("calm_beach_coves") or [])
         )
+
+    def _activity_contact_required(self, activities: List[str]) -> bool:
+        tokens = " ".join([str(a or "").strip().lower() for a in activities])
+        diving = any(x in tokens for x in ["div", "dalis", "dalış", "scuba", "snorkel"])
+        archaeology = any(x in tokens for x in ["archae", "arkeo", "ruin", "ancient", "history", "tarih"])
+        return diving or archaeology
 
     def _is_generic_title(self, title: str, city: str) -> bool:
         t = (title or "").strip().lower()
@@ -72,11 +83,26 @@ class PlanGeneratorService:
             return True
         return len(t.split()) < 2
 
-    def _validate_quality(self, options: List[Dict[str, Any]], city: str) -> List[str]:
+    def _validate_quality(
+        self,
+        options: List[Dict[str, Any]],
+        city: str,
+        activities: List[str],
+        area_zone: str = "",
+        area_district: str = "",
+    ) -> List[str]:
         issues: List[str] = []
         titles: List[str] = []
         notes_blob: List[str] = []
         city_lc = (city or "").strip().lower()
+        zone_lc = (area_zone or "").strip().lower()
+        district_lc = (area_district or "").strip().lower()
+        allowed_tokens = {city_lc}
+        for token_src in [zone_lc, district_lc]:
+            for token in re.split(r"[^a-z0-9]+", token_src):
+                token = token.strip()
+                if len(token) >= 3:
+                    allowed_tokens.add(token)
         forbidden_location_terms = [
             "oba",
             "syedra",
@@ -105,7 +131,7 @@ class PlanGeneratorService:
 
                     text_lc = f"{title} {notes}".lower()
                     for term in forbidden_location_terms:
-                        if term in text_lc and term != city_lc:
+                        if term in text_lc and term not in allowed_tokens:
                             issues.append(f"out-of-city hardcoded location detected: {term}")
                             break
 
@@ -119,6 +145,9 @@ class PlanGeneratorService:
             issues.append("missing Source: Partner/External annotation in notes")
         if not re.search(r"rating\s*[:]?\s*4", joined_notes):
             issues.append("missing 4+ rating signals in notes for food/cafe suggestions")
+        if self._activity_contact_required(activities):
+            if not re.search(r"(phone|tel|contact)\s*[:]|https?://|www\.", joined_notes):
+                issues.append("missing contact details for activity providers in notes")
 
         deduped: List[str] = []
         for issue in issues:
@@ -133,6 +162,8 @@ class PlanGeneratorService:
         end_date: str,
         budget: str,
         activities: List[str],
+        adults: int = 1,
+        children: int = 0,
         language: str = "en",
         family_mode: bool = False,
         hotel_name: str = "",
@@ -203,6 +234,8 @@ City: {city}
 Start date: {start_date}
 End date: {end_date}
 Budget: {budget}
+Adults: {adults}
+Children: {children}
 Activities: {', '.join(activities)}
 Language: {language}
 Family mode: {str(family_mode).lower()}
@@ -228,6 +261,7 @@ Rules:
 - Include explicit food/coffee breaks and local dishes.
 - Restaurant/cafe notes should include rating hints like "Rating: 4.x" where possible.
 - Tour/activity notes should include source hints like "Source: Partner" or "Source: External".
+- For diving/archaeology related activities, include contact info in notes when available (e.g., "Phone: ...", "Website: ...").
 - Respect avoid_duplicates from local context.
 
 Output schema:
@@ -262,7 +296,13 @@ Output schema:
                 quality_feedback = f"\nQuality errors to fix in regeneration: Must return exactly 2 plan options, got {len(options)}.\n"
                 continue
 
-            issues = self._validate_quality(options=options, city=city)
+            issues = self._validate_quality(
+                options=options,
+                city=city,
+                activities=activities,
+                area_zone=area_ctx.zone,
+                area_district=area_ctx.district,
+            )
             if not issues:
                 break
             quality_feedback = "\nQuality errors to fix in regeneration:\n- " + "\n- ".join(issues[:8]) + "\n"
