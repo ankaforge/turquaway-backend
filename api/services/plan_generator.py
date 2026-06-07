@@ -76,6 +76,12 @@ class PlanGeneratorService:
         issues: List[str] = []
         titles: List[str] = []
         notes_blob: List[str] = []
+        city_lc = (city or "").strip().lower()
+        forbidden_location_terms = [
+            "oba",
+            "syedra",
+            "alanya",
+        ]
 
         for option in options:
             days = option.get("days") or []
@@ -96,6 +102,12 @@ class PlanGeneratorService:
                     notes_blob.append(notes)
                     if self._is_generic_title(title, city):
                         issues.append(f"generic title detected: {title}")
+
+                    text_lc = f"{title} {notes}".lower()
+                    for term in forbidden_location_terms:
+                        if term in text_lc and term != city_lc:
+                            issues.append(f"out-of-city hardcoded location detected: {term}")
+                            break
 
         non_empty_titles = [t for t in titles if t]
         unique_ratio = (len(set(non_empty_titles)) / len(non_empty_titles)) if non_empty_titles else 0.0

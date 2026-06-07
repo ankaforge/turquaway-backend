@@ -194,92 +194,92 @@ def build_plan_options(
     hotel_label = str(hotel_name or "").strip()
 
     if is_tr:
-        food_dishes = ["Tahinli Piyaz", "Alanya Bohcasi", "Taze deniz mahsulleri", "Kabak tatlisi"]
+        food_dishes = ["Yerel meze tabagi", "Taze deniz mahsulleri", "Bolgesel izgara", "Gunun tatlisi"]
         food_venues = [
-            f"{city_label} Marina Balik Evi",
-            f"{city_label} Iskele Ocakbasi",
+            f"{city_label} Marina Lezzet Noktasi",
+            f"{city_label} Iskele Sofrasi",
             f"{city_label} Sahil Mutfagi",
-            f"{city_label} Kale Lezzet Evi",
+            f"{city_label} Merkez Lezzet Evi",
         ]
         cafe_venues = [
-            f"{city_label} Oba Sahil Coffee House",
-            f"{city_label} Marina Cold Brew Point",
-            f"{city_label} Kale Manzara Cafe",
+            f"{city_label} Sahil Kahve Noktasi",
+            f"{city_label} Marina Coffee Point",
+            f"{city_label} Manzara Cafe",
             f"{city_label} Liman Latte Studio",
         ]
         activity_templates = [
-            f"{city_label} Oba Sahil Yuruyusu ve Foto Duragi",
-            f"{city_label} Marina ve Tersane Cevresi Kesfi",
-            f"{city_label} Dalis Merkezi ile Sabah Seansi",
-            f"{city_label} Tekne Turu - Koy ve Magara Rotasi",
-            f"{city_label} Syedra Antik Kent Kisa Rota",
-            f"{city_label} Kale Eteklerinde Gun Batimi Yuruyusu",
+            f"{city_label} Sahil Yuruyusu ve Foto Duragi",
+            f"{city_label} Marina ve Liman Cevresi Kesfi",
+            f"{city_label} Sabah Acik Hava Aktivitesi",
+            f"{city_label} Koy ve Kiyı Rotasi",
+            f"{city_label} Tarihi Bolge Kisa Rota",
+            f"{city_label} Merkezde Gun Batimi Yuruyusu",
         ]
     elif is_ru:
-        food_dishes = ["Piyaz", "rybnoye assorti", "mestnye meze", "tykvennyy desert"]
+        food_dishes = ["mestnye meze", "rybnoye assorti", "regionalnyy grill", "desert dnya"]
         food_venues = [
-            f"{city_label} Marina Fish House",
-            f"{city_label} Iskele Grill",
+            f"{city_label} Marina Flavor House",
+            f"{city_label} Pier Grill",
             f"{city_label} Coast Kitchen",
-            f"{city_label} Kale Flavor Point",
+            f"{city_label} Central Taste Point",
         ]
         cafe_venues = [
-            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Coast Coffee Point",
             f"{city_label} Marina Cold Brew",
-            f"{city_label} Kale View Cafe",
+            f"{city_label} View Cafe",
             f"{city_label} Harbor Latte Bar",
         ]
         activity_templates = [
-            f"{city_label} Progulka po beregu Oba i foto-stop",
-            f"{city_label} Issledovanie mariny i verfi",
-            f"{city_label} Utrennyaya sessiya dayvinga",
-            f"{city_label} Lodocnyy tur po bukhtam i peshcheram",
-            f"{city_label} Korotkiy marshrut v Syedra",
-            f"{city_label} Vechernyaya progulka u podnozhiya kreposti",
+            f"{city_label} Beregovaya progulka i foto-stop",
+            f"{city_label} Issledovanie mariny i porta",
+            f"{city_label} Utrennyaya aktivnost na otkrytom vozdukhe",
+            f"{city_label} Marshrut po zalivam i beregu",
+            f"{city_label} Korotkiy istoricheskiy marshrut",
+            f"{city_label} Vechernyaya progulka v tsentre",
         ]
     elif is_ar:
-        food_dishes = ["Piyaz", "makulat bahriya", "mezze mahalli", "halwa yaqtiin"]
+        food_dishes = ["mezze mahalli", "makulat bahriya", "mashwiyat mahalliya", "hulwa al yawm"]
         food_venues = [
-            f"{city_label} Marina Fish House",
-            f"{city_label} Iskele Grill",
+            f"{city_label} Marina Flavor House",
+            f"{city_label} Pier Grill",
             f"{city_label} Coast Kitchen",
-            f"{city_label} Kale Flavor Point",
+            f"{city_label} Central Taste Point",
         ]
         cafe_venues = [
-            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Coast Coffee Point",
             f"{city_label} Marina Cold Brew",
-            f"{city_label} Kale View Cafe",
+            f"{city_label} View Cafe",
             f"{city_label} Harbor Latte Bar",
         ]
         activity_templates = [
-            f"{city_label} jawla sahiliya fi Oba ma mawqif suwar",
-            f"{city_label} istikshaf al marina wa al tersane",
-            f"{city_label} jalsat ghaws sabahiya",
-            f"{city_label} jawlat qareb lil khiljan wal kuhuf",
-            f"{city_label} masar qasir ila Syedra",
-            f"{city_label} mashy masa i qurb al qalaa",
+            f"{city_label} jawla ala al sahil ma mawqif suwar",
+            f"{city_label} istikshaf al marina wa al mina",
+            f"{city_label} nashat sabahi fi al talaq",
+            f"{city_label} masar ala al khiljan wa al sahil",
+            f"{city_label} masar tarikhi qasir",
+            f"{city_label} mashy masa i fi markaz al madina",
         ]
     else:
-        food_dishes = ["Piyaz", "local seafood platter", "regional meze", "pumpkin dessert"]
+        food_dishes = ["local meze platter", "local seafood platter", "regional grill", "dessert of the day"]
         food_venues = [
-            f"{city_label} Marina Fish House",
-            f"{city_label} Iskele Grill",
+            f"{city_label} Marina Flavor House",
+            f"{city_label} Pier Grill",
             f"{city_label} Coast Kitchen",
-            f"{city_label} Kale Flavor Point",
+            f"{city_label} Central Taste Point",
         ]
         cafe_venues = [
-            f"{city_label} Oba Coast Coffee",
+            f"{city_label} Coast Coffee Point",
             f"{city_label} Marina Cold Brew",
-            f"{city_label} Kale View Cafe",
+            f"{city_label} View Cafe",
             f"{city_label} Harbor Latte Bar",
         ]
         activity_templates = [
-            f"{city_label} Oba Coast Walk and Photo Stop",
-            f"{city_label} Marina and Shipyard Discovery",
-            f"{city_label} Morning Dive Session",
-            f"{city_label} Boat Tour - Coves and Caves Route",
-            f"{city_label} Syedra Ancient Site Short Route",
-            f"{city_label} Sunset Walk Near the Castle Slopes",
+            f"{city_label} Coast Walk and Photo Stop",
+            f"{city_label} Marina and Harbor Discovery",
+            f"{city_label} Morning Outdoor Session",
+            f"{city_label} Bay and Coast Route",
+            f"{city_label} Historic District Short Route",
+            f"{city_label} Sunset Walk in Central Area",
         ]
 
     activities = activities or []
