@@ -38,6 +38,35 @@ VALID_COUNTRY_CODES = {
     'VE','VN','VG','VI','WF','EH','YE','ZM','ZW',
 }
 
+def resolve_active_activity_keys(raw_values):
+    active_keys = list(ActivityCategory.objects.filter(active=True).values_list('key', flat=True))
+    key_map = {str(key).strip().lower(): key for key in active_keys}
+
+    resolved = []
+    invalid = []
+    for value in raw_values or []:
+        raw = str(value or '').strip()
+        if not raw:
+            invalid.append(raw)
+            continue
+
+        lookup = raw.lower()
+        db_key = key_map.get(lookup)
+        if not db_key:
+            invalid.append(raw)
+            continue
+
+        if db_key not in resolved:
+            resolved.append(db_key)
+
+    return resolved, invalid
+
+
+def activity_validation_message(invalid, valid_keys):
+    invalid_text = ', '.join(invalid)
+    valid_text = ', '.join(valid_keys) if valid_keys else 'none'
+    return f"Unknown activity keys: {invalid_text}. Allowed keys: {valid_text}"
+
 
 class RegisterSerializer(serializers.Serializer):
     full_name = serializers.CharField(max_length=255)
@@ -193,6 +222,15 @@ class FunnelDraftSerializer(serializers.ModelSerializer):
             )
         if attrs.get('adults', 0) < 1:
             raise serializers.ValidationError({'adults': 'adults must be at least 1.'})
+
+        requested = attrs.get('activities') or []
+        resolved, invalid = resolve_active_activity_keys(requested)
+        if invalid:
+            valid_keys = list(ActivityCategory.objects.filter(active=True).order_by('key').values_list('key', flat=True))
+            raise serializers.ValidationError(
+                {'activities': [activity_validation_message(invalid, valid_keys)]}
+            )
+        attrs['activities'] = resolved
         return attrs
 
 
@@ -234,6 +272,15 @@ class SuggestCitiesSerializer(serializers.Serializer):
             raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
         if attrs['children'] > 0 and attrs['family_mode'] is not True:
             raise serializers.ValidationError({'family_mode': 'Must be true when children > 0.'})
+
+        requested = attrs.get('activities') or []
+        resolved, invalid = resolve_active_activity_keys(requested)
+        if invalid:
+            valid_keys = list(ActivityCategory.objects.filter(active=True).order_by('key').values_list('key', flat=True))
+            raise serializers.ValidationError(
+                {'activities': [activity_validation_message(invalid, valid_keys)]}
+            )
+        attrs['activities'] = resolved
         return attrs
 
 
@@ -247,6 +294,13 @@ class HotelSearchSerializer(serializers.Serializer):
     activities = serializers.ListField(child=serializers.CharField(), required=False, default=list)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
     sort = serializers.ChoiceField(choices=['price_asc', 'price_desc', 'value_score'], default='price_asc')
+
+    def validate_activities(self, value):
+        resolved, invalid = resolve_active_activity_keys(value or [])
+        if invalid:
+            valid_keys = list(ActivityCategory.objects.filter(active=True).order_by('key').values_list('key', flat=True))
+            raise serializers.ValidationError(activity_validation_message(invalid, valid_keys))
+        return resolved
 
 
 class HotelReservationCreateSerializer(serializers.Serializer):
@@ -280,6 +334,13 @@ class TourSearchSerializer(serializers.Serializer):
     radius_km = serializers.IntegerField(min_value=1, default=30)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
 
+    def validate_activities(self, value):
+        resolved, invalid = resolve_active_activity_keys(value or [])
+        if invalid:
+            valid_keys = list(ActivityCategory.objects.filter(active=True).order_by('key').values_list('key', flat=True))
+            raise serializers.ValidationError(activity_validation_message(invalid, valid_keys))
+        return resolved
+
 
 class PlanGenerateOptionsSerializer(serializers.Serializer):
     city = serializers.CharField(max_length=120)
@@ -299,6 +360,18 @@ class PlanGenerateOptionsSerializer(serializers.Serializer):
             raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
         if attrs['children'] > 0 and attrs['family_mode'] is not True:
             raise serializers.ValidationError({'family_mode': 'Must be true when children > 0.'})
+
+        requested = attrs.get('activities') or []
+        resolved, invalid = resolve_active_activity_keys(requested)
+        if invalid:
+            valid_keys = list(ActivityCategory.objects.filter(active=True).order_by('key').values_list('key', flat=True))
+            raise serializers.ValidationError(
+                {'activities': [activity_validation_message(invalid, valid_keys)]}
+            )
+        if not resolved:
+            raise serializers.ValidationError({'activities': ['At least one valid activity is required.']})
+
+        attrs['activities'] = resolved
         return attrs
 
 

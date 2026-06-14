@@ -21,6 +21,7 @@ class PlanGeneratorService:
         external = catalog.get("external") or {}
         partner = catalog.get("partner_tours") or []
         providers = external.get("activity_providers") or []
+        activity_specific = external.get("activity_specific_options") or {}
 
         def fmt(items: List[Dict[str, Any]], key: str = "name", limit: int = 8) -> str:
             lines: List[str] = []
@@ -39,6 +40,14 @@ class PlanGeneratorService:
                     lines.append(f"- {value}" + (f" ({extras})" if extras else ""))
             return "\\n".join(lines) if lines else "- none"
 
+        dynamic_activity_blocks: List[str] = []
+        if isinstance(activity_specific, dict):
+            for activity_key, items in activity_specific.items():
+                label = str(activity_key or "").strip() or "activity"
+                dynamic_activity_blocks.append(
+                    f"\n\nActivity '{label}' options:\n" + fmt(items if isinstance(items, list) else [])
+                )
+
         return (
             "Partner Tours:\n"
             + fmt(partner, key="title")
@@ -48,21 +57,13 @@ class PlanGeneratorService:
             + fmt(external.get("restaurants_4plus") or [])
             + "\n\nCafes/Bistros 4+ :\n"
             + fmt(external.get("cafes_bistros_4plus") or [])
-            + "\n\nYacht Tours:\n"
-            + fmt(external.get("yacht_tours") or [])
-            + "\n\nDiving Tours:\n"
-            + fmt(external.get("diving_tours") or [])
-            + "\n\nArchaeology Day Trips:\n"
-            + fmt(external.get("archaeology_day_trips") or [])
             + "\n\nCalm Beach Coves:\n"
             + fmt(external.get("calm_beach_coves") or [])
+            + "".join(dynamic_activity_blocks)
         )
 
     def _activity_contact_required(self, activities: List[str]) -> bool:
-        tokens = " ".join([str(a or "").strip().lower() for a in activities])
-        diving = any(x in tokens for x in ["div", "dalis", "dalış", "scuba", "snorkel"])
-        archaeology = any(x in tokens for x in ["archae", "arkeo", "ruin", "ancient", "history", "tarih"])
-        return diving or archaeology
+        return len([str(a or "").strip() for a in activities if str(a or "").strip()]) > 0
 
     def _has_transport_time(self, text: str) -> bool:
         t = (text or "").lower()
@@ -78,12 +79,10 @@ class PlanGeneratorService:
             r"serbest\s*zaman",
             r"yerel\s*lezzet\s*duragi",
             r"local\s*food\s*stop",
-            r"archaeology$",
-            r"diving$",
         ]
         if any(re.search(p, t) for p in generic_patterns):
             return True
-        if c and t in {c, f"{c} archaeology", f"{c} diving", f"{c} local food stop"}:
+        if c and t in {c, f"{c} local food stop"}:
             return True
         return len(t.split()) < 2
 

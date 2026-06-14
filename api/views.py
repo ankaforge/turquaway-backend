@@ -319,29 +319,30 @@ def build_plan_options(
 
     activities = activities or []
     selected_tours = selected_tours or []
-    activity_titles = {
-        'swimming': {'tr': 'Otele yakin sahil yuzme molasi', 'en': 'Near-hotel coastal swim stop', 'ru': 'Kupanie na poberezhye ryadom s otelem', 'ar': 'waqfat sibaha ala al sahil qarib min al funduq'},
-        'culture': {'tr': 'Yakindaki tarihi rota yuruyusu', 'en': 'Nearby historic route walk', 'ru': 'Progulka po blizkomu istoricheskomu marshrutu', 'ar': 'jawla fi masar tarikhi qarib'},
-        'food': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
-        'food_drink': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
-        'yeme_icme': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
-        'safari': {'tr': 'Yakindaki doga ve safari rotasi', 'en': 'Nearby nature and safari route', 'ru': 'Blizhniy marshrut po prirode i safari', 'ar': 'masar tabi i wa safari qarib'},
-        'diving': {'tr': 'Yakindaki dalis deneyimi ve tekne cikisi', 'en': 'Nearby diving experience and boat departure', 'ru': 'Blizhniy dayving i vykhod na lodke', 'ar': 'tajribat ghaws qariba ma khuruj alqareb'},
-        'boat': {'tr': 'Yakindaki tekne turu kalkis noktasi', 'en': 'Nearby boat tour departure', 'ru': 'Blizhniy punkt otpravleniya lodki', 'ar': 'nuqtat intilaq jawlat qareb qariba'},
-        'nature': {'tr': 'Yakindaki doga kesif rotasi', 'en': 'Nearby nature discovery route', 'ru': 'Blizhniy marshrut dlya izucheniya prirody', 'ar': 'masar istikshaf tabi i qarib'},
-        'kultur': {'tr': 'Yakindaki tarihi rota yuruyusu', 'en': 'Nearby historic route walk', 'ru': 'Progulka po blizkomu istoricheskomu marshrutu', 'ar': 'jawla fi masar tarikhi qarib'},
-        'yuzme': {'tr': 'Otele yakin sahil yuzme molasi', 'en': 'Near-hotel coastal swim stop', 'ru': 'Kupanie na poberezhye ryadom s otelem', 'ar': 'waqfat sibaha ala al sahil qarib min al funduq'},
+    activity_records = {
+        str(item.key).strip().lower(): item
+        for item in ActivityCategory.objects.filter(active=True)
     }
+
+    def localized_activity_name(item):
+        if language == 'tr':
+            return item.name_tr
+        if language == 'ru':
+            return item.name_ru
+        if language == 'ar':
+            return item.name_ar
+        return item.name_en
 
     fallback_pool = []
     for key in activities:
         key_norm = str(key).strip().lower()
         if not key_norm:
             continue
-        if key_norm in activity_titles:
-            fallback_pool.append(activity_titles[key_norm].get(language, activity_titles[key_norm]['en']))
-        else:
-            fallback_pool.append(key_norm.replace('_', ' ').title())
+        activity_item = activity_records.get(key_norm)
+        if activity_item:
+            fallback_pool.append(localized_activity_name(activity_item))
+            continue
+        fallback_pool.append(key_norm.replace('_', ' ').title())
     if not fallback_pool:
         if is_tr:
             fallback_pool = ['Sehir Turu', 'Yerel Lezzet Deneyimi', 'Sahil Etkinligi']
