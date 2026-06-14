@@ -469,6 +469,51 @@ class PlanContractTests(APITestCase):
 		self.assertGreater(len(response.data['options']), 0)
 		self.assertIn('days', response.data['options'][0])
 
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_fallback_plan_keeps_timeline_sorted_and_avoids_fake_venue_names(self, _mock_generate):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		option = response.data['options'][0]
+		self.assertGreater(len(option['days']), 0)
+
+		for day in option['days']:
+			timeline = day['timeline']
+			times = [item['time'] for item in timeline]
+			self.assertEqual(times, sorted(times))
+
+		last_day = option['days'][-1]
+		checkout_indexes = [index for index, item in enumerate(last_day['timeline']) if item['time'] == '12:00']
+		self.assertTrue(checkout_indexes)
+		last_checkout_index = checkout_indexes[-1]
+		self.assertTrue(all(item['time'] <= '12:00' for item in last_day['timeline'][last_checkout_index:]))
+
+		serialized_titles = ' '.join(
+			item['title']
+			for day in option['days']
+			for item in day['timeline']
+		)
+		self.assertNotIn('Marina Coffee Point', serialized_titles)
+		self.assertNotIn('Liman Latte Studio', serialized_titles)
+
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_fallback_plan_includes_detailed_notes(self, _mock_generate):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		option = response.data['options'][0]
+		all_items = [item for day in option['days'] for item in day['timeline']]
+
+		detailed_items = [item for item in all_items if item['type'] in ['activity', 'break', 'dining', 'free_time']]
+		self.assertGreater(len(detailed_items), 0)
+
+		for item in detailed_items:
+			notes = item.get('notes', '')
+			self.assertTrue(('Neden:' in notes) or ('Why:' in notes))
+			self.assertTrue(('Kisa Bilgi:' in notes) or ('Quick Info:' in notes))
+			self.assertTrue(('Ulasim:' in notes) or ('Transport:' in notes))
+			self.assertIn('Source:', notes)
+
 	def test_current_plan_returns_plan_city_and_days_timeline(self):
 		TravelPlan.objects.create(
 			user=self.user,

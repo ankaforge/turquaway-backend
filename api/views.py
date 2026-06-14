@@ -89,6 +89,19 @@ def build_plan_options(
     is_ru = language == 'ru'
     is_ar = language == 'ar'
 
+    def sort_timeline_items(items):
+        def time_key(item):
+            value = str((item or {}).get('time') or '').strip()
+            parts = value.split(':')
+            if len(parts) != 2:
+                return 24 * 60
+            try:
+                return int(parts[0]) * 60 + int(parts[1])
+            except ValueError:
+                return 24 * 60
+
+        return sorted(items, key=time_key)
+
     def text(key: str) -> str:
         translations = {
             'plan_a': {
@@ -190,112 +203,134 @@ def build_plan_options(
         }
         return translations.get(key, {}).get(language, translations.get(key, {}).get('en', ''))
 
+    def detailed_note(reason: str, quick_info: str, transport_minutes: int, source: str = "External", rating: str = "") -> str:
+        if is_tr:
+            base = (
+                f"Neden: {reason}. "
+                f"Kisa Bilgi: {quick_info}. "
+                f"Ulasim: Otelden araba/taksi ile yaklasik {transport_minutes} dk. "
+                f"Source: {source}."
+            )
+            if rating:
+                return f"Rating: {rating}. {base}"
+            return base
+
+        base = (
+            f"Why: {reason}. "
+            f"Quick Info: {quick_info}. "
+            f"Transport: around {transport_minutes} min by car/taxi from hotel area. "
+            f"Source: {source}."
+        )
+        if rating:
+            return f"Rating: {rating}. {base}"
+        return base
+
     city_label = str(city or "").strip() or "City"
     hotel_label = str(hotel_name or "").strip()
 
     if is_tr:
         food_dishes = ["Yerel meze tabagi", "Taze deniz mahsulleri", "Bolgesel izgara", "Gunun tatlisi"]
         food_venues = [
-            f"{city_label} Marina Lezzet Noktasi",
-            f"{city_label} Iskele Sofrasi",
-            f"{city_label} Sahil Mutfagi",
-            f"{city_label} Merkez Lezzet Evi",
+            "Otele yakin yerel aksam yemegi",
+            "Sahil kenarinda deniz mahsulleri molasi",
+            "Merkezde sakin yerel yemek duragi",
+            "Yerel izgara ve meze molasi",
         ]
         cafe_venues = [
-            f"{city_label} Sahil Kahve Noktasi",
-            f"{city_label} Marina Coffee Point",
-            f"{city_label} Manzara Cafe",
-            f"{city_label} Liman Latte Studio",
+            "Otele yakin kahve molasi",
+            "Sahil cevresinde kahve molasi",
+            "Manzarali kisa kahve molasi",
+            "Merkezde sakin kahve molasi",
         ]
         activity_templates = [
-            f"{city_label} Sahil Yuruyusu ve Foto Duragi",
-            f"{city_label} Marina ve Liman Cevresi Kesfi",
-            f"{city_label} Sabah Acik Hava Aktivitesi",
-            f"{city_label} Koy ve Kiyı Rotasi",
-            f"{city_label} Tarihi Bolge Kisa Rota",
-            f"{city_label} Merkezde Gun Batimi Yuruyusu",
+            "Sahil yuruyusu ve fotograf molasi",
+            "Marina cevresinde kisa kesif",
+            "Sabah acik hava aktivitesi",
+            "Kiyiya yakin dinlendirici rota",
+            "Tarihi bolgeye yonelik kisa rota",
+            "Merkezde gun batimi yuruyusu",
         ]
     elif is_ru:
         food_dishes = ["mestnye meze", "rybnoye assorti", "regionalnyy grill", "desert dnya"]
         food_venues = [
-            f"{city_label} Marina Flavor House",
-            f"{city_label} Pier Grill",
-            f"{city_label} Coast Kitchen",
-            f"{city_label} Central Taste Point",
+            "Uzhin s mestnoy kukhney ryadom s otelem",
+            "Pauza na moreprodukty u poberezhya",
+            "Spokoynyy mestnyy obed v tsentre",
+            "Pauza na grill i meze",
         ]
         cafe_venues = [
-            f"{city_label} Coast Coffee Point",
-            f"{city_label} Marina Cold Brew",
-            f"{city_label} View Cafe",
-            f"{city_label} Harbor Latte Bar",
+            "Kofe-pauza ryadom s otelem",
+            "Kofe-pauza u poberezhya",
+            "Korotkaya pauza v kafe s vidom",
+            "Spokoynaya kofe-pauza v tsentre",
         ]
         activity_templates = [
-            f"{city_label} Beregovaya progulka i foto-stop",
-            f"{city_label} Issledovanie mariny i porta",
-            f"{city_label} Utrennyaya aktivnost na otkrytom vozdukhe",
-            f"{city_label} Marshrut po zalivam i beregu",
-            f"{city_label} Korotkiy istoricheskiy marshrut",
-            f"{city_label} Vechernyaya progulka v tsentre",
+            "Beregovaya progulka i foto-stop",
+            "Korotkoye issledovanie mariny",
+            "Utrennyaya aktivnost na svezhem vozdukhe",
+            "Spokoynyy marshrut ryadom s beregom",
+            "Korotkiy istoricheskiy marshrut",
+            "Vechernyaya progulka v tsentre",
         ]
     elif is_ar:
         food_dishes = ["mezze mahalli", "makulat bahriya", "mashwiyat mahalliya", "hulwa al yawm"]
         food_venues = [
-            f"{city_label} Marina Flavor House",
-            f"{city_label} Pier Grill",
-            f"{city_label} Coast Kitchen",
-            f"{city_label} Central Taste Point",
+            "wajbat mahalliya qarib min al funduq",
+            "istiraha lilmakulat albahriya ala al sahil",
+            "ghadaa mahalli hadi fi al markaz",
+            "istiraha mashwiyat wa mezze",
         ]
         cafe_venues = [
-            f"{city_label} Coast Coffee Point",
-            f"{city_label} Marina Cold Brew",
-            f"{city_label} View Cafe",
-            f"{city_label} Harbor Latte Bar",
+            "istirahat qahwa qarib min al funduq",
+            "istirahat qahwa ala al sahil",
+            "istirahat qasira fi maqha ma itlala",
+            "istirahat qahwa hadia fi al markaz",
         ]
         activity_templates = [
-            f"{city_label} jawla ala al sahil ma mawqif suwar",
-            f"{city_label} istikshaf al marina wa al mina",
-            f"{city_label} nashat sabahi fi al talaq",
-            f"{city_label} masar ala al khiljan wa al sahil",
-            f"{city_label} masar tarikhi qasir",
-            f"{city_label} mashy masa i fi markaz al madina",
+            "jawla ala al sahil ma mawqif suwar",
+            "istikshaf qasir lihawli al marina",
+            "nashat sabahi fi al talaq",
+            "masar hadi qarib min al sahil",
+            "masar tarikhi qasir",
+            "mashy masa i fi markaz al madina",
         ]
     else:
         food_dishes = ["local meze platter", "local seafood platter", "regional grill", "dessert of the day"]
         food_venues = [
-            f"{city_label} Marina Flavor House",
-            f"{city_label} Pier Grill",
-            f"{city_label} Coast Kitchen",
-            f"{city_label} Central Taste Point",
+            "Local dinner stop near the hotel",
+            "Seafood break by the coast",
+            "Relaxed local lunch in the center",
+            "Regional grill and meze stop",
         ]
         cafe_venues = [
-            f"{city_label} Coast Coffee Point",
-            f"{city_label} Marina Cold Brew",
-            f"{city_label} View Cafe",
-            f"{city_label} Harbor Latte Bar",
+            "Coffee break near the hotel",
+            "Coffee stop by the coast",
+            "Scenic cafe short break",
+            "Quiet coffee break in the center",
         ]
         activity_templates = [
-            f"{city_label} Coast Walk and Photo Stop",
-            f"{city_label} Marina and Harbor Discovery",
-            f"{city_label} Morning Outdoor Session",
-            f"{city_label} Bay and Coast Route",
-            f"{city_label} Historic District Short Route",
-            f"{city_label} Sunset Walk in Central Area",
+            "Coast walk and photo stop",
+            "Short marina discovery walk",
+            "Morning outdoor session",
+            "Relaxed route near the coastline",
+            "Historic district short route",
+            "Sunset walk in the central area",
         ]
 
     activities = activities or []
     selected_tours = selected_tours or []
     activity_titles = {
-        'swimming': {'tr': 'Sahil Yuzme Etkinligi', 'en': 'Coastal Swimming Experience', 'ru': 'Plyazhnyy Otdyk i Kupanie', 'ar': 'Tajribat Sibaha Ala Al Sahil'},
-        'culture': {'tr': 'Tarihi Bolge Yuruyus Turu', 'en': 'Historic District Walk', 'ru': 'Progulka po Istoricheskomu Rayonu', 'ar': 'Jawla fi Al Hara Al Tarikhia'},
-        'food': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
-        'food_drink': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
-        'yeme_icme': {'tr': 'Yerel Lezzet Deneyimi', 'en': 'Local Food Experience', 'ru': 'Znakomstvo s Mestnoy Kukhney', 'ar': 'Tajribat Al Atima Al Mahalliya'},
-        'safari': {'tr': 'Doga ve Safari Turu', 'en': 'Nature and Safari Route', 'ru': 'Marshrut po Prirode i Safari', 'ar': "Masaar Tabi'i wa Safari"},
-        'diving': {'tr': 'Dalis ve Tekne Aktivitesi', 'en': 'Diving and Boat Experience', 'ru': 'Dayving i Lodocnaya Aktivnost', 'ar': 'Tajribat Ghaws wa Qareb'},
-        'boat': {'tr': 'Tekne Turu', 'en': 'Boat Tour', 'ru': 'Progulka na Lodke', 'ar': 'Jawlat Qareb'},
-        'nature': {'tr': 'Doga Kesif Rotasi', 'en': 'Nature Discovery Route', 'ru': 'Marshrut Izucheniya Prirody', 'ar': "Masaar Istikshaf Al Tabi'a"},
-        'kultur': {'tr': 'Tarihi Bolge Yuruyus Turu', 'en': 'Historic District Walk', 'ru': 'Progulka po Istoricheskomu Rayonu', 'ar': 'Jawla fi Al Hara Al Tarikhia'},
-        'yuzme': {'tr': 'Sahil Yuzme Etkinligi', 'en': 'Coastal Swimming Experience', 'ru': 'Plyazhnyy Otdyk i Kupanie', 'ar': 'Tajribat Sibaha Ala Al Sahil'},
+        'swimming': {'tr': 'Otele yakin sahil yuzme molasi', 'en': 'Near-hotel coastal swim stop', 'ru': 'Kupanie na poberezhye ryadom s otelem', 'ar': 'waqfat sibaha ala al sahil qarib min al funduq'},
+        'culture': {'tr': 'Yakindaki tarihi rota yuruyusu', 'en': 'Nearby historic route walk', 'ru': 'Progulka po blizkomu istoricheskomu marshrutu', 'ar': 'jawla fi masar tarikhi qarib'},
+        'food': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
+        'food_drink': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
+        'yeme_icme': {'tr': 'Yerel lezzet odakli mola', 'en': 'Local food focused stop', 'ru': 'Pauza s aktsentom na mestnuyu kukhnyu', 'ar': 'waqfa tukariz ala al atima almahalliya'},
+        'safari': {'tr': 'Yakindaki doga ve safari rotasi', 'en': 'Nearby nature and safari route', 'ru': 'Blizhniy marshrut po prirode i safari', 'ar': 'masar tabi i wa safari qarib'},
+        'diving': {'tr': 'Yakindaki dalis deneyimi ve tekne cikisi', 'en': 'Nearby diving experience and boat departure', 'ru': 'Blizhniy dayving i vykhod na lodke', 'ar': 'tajribat ghaws qariba ma khuruj alqareb'},
+        'boat': {'tr': 'Yakindaki tekne turu kalkis noktasi', 'en': 'Nearby boat tour departure', 'ru': 'Blizhniy punkt otpravleniya lodki', 'ar': 'nuqtat intilaq jawlat qareb qariba'},
+        'nature': {'tr': 'Yakindaki doga kesif rotasi', 'en': 'Nearby nature discovery route', 'ru': 'Blizhniy marshrut dlya izucheniya prirody', 'ar': 'masar istikshaf tabi i qarib'},
+        'kultur': {'tr': 'Yakindaki tarihi rota yuruyusu', 'en': 'Nearby historic route walk', 'ru': 'Progulka po blizkomu istoricheskomu marshrutu', 'ar': 'jawla fi masar tarikhi qarib'},
+        'yuzme': {'tr': 'Otele yakin sahil yuzme molasi', 'en': 'Near-hotel coastal swim stop', 'ru': 'Kupanie na poberezhye ryadom s otelem', 'ar': 'waqfat sibaha ala al sahil qarib min al funduq'},
     }
 
     fallback_pool = []
@@ -325,6 +360,8 @@ def build_plan_options(
             tours_by_date.setdefault(session_date, []).append(tour)
         else:
             unscheduled_tours.append(tour)
+
+    focus_titles = fallback_pool or activity_templates
 
     for idx in [1, 2]:
         days = []
@@ -358,37 +395,64 @@ def build_plan_options(
 
             # For trips >=3 days, keep first/last day light.
             allow_heavy_activities = not (total_days >= 3 and (is_first_day or is_last_day))
-            activity_title = activity_templates[(day_index + idx - 1) % len(activity_templates)]
+            activity_title = focus_titles[(day_index + idx - 1) % len(focus_titles)]
             coffee_venue = cafe_venues[(day_index + idx - 1) % len(cafe_venues)]
             meal_venue = food_venues[(day_index + idx - 1) % len(food_venues)]
             local_dish = food_dishes[(day_index + idx - 1) % len(food_dishes)]
 
             if allow_heavy_activities:
                 for tour in day_tours:
+                    tour_title = tour.get('title') or f"{city} Tour"
                     timeline_items.append(
                         {
                             "time": tour.get('start_time') or base_time,
                             "type": "activity",
-                            "title": tour.get('title') or f"{city} Tour",
-                            "notes": text('tour_notes') + " Source: Partner.",
+                            "title": tour_title,
+                            "notes": detailed_note(
+                                reason="Onceden rezerve edilen aktivite gunluk akisa dogrudan uyuyor" if is_tr else "Pre-booked activity fits the daily route directly",
+                                quick_info=text('tour_notes'),
+                                transport_minutes=20 if not is_first_day else 25,
+                                source="Partner",
+                            ),
                         }
                     )
 
+                activity_reason = (
+                    "Secilen aktivitelere ve butceye uygun bir durak"
+                    if is_tr
+                    else "A stop aligned with selected activities and budget"
+                )
+                activity_info = (
+                    "Bolge karakterini gosteren kisa ama verimli bir rota"
+                    if is_tr
+                    else "A short but meaningful route reflecting the area"
+                )
                 timeline_items.append(
                     {
                         "time": "16:30" if day_tours else base_time,
                         "type": "activity",
                         "title": activity_title,
-                        "notes": (text('calm_notes') if idx == 1 else text('dynamic_notes')) + " Source: External.",
+                        "notes": detailed_note(
+                            reason=activity_reason,
+                            quick_info=f"{(text('calm_notes') if idx == 1 else text('dynamic_notes'))}",
+                            transport_minutes=18 if middle_day else 12,
+                            source="External",
+                        ) + " " + (activity_info + "."),
                     }
                 )
             else:
+                free_title = text('free_time_title')
                 timeline_items.append(
                     {
                         "time": "17:00" if is_first_day else "09:30",
                         "type": "free_time",
-                        "title": text('free_time_title'),
-                        "notes": text('free_time_notes'),
+                        "title": free_title,
+                        "notes": detailed_note(
+                            reason="Yol yorgunlugunu azaltarak gezi verimini arttirir" if is_tr else "Improves trip quality by reducing travel fatigue",
+                            quick_info=text('free_time_notes'),
+                            transport_minutes=8,
+                            source="External",
+                        ),
                     }
                 )
 
@@ -396,10 +460,17 @@ def build_plan_options(
                 {
                     "time": "18:30" if not is_last_day else "10:30",
                     "type": "break",
-                    "title": f"{coffee_venue} Coffee Break",
-                    "notes": (
-                        f"Rating: 4.5. Source: External. "
-                        + (f"{hotel_label} cevresine yakin bir mola." if (is_tr and hotel_label) else "Near-hotel short stop.")
+                    "title": coffee_venue,
+                    "notes": detailed_note(
+                        reason="Yuruyus/aktivite arasi enerji dengelemesi saglar" if is_tr else "Helps balance energy between activities",
+                        quick_info=(
+                            f"{hotel_label} cevresine yakin kisa mola"
+                            if (is_tr and hotel_label)
+                            else "Near-hotel short stop"
+                        ),
+                        transport_minutes=10,
+                        source="External",
+                        rating="4.5",
                     ),
                 }
             )
@@ -407,22 +478,34 @@ def build_plan_options(
             # Add a dining slot for richer, user-facing plans.
             timeline_items.append(
                 {
-                    "time": "20:00" if is_first_day else "13:00",
+                    "time": "20:00" if is_first_day else ("11:00" if is_last_day else "13:00"),
                     "type": "dining",
-                    "title": f"{meal_venue} - {text('food_title')}",
-                    "notes": (
-                        text('food_notes_hotel')
-                        + f" Oneri: {local_dish}. Rating: 4.6. Source: External."
+                    "title": meal_venue,
+                    "notes": detailed_note(
+                        reason=(
+                            f"Uygun fiyat ve yerel tat dengesi sundugu icin {meal_venue} oneriliyor"
+                            if is_tr
+                            else f"Recommended for value and local taste balance: {meal_venue}"
+                        ),
+                        quick_info=(
+                            f"{text('food_notes_hotel')} Oneri: {local_dish}"
+                            if is_tr
+                            else f"{text('food_notes_hotel')} Suggested dish: {local_dish}"
+                        ),
+                        transport_minutes=15,
+                        source="External",
+                        rating="4.6",
                     ),
                 }
             )
 
             if is_last_day:
+                checkout_title = text('checkout_title')
                 timeline_items.append(
                     {
                         "time": "12:00",
                         "type": "check_out",
-                        "title": text('checkout_title'),
+                        "title": checkout_title,
                         "notes": text('checkout_notes'),
                     }
                 )
@@ -430,7 +513,7 @@ def build_plan_options(
             days.append(
                 {
                     "day": day_no,
-                    "timeline": timeline_items,
+                    "timeline": sort_timeline_items(timeline_items),
                 }
             )
 
@@ -462,9 +545,9 @@ def build_plan_options(
                     )
                 ),
                 "summary": (
-                    f"{total_days} Gun • {text('summary_relaxed') if idx == 1 else text('summary_intense')}"
+                    f"{total_days} Gun • {text('summary_intense') if idx == 1 else text('summary_relaxed')}"
                     if is_tr else
-                    f"{total_days} Days • {text('summary_relaxed') if idx == 1 else text('summary_intense')}"
+                    f"{total_days} Days • {text('summary_intense') if idx == 1 else text('summary_relaxed')}"
                 ),
                 "days": days,
                 "estimated_total": 12400 if idx == 1 else 13800,

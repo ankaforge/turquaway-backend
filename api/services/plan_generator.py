@@ -64,6 +64,10 @@ class PlanGeneratorService:
         archaeology = any(x in tokens for x in ["archae", "arkeo", "ruin", "ancient", "history", "tarih"])
         return diving or archaeology
 
+    def _has_transport_time(self, text: str) -> bool:
+        t = (text or "").lower()
+        return bool(re.search(r"\b\d{1,3}\s*(min|mins|minute|minutes|dk|dakika)\b", t))
+
     def _is_generic_title(self, title: str, city: str) -> bool:
         t = (title or "").strip().lower()
         c = (city or "").strip().lower()
@@ -145,6 +149,12 @@ class PlanGeneratorService:
             issues.append("missing Source: Partner/External annotation in notes")
         if not re.search(r"rating\s*[:]?\s*4", joined_notes):
             issues.append("missing 4+ rating signals in notes for food/cafe suggestions")
+        detailed_notes = [n for n in notes_blob if len(n) >= 90]
+        if notes_blob and (len(detailed_notes) / max(len(notes_blob), 1)) < 0.5:
+            issues.append("notes are too short; include reason, quick info, and transport context")
+        transport_notes = [n for n in notes_blob if self._has_transport_time(n)]
+        if notes_blob and (len(transport_notes) / max(len(notes_blob), 1)) < 0.4:
+            issues.append("missing transport time hints in notes (e.g., 15 min / 20 dk)")
         if self._activity_contact_required(activities):
             if not re.search(r"(phone|tel|contact)\s*[:]|https?://|www\.", joined_notes):
                 issues.append("missing contact details for activity providers in notes")
@@ -262,6 +272,8 @@ Rules:
 - Restaurant/cafe notes should include rating hints like "Rating: 4.x" where possible.
 - Tour/activity notes should include source hints like "Source: Partner" or "Source: External".
 - For diving/archaeology related activities, include contact info in notes when available (e.g., "Phone: ...", "Website: ...").
+- Each timeline note must include: why this stop is recommended, one short local info/tip, and an estimated transport time from hotel area.
+- Add transport wording with explicit numbers like "15 min" or "20 dk".
 - Respect avoid_duplicates from local context.
 
 Output schema:
@@ -276,7 +288,7 @@ Output schema:
         {{
           "day": 1,
           "timeline": [
-            {{"time": "09:00", "type": "activity", "title": "string", "notes": "string"}}
+                        {{"time": "09:00", "type": "activity", "title": "string", "notes": "string"}}
           ]
         }}
       ],
