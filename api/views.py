@@ -1411,7 +1411,7 @@ class PlanGenerateOptionsView(APIView):
         effective_language = normalize_lang(getattr(request.user, "language", None) or payload.get("language"))
 
         # Resolve hotel name for Gemini context
-        hotel_name = ''
+        hotel_name = str(payload.get("hotel_name") or '').strip()
         hotel_lat = None
         hotel_lng = None
         hotel_reservation_id = payload.get("hotel_reservation_id")
@@ -1522,6 +1522,7 @@ class PlanGenerateOptionsView(APIView):
                 "children": payload["children"],
                 "budget_type": payload["budget_type"],
                 "activities": payload["activities"],
+                "hotel_name": hotel_name,
                 "hotel_reservation_id": str(hotel_reservation_id) if hotel_reservation_id else None,
                 "selected_tour_ids": [str(x) for x in payload.get("selected_tour_ids", [])],
                 "language": effective_language,
@@ -1530,7 +1531,9 @@ class PlanGenerateOptionsView(APIView):
             options_payload=options,
             status=TravelPlan.Status.DRAFT,
         )
-        request.session["last_plan_uuid"] = str(plan.uuid)
+        session = getattr(request, "session", None)
+        if session is not None:
+            session["last_plan_uuid"] = str(plan.uuid)
 
         return Response({"options": options})
 

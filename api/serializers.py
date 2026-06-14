@@ -343,19 +343,27 @@ class TourSearchSerializer(serializers.Serializer):
 
 
 class PlanGenerateOptionsSerializer(serializers.Serializer):
-    city = serializers.CharField(max_length=120)
+    city = serializers.CharField(max_length=120, required=False, allow_blank=True)
+    destination = serializers.CharField(max_length=120, required=False, allow_blank=True)
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     adults = serializers.IntegerField(min_value=1)
     children = serializers.IntegerField(min_value=0)
     budget_type = serializers.ChoiceField(choices=['luxury', 'economy', 'cheap'])
     activities = serializers.ListField(child=serializers.CharField(), allow_empty=False)
+    hotel_name = serializers.CharField(max_length=150, required=False, allow_blank=True, default='')
     hotel_reservation_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     selected_tour_ids = serializers.ListField(child=serializers.UUIDField(), required=False, default=list)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
     family_mode = serializers.BooleanField()
 
     def validate(self, attrs):
+        city = str(attrs.get('city') or '').strip()
+        destination = str(attrs.get('destination') or '').strip()
+        resolved_city = city or destination
+        if not resolved_city:
+            raise serializers.ValidationError({'city': ['This field is required.']})
+
         if attrs['end_date'] < attrs['start_date']:
             raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
         if attrs['children'] > 0 and attrs['family_mode'] is not True:
@@ -371,6 +379,7 @@ class PlanGenerateOptionsSerializer(serializers.Serializer):
         if not resolved:
             raise serializers.ValidationError({'activities': ['At least one valid activity is required.']})
 
+        attrs['city'] = resolved_city
         attrs['activities'] = resolved
         return attrs
 

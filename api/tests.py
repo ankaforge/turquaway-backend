@@ -440,6 +440,28 @@ class PlanContractTests(APITestCase):
 		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
 		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
 
+	def test_generate_options_accepts_phase1_hotel_name_without_reservation(self):
+		payload = self._payload()
+		payload['hotel_name'] = 'Manisa Grand Hotel'
+
+		response = self.client.post(reverse('plans-generate-options'), payload, format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
+		self.assertEqual(plan.source_payload.get('hotel_name'), 'Manisa Grand Hotel')
+		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
+
+	def test_generate_options_accepts_destination_alias_for_city(self):
+		payload = self._payload()
+		payload.pop('city')
+		payload['destination'] = 'Antalya'
+
+		response = self.client.post(reverse('plans-generate-options'), payload, format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
+		self.assertEqual(plan.source_payload.get('city'), 'Antalya')
+
 	def test_generate_options_activities_empty_returns_field_error(self):
 		payload = self._payload()
 		payload['activities'] = []
