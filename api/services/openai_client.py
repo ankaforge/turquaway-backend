@@ -31,7 +31,7 @@ class OpenAIJsonClient:
         except json.JSONDecodeError as exc:
             raise ValueError(f"OpenAI response is not valid JSON: {text}") from exc
 
-    def chat_json(self, prompt: str, temperature: float = 0.4, max_retries: int = 3) -> Dict[str, Any]:
+    def chat_json(self, prompt: str, temperature: float = 0.4, max_retries: int | None = None) -> Dict[str, Any]:
         url = f"{self.base_url}/chat/completions"
         headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -47,12 +47,16 @@ class OpenAIJsonClient:
             "response_format": {"type": "json_object"},
         }
 
+        timeout_seconds = float(os.getenv("OPENAI_TIMEOUT_SECONDS", "12"))
+        retry_count = int(os.getenv("OPENAI_MAX_RETRIES", "1")) if max_retries is None else max_retries
+        max_retries = max(1, retry_count)
+
         backoff_seconds = 0.8
         last_error: Exception | None = None
 
         for attempt in range(max_retries):
             try:
-                with httpx.Client(timeout=45.0) as client:
+                with httpx.Client(timeout=timeout_seconds) as client:
                     resp = client.post(url, headers=headers, json=payload)
 
                 if resp.status_code >= 400:
