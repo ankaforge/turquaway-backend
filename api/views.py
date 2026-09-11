@@ -607,8 +607,8 @@ class RegisterView(APIView):
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
 
-        user = serializer.save()
         consents = serializer.validated_data["consents"]
+        user = serializer.save()
         accepted_at = parse_datetime(consents["accepted_at"])
         if accepted_at is None:
             return error_response(
