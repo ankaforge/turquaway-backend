@@ -132,6 +132,7 @@
     footerQuickAccount: "Account",
     footerSocialTitle: "Social",
     footerCopyright: "© 2026 Turquaway.",
+    footerDescription: "AI trip planning, hotel matching, and optional tours in one sharp flow.",
     navSignIn: "Sign In",
     navSignUp: "Sign Up",
     authLoginHeading: "Welcome Back",
@@ -208,6 +209,31 @@
     termsSection2Body: "Reservation details, availability, pricing, and third-party service conditions may change. Users should review booking details before confirming any travel service.",
     termsSection3Title: "Acceptable Use",
     termsSection3Body: "You may not misuse the platform, interfere with its operation, attempt unauthorized access, or use Turquaway in violation of applicable laws and regulations.",
+    accountPageTitle: "Turquaway - Account",
+    accountEyebrow: "Account",
+    accountTitle: "My travel dashboard",
+    accountCreatePlan: "Create Plan",
+    accountPlans: "My Plans",
+    accountHotelReservations: "My Hotel Reservations",
+    accountTourReservations: "My Tour Reservations",
+    accountPersonalInfo: "Personal Info",
+    accountLoadingProfile: "Loading profile...",
+    accountActivePlan: "Active Plan",
+    accountLoadingPlan: "Loading active plan...",
+    accountSections: "Account sections",
+    accountName: "Name",
+    accountEmail: "Email",
+    accountPhone: "Phone",
+    accountCountry: "Country",
+    accountLanguage: "Language",
+    accountNoActivePlan: "No active plan yet. Create a new plan to start building your itinerary.",
+    accountDestination: "Destination",
+    accountPlanId: "Plan ID",
+    accountDay: "Day",
+    accountNoDayItems: "No day items available.",
+    accountLoadError: "Your account data could not be loaded right now.",
+    accountProfileUnavailable: "Profile information is unavailable.",
+    accountPlanUnavailable: "Active plan information is unavailable.",
   },
   tr: {
     pageTitle: "Turquaway - Yapay Zeka Destekli Tur Planlayıcı",
@@ -313,6 +339,7 @@
     footerQuickAccount: "Hesabım",
     footerSocialTitle: "Sosyal",
     footerCopyright: "© 2026 Turquaway.",
+    footerDescription: "Yapay zeka ile seyahat planlama, otel eşleştirme ve isteğe bağlı turlar tek akışta.",
     navSignIn: "Giri\u015f",
     navSignUp: "Kay\u0131t Ol",
     authLoginHeading: "Tekrar Ho\u015f Geldiniz",
@@ -389,6 +416,31 @@
     termsSection2Body: "Rezervasyon detayları, müsaitlik, fiyatlandırma ve üçüncü taraf hizmet koşulları değişebilir. Kullanıcılar herhangi bir seyahat hizmetini onaylamadan önce ayrıntıları kontrol etmelidir.",
     termsSection3Title: "Kabul Edilebilir Kullanım",
     termsSection3Body: "Platform kötüye kullanılamaz, işleyişi engellenemez, yetkisiz erişim denenemez ve Turquaway yürürlükteki yasalara aykırı biçimde kullanılamaz.",
+    accountPageTitle: "Turquaway - Hesabım",
+    accountEyebrow: "Hesap",
+    accountTitle: "Seyahat panom",
+    accountCreatePlan: "Plan Oluştur",
+    accountPlans: "Planlarım",
+    accountHotelReservations: "Otel Rezervasyonlarım",
+    accountTourReservations: "Tur Rezervasyonlarım",
+    accountPersonalInfo: "Kişisel Bilgiler",
+    accountLoadingProfile: "Profil yükleniyor...",
+    accountActivePlan: "Aktif Plan",
+    accountLoadingPlan: "Aktif plan yükleniyor...",
+    accountSections: "Hesap bölümleri",
+    accountName: "Ad Soyad",
+    accountEmail: "E-posta",
+    accountPhone: "Telefon",
+    accountCountry: "Ülke",
+    accountLanguage: "Dil",
+    accountNoActivePlan: "Henüz aktif bir planınız yok. Seyahat planınızı oluşturmaya başlamak için yeni bir plan oluşturun.",
+    accountDestination: "Destinasyon",
+    accountPlanId: "Plan ID",
+    accountDay: "Gün",
+    accountNoDayItems: "Bu gün için etkinlik bulunmuyor.",
+    accountLoadError: "Hesap verileriniz şu anda yüklenemedi.",
+    accountProfileUnavailable: "Profil bilgileri kullanılamıyor.",
+    accountPlanUnavailable: "Aktif plan bilgileri kullanılamıyor.",
   },
   ru: {
     pageTitle: "Turquaway - ИИ-планировщик путешествий",
@@ -835,6 +887,11 @@ function translatePage(lang) {
   document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
     const key = el.dataset.i18nPlaceholder;
     if (key in dict) el.placeholder = dict[key];
+  });
+
+  document.querySelectorAll("[data-i18n-aria-label]").forEach(el => {
+    const key = el.dataset.i18nAriaLabel;
+    if (key in dict) el.setAttribute("aria-label", dict[key]);
   });
 }
 
