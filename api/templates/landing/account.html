@@ -58,8 +58,10 @@
   const profileRoot = document.getElementById('account-profile');
   const activePlanRoot = document.getElementById('account-active-plan');
   const errorRoot = document.getElementById('account-auth-error');
-  const accountLanguage = getPreferredLang();
-  const accountText = (key) => translations[accountLanguage]?.[key] || translations.en[key] || key;
+  const accountText = (key) => {
+    const language = getPreferredLang();
+    return translations[language]?.[key] || translations.en[key] || key;
+  };
 
   createPlanBtn?.addEventListener('click', () => {
     document.getElementById('nav-create-plan-btn')?.click();
