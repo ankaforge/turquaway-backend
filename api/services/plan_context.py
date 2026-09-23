@@ -203,7 +203,17 @@ Return strict JSON object:
 }}
 """.strip()
 
-        payload = self.client.chat_json(prompt=prompt, temperature=0.3)
+        try:
+            payload = self.client.chat_json(prompt=prompt, temperature=0.3, timeout=8)
+        except Exception:
+            return {
+                "hotel_area": self._normalize_text(area_district) or self._normalize_text(area_zone),
+                "must_try_foods": [],
+                "nearby_places": [],
+                "photo_spots": [],
+                "avoid_duplicates": [],
+            }
+
         hotel_area = self._normalize_text(payload.get("hotel_area"))
         if not hotel_area:
             hotel_area = self._normalize_text(area_district) or self._normalize_text(area_zone)

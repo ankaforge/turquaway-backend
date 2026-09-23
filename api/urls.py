@@ -1,6 +1,7 @@
 from django.urls import path
 from api.views import (
     ActivityListView,
+    MobileConfigView,
     FunnelDraftView,
     HotelReservationCreateView,
     HotelReservationWebhookView,
@@ -41,6 +42,7 @@ urlpatterns = [
     path('me/reviews/', MeReviewsView.as_view(), name='me-reviews'),
     path('funnel/draft/', FunnelDraftView.as_view(), name='funnel-draft'),
     path('activities/', ActivityListView.as_view(), name='activities'),
+    path('config/mobile/', MobileConfigView.as_view(), name='config-mobile'),
     path('ai/suggest-cities/', SuggestCitiesView.as_view(), name='suggest-cities'),
     path('hotels/search/', HotelSearchView.as_view(), name='hotels-search'),
     path('hotel-reservations/', HotelReservationCreateView.as_view(), name='hotel-reservation-create'),

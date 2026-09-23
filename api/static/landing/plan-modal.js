@@ -8,19 +8,19 @@
     stepPlans: "Plan Options",
     stepComplete: "Plan Confirmed",
     titleDetails: "Build your travel plan",
-    subtitleDetails: "Choose dates, guest count, budget, and activities. Your draft stays in browser storage so the flow can continue after authentication.",
+    subtitleDetails: "Choose dates, guest count, budget, and activities. Phase 1 creates an AI itinerary only. Hotel and tour booking come later.",
     titleDestinations: "Pick your destination",
     subtitleDestinations: "These cities are suggested by AI according to the details you entered.",
     titleAccount: "Sign in to continue",
     subtitleAccount: "Your draft is safe. Authenticate now and continue from the selected destination.",
     titleHotels: "Choose and reserve your hotel",
-    subtitleHotels: "For now hotel reservation uses the current backend model. Later this step can switch to Agoda Search and Book APIs without changing the draft flow.",
+    subtitleHotels: "Hotel booking is paused in Phase 1. This step is skipped.",
     titleTours: "Pick your tours",
-    subtitleTours: "Select the tours that should be woven into your final itinerary. They will be reserved when you confirm the plan.",
+    subtitleTours: "Tour booking is paused in Phase 1. This step is skipped.",
     titlePlans: "Review generated plan options",
-    subtitlePlans: "Compare the two AI-generated itineraries and confirm the one that fits best.",
+    subtitlePlans: "Compare the two AI itineraries. This is a plan suggestion, not a reservation.",
     titleComplete: "Your plan is active",
-    subtitleComplete: "The selected hotel, tours, and confirmed itinerary are now ready. You can review everything from your account page.",
+    subtitleComplete: "Your confirmed itinerary is ready. Hotel and tour booking will be added after company setup.",
     datesLabel: "Travel dates",
     startDate: "Start date",
     endDate: "End date",
@@ -97,19 +97,19 @@
       stepPlans: "Plan Seçenekleri",
       stepComplete: "Plan Onaylandı",
       titleDetails: "Seyahat planını oluştur",
-      subtitleDetails: "Tarihleri, misafir sayısını, bütçeyi ve aktiviteleri seç. Taslak tarayıcı hafızasında saklanır; girişten sonra aynı yerden devam edilir.",
+      subtitleDetails: "Tarih, misafir, bütçe ve aktiviteleri seç. Faz 1 yalnızca AI tatil planı üretir. Otel ve tur rezervasyonu sonra eklenecek.",
       titleDestinations: "Destinasyonunu seç",
       subtitleDestinations: "Bu şehirler girdiğin tercihlere göre yapay zeka tarafından önerildi.",
       titleAccount: "Devam etmek için giriş yap",
       subtitleAccount: "Taslağın güvende. Şimdi giriş yap veya üye ol; seçtiğin destinasyondan devam et.",
       titleHotels: "Otelini seç ve rezerve et",
-      subtitleHotels: "Şimdilik otel rezervasyonu mevcut backend modelini kullanıyor. Daha sonra bu adım Agoda Search ve Book API ile değiştirilebilir.",
+      subtitleHotels: "Faz 1'de otel rezervasyonu kapalı. Bu adım atlanır.",
       titleTours: "Turlarını seç",
-      subtitleTours: "Son planına işlenmesini istediğin turları seç. Bu turlar planı onayladığında rezerve edilecek.",
+      subtitleTours: "Faz 1'de tur rezervasyonu kapalı. Bu adım atlanır.",
       titlePlans: "Üretilen plan seçeneklerini incele",
-      subtitlePlans: "İki yapay zeka planını karşılaştır ve sana en uygun olanı onayla.",
+      subtitlePlans: "İki AI itinerary'yi karşılaştır. Bu bir plan önerisidir, rezervasyon değildir.",
       titleComplete: "Planın aktif",
-      subtitleComplete: "Seçilen otel, turlar ve onaylanan rota hazır. Her şeyi hesap sayfandan takip edebilirsin.",
+      subtitleComplete: "Onaylanan rota hazır. Otel ve tur rezervasyonu şirketleşmeden sonra eklenecek.",
       datesLabel: "Seyahat tarihleri",
       startDate: "Başlangıç tarihi",
       endDate: "Bitiş tarihi",
@@ -183,7 +183,7 @@
       stepPlans: "Варианты плана",
       stepComplete: "План подтвержден",
       titleDetails: "Соберите свой план поездки",
-      subtitleDetails: "Выберите даты, количество гостей, бюджет и активности. Черновик сохранится в браузере и продолжится после авторизации.",
+      subtitleDetails: "Выберите даты, гостей, бюджет и активности. Фаза 1 создает только AI-маршрут. Бронирование отеля и туров будет позже.",
       titleDestinations: "Выберите направление",
       subtitleDestinations: "Эти города предложены ИИ на основе ваших предпочтений.",
       titleAccount: "Войдите, чтобы продолжить",
@@ -193,9 +193,9 @@
       titleTours: "Выберите туры",
       subtitleTours: "Выберите туры, которые должны войти в итоговый маршрут. Они будут забронированы при подтверждении плана.",
       titlePlans: "Проверьте варианты маршрута",
-      subtitlePlans: "Сравните два варианта маршрута от ИИ и подтвердите наиболее подходящий.",
+      subtitlePlans: "Сравните два маршрута ИИ. Это предложение плана, а не бронирование.",
       titleComplete: "Ваш план активен",
-      subtitleComplete: "Выбранный отель, туры и подтвержденный маршрут готовы. Все детали доступны в вашем аккаунте.",
+      subtitleComplete: "Подтвержденный маршрут готов. Бронирование отеля и туров появится после регистрации компании.",
       datesLabel: "Даты поездки",
       startDate: "Дата начала",
       endDate: "Дата окончания",
@@ -269,7 +269,7 @@
       stepPlans: "خيارات الخطة",
       stepComplete: "تم تأكيد الخطة",
       titleDetails: "أنشئ خطة رحلتك",
-      subtitleDetails: "اختر التواريخ وعدد الضيوف والميزانية والأنشطة. سيتم حفظ المسودة في المتصفح ويمكنك المتابعة بعد تسجيل الدخول.",
+      subtitleDetails: "اختر التواريخ والضيوف والميزانية والأنشطة. المرحلة 1 تنشئ مسار رحلة بالذكاء الاصطناعي فقط. حجز الفندق والجولات لاحقا.",
       titleDestinations: "اختر وجهتك",
       subtitleDestinations: "هذه المدن تم اقتراحها بالذكاء الاصطناعي بناء على تفضيلاتك.",
       titleAccount: "سجل الدخول للمتابعة",
@@ -279,9 +279,9 @@
       titleTours: "اختر الجولات",
       subtitleTours: "حدد الجولات التي تريد إضافتها إلى خطتك النهائية. سيتم حجزها عند تأكيد الخطة.",
       titlePlans: "راجع خيارات الخطة",
-      subtitlePlans: "قارن بين خطتي الرحلة اللتين أنشأهما الذكاء الاصطناعي ثم أكد الأنسب لك.",
+      subtitlePlans: "قارن بين المسارين. هذه توصية خطة وليست حجزا.",
       titleComplete: "خطتك أصبحت جاهزة",
-      subtitleComplete: "الفندق والجولات وخط السير المؤكد أصبحت جاهزة. يمكنك مراجعة كل التفاصيل من صفحة الحساب.",
+      subtitleComplete: "المسار المؤكد جاهز. حجز الفندق والجولات سيضاف بعد تأسيس الشركة.",
       datesLabel: "تواريخ الرحلة",
       startDate: "تاريخ البداية",
       endDate: "تاريخ النهاية",
@@ -513,8 +513,7 @@
   function computeStep() {
     if (state.draft.confirmed_plan_id) return "complete";
     if (state.draft.plan_options.length) return "plans";
-    if (state.draft.hotel_reservation_id) return "tours";
-    if (state.draft.city) return hasAuth() ? "hotels" : "account";
+    if (state.draft.city) return hasAuth() ? "plans" : "account";
     if (state.draft.suggestions.length) return "destinations";
     return "details";
   }
@@ -842,8 +841,8 @@
   }
 
   async function generatePlanOptions() {
-    if (!state.draft.hotel_reservation_id) {
-      setFeedback(text("genericError"));
+    if (!state.draft.city || !state.draft.start_date || !state.draft.end_date) {
+      setFeedback(text("validationMessage"));
       render();
       return;
     }
@@ -861,8 +860,8 @@
           children: state.draft.children,
           budget_type: state.draft.budget_type,
           activities: state.draft.activities,
-          hotel_reservation_id: state.draft.hotel_reservation_id,
-          selected_tour_ids: state.draft.selected_tour_ids,
+          hotel_name: state.draft.selected_hotel_name || "",
+          selected_tour_ids: [],
           language: getLang(),
           family_mode: Number(state.draft.children) > 0,
         }),
@@ -998,8 +997,8 @@
         saveDraft();
         if (hasAuth()) {
           await syncDraftToServer();
-          state.step = "hotels";
-          await loadHotels(true);
+          state.step = "plans";
+          await generatePlanOptions();
         } else {
           state.step = "account";
           render();
@@ -1061,8 +1060,8 @@
   }
 
   function renderPlansStep() {
-    modalBody.innerHTML = `<div class="space-y-6"><div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><div class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p><p class="mt-4 text-sm text-slate-200">${text("selectedTours")}: ${escapeHtml(state.draft.selected_tour_ids.length)}</p></div><button id="plan-back-tours" type="button" class="inline-flex h-fit items-center justify-center gap-2 border border-slate-200/30 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button></div>${state.draft.plan_options.length ? `<div class="grid gap-6 xl:grid-cols-2">${state.draft.plan_options.map(renderPlanOption).join("")}</div>` : `<div class="border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${text("noActivePlan")}</p></div>`}</div>`;
-    document.getElementById("plan-back-tours")?.addEventListener("click", () => { state.step = "tours"; render(); });
+    modalBody.innerHTML = `<div class="space-y-6"><div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><div class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.start_date)} — ${escapeHtml(state.draft.end_date)}</p></div><button id="plan-back-destinations-from-plans" type="button" class="inline-flex h-fit items-center justify-center gap-2 border border-slate-200/30 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button></div>${state.generatingPlans ? `<div class="flex min-h-[16rem] items-center justify-center border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><div><i class="fa-solid fa-route animate-pulse text-3xl"></i><p class="mt-4 text-base">${text("generatingPlans")}</p></div></div>` : ""}${!state.generatingPlans && state.draft.plan_options.length ? `<div class="grid gap-6 xl:grid-cols-2">${state.draft.plan_options.map(renderPlanOption).join("")}</div>` : ""}${!state.generatingPlans && !state.draft.plan_options.length ? `<div class="border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${text("noActivePlan")}</p></div>` : ""}</div>`;
+    document.getElementById("plan-back-destinations-from-plans")?.addEventListener("click", () => { state.step = "destinations"; render(); });
     modalBody.querySelectorAll("[data-plan-confirm]").forEach((button) => {
       button.addEventListener("click", () => confirmPlan(button.dataset.planConfirm));
     });
@@ -1098,8 +1097,9 @@
 
   async function prepareStep() {
     await ensureActivitiesLoaded();
-    if (state.step === "hotels") await loadHotels();
-    if (state.step === "tours") await loadTours();
+    if (state.step === "plans" && !state.draft.plan_options.length && hasAuth() && !state.generatingPlans) {
+      await generatePlanOptions();
+    }
   }
 
   async function openModal(nextStep) {

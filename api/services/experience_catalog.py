@@ -87,7 +87,10 @@ Return strict JSON object:
 }}
 """.strip()
 
-        payload = self.client.chat_json(prompt=prompt, temperature=0.3)
+        try:
+            payload = self.client.chat_json(prompt=prompt, temperature=0.3, timeout=8)
+        except Exception:
+            payload = {}
         activity_specific_options: Dict[str, Any] = payload.get("activity_specific_options") or {}
         if not isinstance(activity_specific_options, dict):
             activity_specific_options = {}

@@ -265,13 +265,13 @@ class SuggestCitiesSerializer(serializers.Serializer):
     budget_type = serializers.ChoiceField(choices=['luxury', 'economy', 'cheap'])
     activities = serializers.ListField(child=serializers.CharField(), allow_empty=False)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
-    family_mode = serializers.BooleanField()
+    family_mode = serializers.BooleanField(required=False, default=False)
 
     def validate(self, attrs):
         if attrs['end_date'] < attrs['start_date']:
             raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
-        if attrs['children'] > 0 and attrs['family_mode'] is not True:
-            raise serializers.ValidationError({'family_mode': 'Must be true when children > 0.'})
+        if attrs['children'] > 0:
+            attrs['family_mode'] = True
 
         requested = attrs.get('activities') or []
         resolved, invalid = resolve_active_activity_keys(requested)
@@ -355,7 +355,7 @@ class PlanGenerateOptionsSerializer(serializers.Serializer):
     hotel_reservation_id = serializers.UUIDField(required=False, allow_null=True, default=None)
     selected_tour_ids = serializers.ListField(child=serializers.UUIDField(), required=False, default=list)
     language = serializers.ChoiceField(choices=['tr', 'en', 'ru', 'ar'], default='en')
-    family_mode = serializers.BooleanField()
+    family_mode = serializers.BooleanField(required=False, default=False)
 
     def validate(self, attrs):
         city = str(attrs.get('city') or '').strip()
@@ -366,8 +366,8 @@ class PlanGenerateOptionsSerializer(serializers.Serializer):
 
         if attrs['end_date'] < attrs['start_date']:
             raise serializers.ValidationError({'end_date': 'End date cannot be earlier than start date.'})
-        if attrs['children'] > 0 and attrs['family_mode'] is not True:
-            raise serializers.ValidationError({'family_mode': 'Must be true when children > 0.'})
+        if attrs['children'] > 0:
+            attrs['family_mode'] = True
 
         requested = attrs.get('activities') or []
         resolved, invalid = resolve_active_activity_keys(requested)

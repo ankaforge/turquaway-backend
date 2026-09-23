@@ -38,7 +38,7 @@ class PlanGeneratorService:
                 extras = ", ".join([x for x in [area, rating, price_hint, transfer_hint, phone, website] if x])
                 if value:
                     lines.append(f"- {value}" + (f" ({extras})" if extras else ""))
-            return "\\n".join(lines) if lines else "- none"
+            return "\n".join(lines) if lines else "- none"
 
         dynamic_activity_blocks: List[str] = []
         if isinstance(activity_specific, dict):
@@ -190,14 +190,26 @@ class PlanGeneratorService:
             hotel_lng=hotel_lng,
         )
 
-        catalog = self.experience_catalog_service.build_catalog(
-            city=city,
-            zone=area_ctx.zone,
-            budget=budget,
-            activities=activities,
-            language=language,
-            partner_tours=partner_tours,
-        )
+        try:
+            catalog = self.experience_catalog_service.build_catalog(
+                city=city,
+                zone=area_ctx.zone,
+                budget=budget,
+                activities=activities,
+                language=language,
+                partner_tours=partner_tours,
+            )
+        except Exception:
+            catalog = {
+                "zone": area_ctx.zone,
+                "budget": budget,
+                "activities": activities,
+                "partner_tours": partner_tours or [],
+                "external": {},
+                "has_partner_options": bool(partner_tours),
+                "source_policy": "partner_first_external_fallback",
+                "catalog_json": "{}",
+            }
 
         tour_block = ""
         if selected_tours:
@@ -216,25 +228,35 @@ class PlanGeneratorService:
                 if extras:
                     line += f" ({', '.join(extras)})"
                 lines.append(line)
-            tour_block = "\\n".join(lines)
+            tour_block = "\n".join(lines)
 
-        local_context = self.context_service.build_local_experience_context(
-            city=city,
-            hotel_name=hotel_name,
-            activities=activities,
-            language=language,
-            selected_tours=selected_tours,
-            area_zone=area_ctx.zone,
-            area_district=area_ctx.district,
-        )
+        try:
+            local_context = self.context_service.build_local_experience_context(
+                city=city,
+                hotel_name=hotel_name,
+                activities=activities,
+                language=language,
+                selected_tours=selected_tours,
+                area_zone=area_ctx.zone,
+                area_district=area_ctx.district,
+            )
+        except Exception:
+            local_context = {
+                "hotel_area": area_ctx.district or area_ctx.zone,
+                "must_try_foods": [],
+                "nearby_places": [],
+                "photo_spots": [],
+                "avoid_duplicates": [],
+            }
         local_context_block = json.dumps(local_context, ensure_ascii=False)
         experience_catalog_block = catalog.get("catalog_json", "{}")
         catalog_lists_block = self._catalog_lists_block(catalog)
 
         quality_feedback = ""
         options: List[Dict[str, Any]] = []
+        last_error: Exception | None = None
 
-        for _ in range(3):
+        for _ in range(2):
             prompt = f"""
 You are an expert travel planner.
 Generate exactly 2 itinerary options for this trip and return valid JSON only.
@@ -297,7 +319,12 @@ Output schema:
   ]
 }}
 """.strip()
-            payload = self.client.chat_json(prompt=prompt, temperature=0.45)
+            try:
+                payload = self.client.chat_json(prompt=prompt, temperature=0.45, timeout=60)
+            except Exception as exc:
+                last_error = exc
+                break
+
             options = payload.get("items", [])
             if not isinstance(options, list):
                 quality_feedback = "\nQuality errors to fix in regeneration: plan items must be a JSON list.\n"
@@ -318,8 +345,14 @@ Output schema:
                 break
             quality_feedback = "\nQuality errors to fix in regeneration:\n- " + "\n- ".join(issues[:8]) + "\n"
 
-        if not isinstance(options, list) or len(options) != 2:
-            raise ValueError("Plan generation failed quality gate after retries.")
+        has_usable_days = (
+            isinstance(options, list)
+            and len(options) == 2
+            and all(isinstance((option or {}).get("days"), list) and (option or {}).get("days") for option in options)
+        )
+        if not has_usable_days:
+            detail = f" ({last_error})" if last_error else ""
+            raise ValueError(f"Plan generation failed quality gate after retries.{detail}")
 
         return self.post_processor.enforce_plan_variation_and_balance(
             options=options,

@@ -1,11 +1,14 @@
 from datetime import timedelta
 from unittest.mock import patch
 
+from django.test import SimpleTestCase
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
+
+from api.services.openai_client import OpenAIJsonClient
 
 from api.models import (
 	ActivityCategory,
@@ -19,6 +22,23 @@ from api.models import (
 	TourSession,
 	User,
 )
+
+
+class OpenAIJsonClientTests(SimpleTestCase):
+	def test_extract_json_strips_markdown_fences(self):
+		client = OpenAIJsonClient.__new__(OpenAIJsonClient)
+		payload = client.extract_json('```json\n{"ping": "pong"}\n```')
+		self.assertEqual(payload, {'ping': 'pong'})
+
+
+class MobileConfigViewTests(APITestCase):
+	def test_phase1_flags_disable_booking(self):
+		response = self.client.get(reverse('config-mobile'))
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(response.data['phase_mode'], 'phase1')
+		self.assertFalse(response.data['hotel_booking_enabled'])
+		self.assertFalse(response.data['tour_booking_enabled'])
 
 
 class ActivityListViewTests(APITestCase):
@@ -408,6 +428,17 @@ class PlanContractTests(APITestCase):
 		self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {str(refresh.access_token)}')
 
 		self.destination = Destination.objects.create(name='Antalya', active=True)
+		for key, name in (('culture', 'Culture'), ('food', 'Food')):
+			ActivityCategory.objects.get_or_create(
+				key=key,
+				defaults={
+					'name_tr': name,
+					'name_en': name,
+					'name_ru': name,
+					'name_ar': name,
+					'active': True,
+				},
+			)
 
 	def _payload(self):
 		return {
@@ -423,7 +454,8 @@ class PlanContractTests(APITestCase):
 			'family_mode': False,
 		}
 
-	def test_generate_options_accepts_missing_hotel_reservation_id(self):
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_generate_options_accepts_missing_hotel_reservation_id(self, _mock_generate):
 		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
 
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -440,7 +472,8 @@ class PlanContractTests(APITestCase):
 		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
 		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
 
-	def test_generate_options_accepts_phase1_hotel_name_without_reservation(self):
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_generate_options_accepts_phase1_hotel_name_without_reservation(self, _mock_generate):
 		payload = self._payload()
 		payload['hotel_name'] = 'Manisa Grand Hotel'
 
@@ -451,7 +484,8 @@ class PlanContractTests(APITestCase):
 		self.assertEqual(plan.source_payload.get('hotel_name'), 'Manisa Grand Hotel')
 		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
 
-	def test_generate_options_accepts_destination_alias_for_city(self):
+	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
+	def test_generate_options_accepts_destination_alias_for_city(self, _mock_generate):
 		payload = self._payload()
 		payload.pop('city')
 		payload['destination'] = 'Antalya'
@@ -481,6 +515,35 @@ class PlanContractTests(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 		self.assertEqual(response.data['code'], 'validation_error')
 		self.assertIn('start_date', response.data['fields'])
+
+	@patch(
+		'api.views.GeminiService.generate_plan_options',
+		return_value=[
+			{
+				'plan_id': 'empty-a',
+				'title': 'Plan A',
+				'summary': 'Empty days',
+				'estimated_total': 1000,
+				'currency': 'TRY',
+				'days': [],
+			},
+			{
+				'plan_id': 'empty-b',
+				'title': 'Plan B',
+				'summary': 'Empty days',
+				'estimated_total': 1100,
+				'currency': 'TRY',
+				'days': [],
+			},
+		],
+	)
+	def test_generate_options_falls_back_when_ai_returns_empty_days(self, _mock_generate):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertGreater(len(response.data['options']), 0)
+		self.assertGreater(len(response.data['options'][0]['days']), 0)
+		self.assertGreater(len(response.data['options'][0]['days'][0]['timeline']), 0)
 
 	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
 	def test_generate_options_falls_back_when_ai_returns_empty(self, _mock_generate):

@@ -568,9 +568,10 @@ def _is_valid_timeline_item(item: Any) -> bool:
 def _is_valid_day_item(item: Any) -> bool:
     if not isinstance(item, dict):
         return False
-    if "day" not in item or not isinstance(item.get("timeline"), list):
+    timeline = item.get("timeline")
+    if "day" not in item or not isinstance(timeline, list) or not timeline:
         return False
-    return all(_is_valid_timeline_item(timeline_item) for timeline_item in item["timeline"])
+    return all(_is_valid_timeline_item(timeline_item) for timeline_item in timeline)
 
 
 def _is_valid_plan_option(item: Any) -> bool:
@@ -583,9 +584,10 @@ def _is_valid_plan_option(item: Any) -> bool:
         return False
     if "summary" not in item and "description" not in item:
         return False
-    if not isinstance(item.get("days"), list):
+    days = item.get("days")
+    if not isinstance(days, list) or not days:
         return False
-    return all(_is_valid_day_item(day_item) for day_item in item["days"])
+    return all(_is_valid_day_item(day_item) for day_item in days)
 
 
 def _is_valid_options_payload(options: Any) -> bool:
@@ -1052,6 +1054,22 @@ class ActivityListView(APIView):
         return Response({"results": data})
 
 
+class MobileConfigView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        return Response(
+            {
+                "phase_mode": "phase1",
+                "ai_entry_mode": "stay_details",
+                "hotel_booking_enabled": False,
+                "tour_booking_enabled": False,
+                "ads_interstitial_on_ai_generate": True,
+                "ads_banner_on_plan_screen": True,
+            }
+        )
+
+
 class SuggestCitiesView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -1076,6 +1094,10 @@ class SuggestCitiesView(APIView):
             destination_qs = destination_qs.filter(tours__family_friendly=True)
 
         allowed_destinations = list(destination_qs.order_by("name").distinct().values_list("name", flat=True))
+        if not allowed_destinations:
+            allowed_destinations = list(
+                Destination.objects.filter(active=True).order_by("name").values_list("name", flat=True)
+            )
         if not allowed_destinations:
             return Response({"cities": []}, status=status.HTTP_200_OK)
 
