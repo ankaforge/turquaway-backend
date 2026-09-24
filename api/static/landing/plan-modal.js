@@ -3,24 +3,18 @@
     stepDetails: "Trip Details",
     stepDestinations: "Suggested Destinations",
     stepAccount: "Account Required",
-    stepHotels: "Hotel Reservation",
-    stepTours: "Tour Selection",
     stepPlans: "Plan Options",
     stepComplete: "Plan Confirmed",
     titleDetails: "Build your travel plan",
-    subtitleDetails: "Choose dates, guest count, budget, and activities. Phase 1 creates an AI itinerary only. Hotel and tour booking come later.",
+    subtitleDetails: "Choose dates, guests, budget, and activities. Phase 1 creates an AI itinerary only — no hotel or tour booking yet.",
     titleDestinations: "Pick your destination",
     subtitleDestinations: "These cities are suggested by AI according to the details you entered.",
     titleAccount: "Sign in to continue",
     subtitleAccount: "Your draft is safe. Authenticate now and continue from the selected destination.",
-    titleHotels: "Choose and reserve your hotel",
-    subtitleHotels: "Hotel booking is paused in Phase 1. This step is skipped.",
-    titleTours: "Pick your tours",
-    subtitleTours: "Tour booking is paused in Phase 1. This step is skipped.",
     titlePlans: "Review generated plan options",
     subtitlePlans: "Compare the two AI itineraries. This is a plan suggestion, not a reservation.",
     titleComplete: "Your plan is active",
-    subtitleComplete: "Your confirmed itinerary is ready. Hotel and tour booking will be added after company setup.",
+    subtitleComplete: "Your confirmed itinerary is ready. You can open the full day-by-day plan from your account.",
     datesLabel: "Travel dates",
     startDate: "Start date",
     endDate: "End date",
@@ -32,6 +26,9 @@
     budgetLuxury: "Luxury",
     activitiesLabel: "Activities",
     activitiesHint: "Pick at least one activity.",
+    hotelNameLabel: "Hotel name",
+    hotelNamePlaceholder: "Optional",
+    hotelNameHint: "If you already have a stay, we will plan around it. This is not a booking.",
     findDestinations: "Find destinations",
     back: "Back",
     selectDestination: "Select this destination",
@@ -47,37 +44,17 @@
     draftRestored: "Your saved draft has been restored.",
     syncFailed: "Your local draft is safe, but server sync could not be completed right now.",
     loadActivitiesFailed: "Activities could not be loaded right now.",
-    loadingHotels: "Looking up hotel options in this city...",
-    noHotels: "No hotels matched your criteria right now.",
-    reserveHotel: "Reserve this hotel",
-    reservedHotel: "Hotel reserved",
-    loadingTours: "Finding tours near your selected hotel...",
-    noTours: "No tours were returned for this destination. You can still generate a plan without tours.",
-    generatePlans: "Generate plan options",
-    selectedHotel: "Selected hotel",
-    selectedTours: "Selected tours",
-    optionalToursHint: "Tour selection is optional. If you continue without tours, the itinerary will be generated around the city and hotel only.",
-    reservingHotel: "Reserving hotel...",
     generatingPlans: "Generating plan options...",
+    retryGenerate: "Try generating again",
     confirmPlan: "Confirm this plan",
     estimatedTotal: "Estimated total",
     loadingPlan: "Preparing your final itinerary...",
     goToAccount: "Go to account",
     createAnotherPlan: "Create another plan",
-    hotelNightlyPrice: "Nightly price per person",
-    hotelRating: "Rating",
-    sponsoredBadge: "AI pick",
-    continueWithoutTours: "Continue without tours",
-    noActivePlan: "No confirmed plan is stored yet.",
-    guestProfileMissing: "Profile details could not be resolved for hotel reservation.",
+    noActivePlan: "Plan options could not be created yet. Try again or pick another destination.",
     serverDraftLoaded: "Your account draft was loaded.",
     genericError: "Something went wrong. Please try again.",
-    hotelReservedBody: "Your hotel reservation was created in the current backend flow. Agoda integration can replace this later.",
-    selectTour: "Select",
-    selectedState: "Selected",
-    adultLabel: "Adult",
-    childLabel: "Child",
-    availableLabel: "Available",
+    guestsLabel: "Guests",
     dayLabel: "Day",
     planIdLabel: "Plan ID",
     optionLabel: "Option",
@@ -92,24 +69,18 @@
       stepDetails: "Seyahat Detayları",
       stepDestinations: "Önerilen Destinasyonlar",
       stepAccount: "Hesap Gerekli",
-      stepHotels: "Otel Rezervasyonu",
-      stepTours: "Tur Seçimi",
       stepPlans: "Plan Seçenekleri",
       stepComplete: "Plan Onaylandı",
       titleDetails: "Seyahat planını oluştur",
-      subtitleDetails: "Tarih, misafir, bütçe ve aktiviteleri seç. Faz 1 yalnızca AI tatil planı üretir. Otel ve tur rezervasyonu sonra eklenecek.",
+      subtitleDetails: "Tarih, misafir, bütçe ve aktiviteleri seç. Faz 1 yalnızca AI tatil planı üretir; otel ve tur rezervasyonu yok.",
       titleDestinations: "Destinasyonunu seç",
       subtitleDestinations: "Bu şehirler girdiğin tercihlere göre yapay zeka tarafından önerildi.",
       titleAccount: "Devam etmek için giriş yap",
       subtitleAccount: "Taslağın güvende. Şimdi giriş yap veya üye ol; seçtiğin destinasyondan devam et.",
-      titleHotels: "Otelini seç ve rezerve et",
-      subtitleHotels: "Faz 1'de otel rezervasyonu kapalı. Bu adım atlanır.",
-      titleTours: "Turlarını seç",
-      subtitleTours: "Faz 1'de tur rezervasyonu kapalı. Bu adım atlanır.",
       titlePlans: "Üretilen plan seçeneklerini incele",
       subtitlePlans: "İki AI itinerary'yi karşılaştır. Bu bir plan önerisidir, rezervasyon değildir.",
       titleComplete: "Planın aktif",
-      subtitleComplete: "Onaylanan rota hazır. Otel ve tur rezervasyonu şirketleşmeden sonra eklenecek.",
+      subtitleComplete: "Onaylanan rota hazır. Günlük detayı hesabından açabilirsin.",
       datesLabel: "Seyahat tarihleri",
       startDate: "Başlangıç tarihi",
       endDate: "Bitiş tarihi",
@@ -121,6 +92,9 @@
       budgetLuxury: "Lüks",
       activitiesLabel: "Aktiviteler",
       activitiesHint: "En az bir aktivite seç.",
+      hotelNameLabel: "Otel adı",
+      hotelNamePlaceholder: "İsteğe bağlı",
+      hotelNameHint: "Zaten bir konaklaman varsa planı onun etrafında kurarız. Bu bir rezervasyon değildir.",
       findDestinations: "Destinasyon bul",
       back: "Geri",
       selectDestination: "Bu destinasyonu seç",
@@ -136,37 +110,17 @@
       draftRestored: "Kaydedilmiş taslağın geri yüklendi.",
       syncFailed: "Yerel taslağın güvende, ancak sunucuya senkronizasyon şu anda tamamlanamadı.",
       loadActivitiesFailed: "Aktiviteler şu anda yüklenemedi.",
-      loadingHotels: "Bu şehirdeki oteller listeleniyor...",
-      noHotels: "Şu anda kriterlerine uygun otel bulunamadı.",
-      reserveHotel: "Bu oteli rezerve et",
-      reservedHotel: "Otel rezerve edildi",
-      loadingTours: "Seçtiğin otele yakın turlar aranıyor...",
-      noTours: "Bu destinasyon için tur dönmedi. Tursuz şekilde de plan üretebilirsin.",
-      generatePlans: "Plan seçenekleri oluştur",
-      selectedHotel: "Seçilen otel",
-      selectedTours: "Seçilen turlar",
-      optionalToursHint: "Tur seçimi opsiyoneldir. Tur seçmeden devam edersen plan sadece şehir ve otel etrafında üretilir.",
-      reservingHotel: "Otel rezerve ediliyor...",
       generatingPlans: "Plan seçenekleri üretiliyor...",
+      retryGenerate: "Tekrar dene",
       confirmPlan: "Bu planı onayla",
       estimatedTotal: "Tahmini toplam",
       loadingPlan: "Final rota hazırlanıyor...",
       goToAccount: "Hesaba git",
       createAnotherPlan: "Yeni plan oluştur",
-      hotelNightlyPrice: "Kişi başı gecelik fiyat",
-      hotelRating: "Puan",
-      sponsoredBadge: "AI önerisi",
-      continueWithoutTours: "Tursuz devam et",
-      noActivePlan: "Henüz onaylanmış plan yok.",
-      guestProfileMissing: "Otel rezervasyonu için profil bilgileri çözümlenemedi.",
+      noActivePlan: "Plan seçenekleri henüz oluşturulamadı. Tekrar dene veya başka destinasyon seç.",
       serverDraftLoaded: "Hesabındaki taslak yüklendi.",
       genericError: "Bir sorun oluştu. Lütfen tekrar dene.",
-      hotelReservedBody: "Otel rezervasyonun mevcut backend akışında oluşturuldu. Agoda entegrasyonu geldiğinde bu adım değiştirilebilir.",
-      selectTour: "Seç",
-      selectedState: "Seçildi",
-      adultLabel: "Yetişkin",
-      childLabel: "Çocuk",
-      availableLabel: "Müsait",
+      guestsLabel: "Misafir",
       dayLabel: "Gün",
       planIdLabel: "Plan ID",
       optionLabel: "Seçenek",
@@ -178,24 +132,18 @@
       stepDetails: "Детали поездки",
       stepDestinations: "Рекомендуемые направления",
       stepAccount: "Требуется аккаунт",
-      stepHotels: "Бронирование отеля",
-      stepTours: "Выбор туров",
       stepPlans: "Варианты плана",
       stepComplete: "План подтвержден",
       titleDetails: "Соберите свой план поездки",
-      subtitleDetails: "Выберите даты, гостей, бюджет и активности. Фаза 1 создает только AI-маршрут. Бронирование отеля и туров будет позже.",
+      subtitleDetails: "Выберите даты, гостей, бюджет и активности. Фаза 1 создает только AI-маршрут — без бронирования отеля и туров.",
       titleDestinations: "Выберите направление",
       subtitleDestinations: "Эти города предложены ИИ на основе ваших предпочтений.",
       titleAccount: "Войдите, чтобы продолжить",
       subtitleAccount: "Ваш черновик сохранен. Авторизуйтесь и продолжите с выбранного направления.",
-      titleHotels: "Выберите и забронируйте отель",
-      subtitleHotels: "Пока бронирование отеля использует текущую backend-модель. Позже этот шаг можно заменить Agoda Search и Book API.",
-      titleTours: "Выберите туры",
-      subtitleTours: "Выберите туры, которые должны войти в итоговый маршрут. Они будут забронированы при подтверждении плана.",
       titlePlans: "Проверьте варианты маршрута",
       subtitlePlans: "Сравните два маршрута ИИ. Это предложение плана, а не бронирование.",
       titleComplete: "Ваш план активен",
-      subtitleComplete: "Подтвержденный маршрут готов. Бронирование отеля и туров появится после регистрации компании.",
+      subtitleComplete: "Подтвержденный маршрут готов. Полное расписание можно открыть в аккаунте.",
       datesLabel: "Даты поездки",
       startDate: "Дата начала",
       endDate: "Дата окончания",
@@ -207,6 +155,9 @@
       budgetLuxury: "Люкс",
       activitiesLabel: "Активности",
       activitiesHint: "Выберите хотя бы одну активность.",
+      hotelNameLabel: "Название отеля",
+      hotelNamePlaceholder: "Необязательно",
+      hotelNameHint: "Если жилье уже есть, маршрут будет построен вокруг него. Это не бронирование.",
       findDestinations: "Найти направления",
       back: "Назад",
       selectDestination: "Выбрать это направление",
@@ -222,37 +173,17 @@
       draftRestored: "Ваш сохраненный черновик восстановлен.",
       syncFailed: "Локальный черновик сохранен, но синхронизация с сервером сейчас недоступна.",
       loadActivitiesFailed: "Сейчас не удалось загрузить активности.",
-      loadingHotels: "Ищем подходящие отели в этом городе...",
-      noHotels: "Сейчас не найдено отелей по вашим критериям.",
-      reserveHotel: "Забронировать этот отель",
-      reservedHotel: "Отель забронирован",
-      loadingTours: "Ищем туры рядом с выбранным отелем...",
-      noTours: "Для этого направления туры не найдены. Вы все равно можете продолжить без туров.",
-      generatePlans: "Сгенерировать варианты плана",
-      selectedHotel: "Выбранный отель",
-      selectedTours: "Выбранные туры",
-      optionalToursHint: "Выбор туров не обязателен. Если продолжить без туров, маршрут будет построен вокруг города и отеля.",
-      reservingHotel: "Бронирование отеля...",
       generatingPlans: "Создаем варианты плана...",
+      retryGenerate: "Попробовать снова",
       confirmPlan: "Подтвердить этот план",
       estimatedTotal: "Ориентировочная стоимость",
       loadingPlan: "Подготавливаем итоговый маршрут...",
       goToAccount: "Перейти в аккаунт",
       createAnotherPlan: "Создать новый план",
-      hotelNightlyPrice: "Цена за ночь на человека",
-      hotelRating: "Рейтинг",
-      sponsoredBadge: "Выбор ИИ",
-      continueWithoutTours: "Продолжить без туров",
-      noActivePlan: "Подтвержденный план пока не сохранен.",
-      guestProfileMissing: "Не удалось получить данные профиля для бронирования отеля.",
+      noActivePlan: "Варианты плана пока не созданы. Попробуйте снова или выберите другое направление.",
       serverDraftLoaded: "Черновик из аккаунта загружен.",
       genericError: "Что-то пошло не так. Попробуйте еще раз.",
-      hotelReservedBody: "Ваше бронирование отеля создано в текущем backend-потоке. Позже этот шаг можно будет заменить интеграцией Agoda.",
-      selectTour: "Выбрать",
-      selectedState: "Выбрано",
-      adultLabel: "Взрослый",
-      childLabel: "Ребенок",
-      availableLabel: "Доступно",
+      guestsLabel: "Гости",
       dayLabel: "День",
       planIdLabel: "ID плана",
       optionLabel: "Вариант",
@@ -264,24 +195,18 @@
       stepDetails: "تفاصيل الرحلة",
       stepDestinations: "الوجهات المقترحة",
       stepAccount: "الحساب مطلوب",
-      stepHotels: "حجز الفندق",
-      stepTours: "اختيار الجولات",
       stepPlans: "خيارات الخطة",
       stepComplete: "تم تأكيد الخطة",
       titleDetails: "أنشئ خطة رحلتك",
-      subtitleDetails: "اختر التواريخ والضيوف والميزانية والأنشطة. المرحلة 1 تنشئ مسار رحلة بالذكاء الاصطناعي فقط. حجز الفندق والجولات لاحقا.",
+      subtitleDetails: "اختر التواريخ والضيوف والميزانية والأنشطة. المرحلة 1 تنشئ مسار رحلة بالذكاء الاصطناعي فقط دون حجز فندق أو جولات.",
       titleDestinations: "اختر وجهتك",
       subtitleDestinations: "هذه المدن تم اقتراحها بالذكاء الاصطناعي بناء على تفضيلاتك.",
       titleAccount: "سجل الدخول للمتابعة",
       subtitleAccount: "مسودتك محفوظة. قم بتسجيل الدخول أو إنشاء حساب ثم تابع من الوجهة التي اخترتها.",
-      titleHotels: "اختر الفندق واحجزه",
-      subtitleHotels: "حاليا يستخدم حجز الفندق نموذج الـ backend الحالي. لاحقا يمكن استبدال هذه الخطوة بواجهات Agoda Search و Book.",
-      titleTours: "اختر الجولات",
-      subtitleTours: "حدد الجولات التي تريد إضافتها إلى خطتك النهائية. سيتم حجزها عند تأكيد الخطة.",
       titlePlans: "راجع خيارات الخطة",
       subtitlePlans: "قارن بين المسارين. هذه توصية خطة وليست حجزا.",
       titleComplete: "خطتك أصبحت جاهزة",
-      subtitleComplete: "المسار المؤكد جاهز. حجز الفندق والجولات سيضاف بعد تأسيس الشركة.",
+      subtitleComplete: "المسار المؤكد جاهز. يمكنك فتح التفاصيل اليومية من حسابك.",
       datesLabel: "تواريخ الرحلة",
       startDate: "تاريخ البداية",
       endDate: "تاريخ النهاية",
@@ -293,6 +218,9 @@
       budgetLuxury: "فاخر",
       activitiesLabel: "الأنشطة",
       activitiesHint: "اختر نشاطا واحدا على الأقل.",
+      hotelNameLabel: "اسم الفندق",
+      hotelNamePlaceholder: "اختياري",
+      hotelNameHint: "إذا كان لديك إقامة مسبقا فسنبني الخطة حولها. هذا ليس حجزا.",
       findDestinations: "ابحث عن وجهات",
       back: "رجوع",
       selectDestination: "اختر هذه الوجهة",
@@ -308,37 +236,17 @@
       draftRestored: "تمت استعادة المسودة المحفوظة.",
       syncFailed: "مسودتك المحلية محفوظة، لكن تعذر مزامنتها مع الخادم الآن.",
       loadActivitiesFailed: "تعذر تحميل الأنشطة الآن.",
-      loadingHotels: "جار البحث عن الفنادق المناسبة في هذه المدينة...",
-      noHotels: "لا توجد فنادق مطابقة لمعاييرك حاليا.",
-      reserveHotel: "احجز هذا الفندق",
-      reservedHotel: "تم حجز الفندق",
-      loadingTours: "جار البحث عن الجولات القريبة من الفندق المختار...",
-      noTours: "لم يتم العثور على جولات لهذه الوجهة. يمكنك المتابعة بدون جولات.",
-      generatePlans: "أنشئ خيارات الخطة",
-      selectedHotel: "الفندق المختار",
-      selectedTours: "الجولات المختارة",
-      optionalToursHint: "اختيار الجولات اختياري. إذا تابعت بدونها فسيتم إنشاء الخطة حول المدينة والفندق فقط.",
-      reservingHotel: "جار حجز الفندق...",
       generatingPlans: "جار إنشاء خيارات الخطة...",
+      retryGenerate: "حاول مرة أخرى",
       confirmPlan: "أكد هذه الخطة",
       estimatedTotal: "الإجمالي التقديري",
       loadingPlan: "جار تجهيز خط السير النهائي...",
       goToAccount: "اذهب إلى الحساب",
       createAnotherPlan: "أنشئ خطة جديدة",
-      hotelNightlyPrice: "سعر الليلة للشخص",
-      hotelRating: "التقييم",
-      sponsoredBadge: "اختيار الذكاء الاصطناعي",
-      continueWithoutTours: "تابع بدون جولات",
-      noActivePlan: "لا توجد خطة مؤكدة محفوظة بعد.",
-      guestProfileMissing: "تعذر الوصول إلى بيانات الملف الشخصي اللازمة لحجز الفندق.",
+      noActivePlan: "تعذر إنشاء خيارات الخطة. حاول مرة أخرى أو اختر وجهة أخرى.",
       serverDraftLoaded: "تم تحميل المسودة من حسابك.",
       genericError: "حدث خطأ ما. حاول مرة أخرى.",
-      hotelReservedBody: "تم إنشاء حجز الفندق ضمن التدفق الحالي في الـ backend. يمكن لاحقا استبدال هذه الخطوة بتكامل Agoda.",
-      selectTour: "اختر",
-      selectedState: "تم الاختيار",
-      adultLabel: "بالغ",
-      childLabel: "طفل",
-      availableLabel: "المتاح",
+      guestsLabel: "الضيوف",
       dayLabel: "اليوم",
       planIdLabel: "معرف الخطة",
       optionLabel: "الخيار",
@@ -361,17 +269,9 @@
     suggestions: [],
     city: "",
     city_description: "",
-    hotel_results: [],
-    selected_hotel_id: "",
     selected_hotel_name: "",
-    hotel_reservation_id: "",
-    hotel_reservation_status: "",
-    tour_results: [],
-    selected_tour_ids: [],
     plan_options: [],
     confirmed_plan_id: "",
-    tour_empty_state: false,
-    tour_fallback: null,
   };
 
   const modal = document.getElementById("plan-modal");
@@ -394,9 +294,6 @@
     activities: [],
     activitiesLoaded: false,
     loadingSuggestions: false,
-    loadingHotels: false,
-    reservingHotelId: "",
-    loadingTours: false,
     generatingPlans: false,
     confirmingPlanId: "",
     syncing: false,
@@ -429,58 +326,31 @@
       ...(raw || {}),
       activities: Array.isArray(raw?.activities) ? raw.activities : [],
       suggestions: Array.isArray(raw?.suggestions) ? raw.suggestions : [],
-      hotel_results: Array.isArray(raw?.hotel_results) ? raw.hotel_results : [],
-      tour_results: Array.isArray(raw?.tour_results) ? raw.tour_results : [],
-      selected_tour_ids: Array.isArray(raw?.selected_tour_ids) ? raw.selected_tour_ids : [],
       plan_options: Array.isArray(raw?.plan_options) ? raw.plan_options : [],
+      selected_hotel_name: String(raw?.selected_hotel_name || "").trim(),
       language: raw?.language || getLang(),
     };
   }
 
   function saveDraft() {
     state.draft.language = getLang();
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(state.draft));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      ...EMPTY_DRAFT,
+      ...state.draft,
+    }));
   }
 
   function clearAfterPreferences() {
     state.draft.suggestions = [];
     state.draft.city = "";
     state.draft.city_description = "";
-    state.draft.hotel_results = [];
-    state.draft.selected_hotel_id = "";
-    state.draft.selected_hotel_name = "";
-    state.draft.hotel_reservation_id = "";
-    state.draft.hotel_reservation_status = "";
-    state.draft.tour_results = [];
-    state.draft.selected_tour_ids = [];
     state.draft.plan_options = [];
     state.draft.confirmed_plan_id = "";
-    state.draft.tour_empty_state = false;
-    state.draft.tour_fallback = null;
   }
 
   function clearAfterCity() {
-    state.draft.hotel_results = [];
-    state.draft.selected_hotel_id = "";
-    state.draft.selected_hotel_name = "";
-    state.draft.hotel_reservation_id = "";
-    state.draft.hotel_reservation_status = "";
-    state.draft.tour_results = [];
-    state.draft.selected_tour_ids = [];
     state.draft.plan_options = [];
     state.draft.confirmed_plan_id = "";
-    state.draft.tour_empty_state = false;
-    state.draft.tour_fallback = null;
-  }
-
-  function clearAfterHotel() {
-    state.draft.tour_results = [];
-    state.draft.selected_tour_ids = [];
-    state.draft.plan_options = [];
-    state.draft.confirmedPlanId = "";
-    state.draft.confirmed_plan_id = "";
-    state.draft.tour_empty_state = false;
-    state.draft.tour_fallback = null;
   }
 
   function hasAuth() {
@@ -504,7 +374,6 @@
       state.draft.end_date ||
       state.draft.activities.length ||
       state.draft.city ||
-      state.draft.hotel_reservation_id ||
       state.draft.plan_options.length ||
       state.draft.confirmed_plan_id
     );
@@ -525,6 +394,12 @@
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;")
       .replaceAll("'", "&#039;");
+  }
+
+  function guestSummary() {
+    const adults = Number(state.draft.adults || 0);
+    const children = Number(state.draft.children || 0);
+    return `${adults} ${text("adults")} · ${children} ${text("children")}`;
   }
 
   function setFeedback(message, type = "error") {
@@ -585,22 +460,6 @@
       error.payload = payload;
       throw error;
     }
-    return payload;
-  }
-
-  function readStoredUser() {
-    try {
-      return JSON.parse(localStorage.getItem("tw_user") || "null");
-    } catch (_) {
-      return null;
-    }
-  }
-
-  async function ensureCurrentUser() {
-    const user = readStoredUser();
-    if (user?.full_name && user?.email) return user;
-    const payload = await apiRequest("/me/", { method: "GET" });
-    localStorage.setItem("tw_user", JSON.stringify(payload));
     return payload;
   }
 
@@ -674,6 +533,7 @@
     }
     state.draft.adults = Math.max(1, Number(state.draft.adults || 1));
     state.draft.children = Math.max(0, Number(state.draft.children || 0));
+    state.draft.selected_hotel_name = String(state.draft.selected_hotel_name || "").trim();
     state.draft.language = getLang();
     saveDraft();
   }
@@ -716,126 +576,6 @@
       setFeedback(error.message || text("noCities"));
     } finally {
       state.loadingSuggestions = false;
-      render();
-    }
-  }
-
-  async function loadHotels(force = false) {
-    if (!hasAuth()) {
-      state.step = "account";
-      render();
-      return;
-    }
-    if (!state.draft.city || state.loadingHotels) return;
-    if (!force && state.draft.hotel_results.length) return;
-
-    state.loadingHotels = true;
-    render();
-    try {
-      const payload = await apiRequest("/hotels/search/", {
-        method: "POST",
-        body: JSON.stringify({
-          city: state.draft.city,
-          start_date: state.draft.start_date,
-          end_date: state.draft.end_date,
-          adults: state.draft.adults,
-          children: state.draft.children,
-          budget_type: state.draft.budget_type,
-          activities: state.draft.activities,
-          language: getLang(),
-          sort: "price_asc",
-        }),
-      });
-      state.draft.hotel_results = Array.isArray(payload.hotels) ? payload.hotels : [];
-      saveDraft();
-    } catch (error) {
-      setFeedback(error.message || text("noHotels"));
-    } finally {
-      state.loadingHotels = false;
-      render();
-    }
-  }
-
-  async function reserveHotel(hotelId) {
-    if (!hotelId || state.reservingHotelId) return;
-    state.reservingHotelId = hotelId;
-    setFeedback("");
-    render();
-    try {
-      const user = await ensureCurrentUser();
-      if (!user?.full_name || !user?.email) {
-        throw new Error(text("guestProfileMissing"));
-      }
-      const payload = await apiRequest("/hotel-reservations/", {
-        method: "POST",
-        body: JSON.stringify({
-          hotel_id: hotelId,
-          start_date: state.draft.start_date,
-          end_date: state.draft.end_date,
-          adults: state.draft.adults,
-          children: state.draft.children,
-          guest_contact: {
-            full_name: user.full_name,
-            email: user.email,
-            phone: user.phone,
-            country: user.country,
-          },
-        }),
-      });
-      const hotel = state.draft.hotel_results.find((item) => item.id === hotelId);
-      state.draft.selected_hotel_id = hotelId;
-      state.draft.selected_hotel_name = hotel?.name || "";
-      state.draft.hotel_reservation_id = payload.reservation_id || "";
-      state.draft.hotel_reservation_status = payload.status || "";
-      clearAfterHotel();
-      saveDraft();
-      setFeedback(text("hotelReservedBody"), "success");
-      state.step = "tours";
-      await loadTours(true);
-    } catch (error) {
-      setFeedback(error.message || text("genericError"));
-    } finally {
-      state.reservingHotelId = "";
-      render();
-    }
-  }
-
-  async function loadTours(force = false) {
-    if (!hasAuth()) {
-      state.step = "account";
-      render();
-      return;
-    }
-    if (!state.draft.city || !state.draft.selected_hotel_id || state.loadingTours) return;
-    if (!force && state.draft.tour_results.length) return;
-
-    state.loadingTours = true;
-    render();
-    try {
-      const payload = await apiRequest("/tours/search/", {
-        method: "POST",
-        body: JSON.stringify({
-          hotel_id: state.draft.selected_hotel_id,
-          city: state.draft.city,
-          adults: state.draft.adults,
-          children: state.draft.children,
-          budget_type: state.draft.budget_type,
-          activities: state.draft.activities,
-          radius_km: 30,
-          language: getLang(),
-        }),
-      });
-      state.draft.tour_results = Array.isArray(payload.tours) ? payload.tours : [];
-      state.draft.tour_empty_state = Boolean(payload.empty_state);
-      state.draft.tour_fallback = payload.diy_fallback || null;
-      saveDraft();
-    } catch (error) {
-      state.draft.tour_results = [];
-      state.draft.tour_empty_state = true;
-      state.draft.tour_fallback = null;
-      setFeedback(error.message || text("noTours"));
-    } finally {
-      state.loadingTours = false;
       render();
     }
   }
@@ -910,8 +650,6 @@
       details: [text("stepDetails"), text("titleDetails"), text("subtitleDetails")],
       destinations: [text("stepDestinations"), text("titleDestinations"), text("subtitleDestinations")],
       account: [text("stepAccount"), text("titleAccount"), text("subtitleAccount")],
-      hotels: [text("stepHotels"), text("titleHotels"), text("subtitleHotels")],
-      tours: [text("stepTours"), text("titleTours"), text("subtitleTours")],
       plans: [text("stepPlans"), text("titlePlans"), text("subtitlePlans")],
       complete: [text("stepComplete"), text("titleComplete"), text("subtitleComplete")],
     };
@@ -941,7 +679,7 @@
   }
 
   function renderDetailsStep() {
-    modalBody.innerHTML = `<div class="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"><section class="space-y-8"><div><p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("datesLabel")}</p><div class="grid gap-4 md:grid-cols-2"><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("startDate")}</span><input id="plan-start-date" type="date" value="${escapeHtml(state.draft.start_date)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("endDate")}</span><input id="plan-end-date" type="date" value="${escapeHtml(state.draft.end_date)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label></div></div><div class="grid gap-4 md:grid-cols-2"><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("adults")}</span><input id="plan-adults" type="number" min="1" value="${escapeHtml(state.draft.adults)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("children")}</span><input id="plan-children" type="number" min="0" value="${escapeHtml(state.draft.children)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label></div><div><p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("budgetLabel")}</p><div class="grid gap-3 sm:grid-cols-3">${renderBudgetButton("cheap", text("budgetCheap"))}${renderBudgetButton("economy", text("budgetEconomy"))}${renderBudgetButton("luxury", text("budgetLuxury"))}</div></div></section><aside class="space-y-4"><div><p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("activitiesLabel")}</p><p class="mt-2 text-sm text-slate-200">${text("activitiesHint")}</p></div><div class="grid gap-3 sm:grid-cols-2">${renderActivities()}</div><button id="plan-find-destinations" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200"><i class="fa-solid fa-stars"></i><span>${text("findDestinations")}</span></button></aside></div>`;
+    modalBody.innerHTML = `<div class="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]"><section class="space-y-8"><div><p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("datesLabel")}</p><div class="grid gap-4 md:grid-cols-2"><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("startDate")}</span><input id="plan-start-date" type="date" value="${escapeHtml(state.draft.start_date)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("endDate")}</span><input id="plan-end-date" type="date" value="${escapeHtml(state.draft.end_date)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label></div></div><div class="grid gap-4 md:grid-cols-2"><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("adults")}</span><input id="plan-adults" type="number" min="1" value="${escapeHtml(state.draft.adults)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("children")}</span><input id="plan-children" type="number" min="0" value="${escapeHtml(state.draft.children)}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /></label></div><label class="space-y-2 text-sm font-medium text-slate-100"><span>${text("hotelNameLabel")}</span><input id="plan-hotel-name" type="text" maxlength="150" value="${escapeHtml(state.draft.selected_hotel_name)}" placeholder="${escapeHtml(text("hotelNamePlaceholder"))}" class="w-full border border-slate-200/30 bg-white/5 px-4 py-3 text-slate-100 outline-none transition focus:border-slate-100 placeholder:text-slate-300" /><p class="text-xs leading-5 text-slate-300">${text("hotelNameHint")}</p></label><div><p class="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("budgetLabel")}</p><div class="grid gap-3 sm:grid-cols-3">${renderBudgetButton("cheap", text("budgetCheap"))}${renderBudgetButton("economy", text("budgetEconomy"))}${renderBudgetButton("luxury", text("budgetLuxury"))}</div></div></section><aside class="space-y-4"><div><p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-200">${text("activitiesLabel")}</p><p class="mt-2 text-sm text-slate-200">${text("activitiesHint")}</p></div><div class="grid gap-3 sm:grid-cols-2">${renderActivities()}</div><button id="plan-find-destinations" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200"><i class="fa-solid fa-stars"></i><span>${text("findDestinations")}</span></button></aside></div>`;
 
     const updateCore = (mutator) => {
       mutator();
@@ -953,6 +691,10 @@
     document.getElementById("plan-end-date")?.addEventListener("input", (event) => updateCore(() => { state.draft.end_date = event.target.value; }));
     document.getElementById("plan-adults")?.addEventListener("input", (event) => updateCore(() => { state.draft.adults = Math.max(1, Number(event.target.value || 1)); }));
     document.getElementById("plan-children")?.addEventListener("input", (event) => updateCore(() => { state.draft.children = Math.max(0, Number(event.target.value || 0)); }));
+    document.getElementById("plan-hotel-name")?.addEventListener("input", (event) => {
+      state.draft.selected_hotel_name = event.target.value;
+      saveDraft();
+    });
     modalBody.querySelectorAll("[data-plan-budget]").forEach((button) => {
       button.addEventListener("click", () => {
         updateCore(() => { state.draft.budget_type = button.dataset.planBudget; });
@@ -1008,60 +750,21 @@
   }
 
   function renderAccountStep() {
-    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]"><div class="border border-slate-200/20 bg-white/5 p-6 text-slate-100"><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-3 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-4 text-sm leading-6 text-slate-200">${escapeHtml(state.draft.city_description)}</p><p class="mt-6 text-sm text-slate-200">${text("subtitleAccount")}</p></div><div class="space-y-3"><button id="plan-signin" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("signInToContinue")}</button><button id="plan-signup" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("signUpToContinue")}</button><button id="plan-back-destinations" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("back")}</button></div></div>`;
+    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]"><div class="border border-slate-200/20 bg-white/5 p-6 text-slate-100"><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-3 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-4 text-sm leading-6 text-slate-200">${escapeHtml(state.draft.city_description)}</p><p class="mt-6 text-sm text-slate-200">${text("subtitleAccount")}</p></div><div class="space-y-3"><button id="plan-signin" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("signInToContinue")}</button><button id="plan-signup" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("signUpToContinue")}</button><button id="plan-back-destinations" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("back")}</button></div></div>`;
     document.getElementById("plan-signin")?.addEventListener("click", () => redirectToAuth("/login/"));
     document.getElementById("plan-signup")?.addEventListener("click", () => redirectToAuth("/register/"));
     document.getElementById("plan-back-destinations")?.addEventListener("click", () => { state.step = "destinations"; render(); });
   }
 
-  function hotelCard(hotel) {
-    const reserving = state.reservingHotelId === hotel.id;
-    return `<article class="flex h-full flex-col border border-slate-200/20 bg-white/5 text-slate-100"><div class="aspect-[16/10] overflow-hidden border-b border-slate-200/10 bg-slate-900/40">${hotel.image ? `<img src="${escapeHtml(hotel.image)}" alt="${escapeHtml(hotel.name)}" class="h-full w-full object-cover" />` : `<div class="flex h-full items-center justify-center text-slate-300"><i class="fa-solid fa-hotel text-3xl"></i></div>`}</div><div class="flex flex-1 flex-col p-5"><div class="flex items-start justify-between gap-3"><div><h3 class="font-display text-2xl text-slate-100">${escapeHtml(hotel.name)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(hotel.city || state.draft.city)}</p></div>${hotel.sponsored ? `<span class="border border-slate-200/20 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-slate-200">${text("sponsoredBadge")}</span>` : ""}</div><div class="mt-5 grid gap-3 sm:grid-cols-2"><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("hotelNightlyPrice")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(hotel.nightly_price_per_person)} ${escapeHtml(hotel.currency || "TRY")}</p></div><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("hotelRating")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(hotel.rating || 0)}</p></div></div><button type="button" data-plan-reserve-hotel="${escapeHtml(hotel.id)}" class="mt-6 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${reserving ? "opacity-60" : ""}" ${reserving ? "disabled" : ""}><i class="fa-solid fa-building-circle-check"></i><span>${reserving ? text("reservingHotel") : text("reserveHotel")}</span></button></div></article>`;
-  }
-
-  function renderHotelsStep() {
-    modalBody.innerHTML = `<div class="space-y-6"><div class="flex flex-col gap-4 border border-slate-200/20 bg-white/5 p-5 text-slate-100 lg:flex-row lg:items-center lg:justify-between"><div><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.city_description)}</p></div><button id="plan-back-destinations-from-hotels" type="button" class="inline-flex items-center justify-center gap-2 border border-slate-200/30 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button></div>${state.loadingHotels ? `<div class="flex min-h-[16rem] items-center justify-center border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><div><i class="fa-solid fa-hotel animate-pulse text-3xl"></i><p class="mt-4 text-base">${text("loadingHotels")}</p></div></div>` : ""}${!state.loadingHotels && !state.draft.hotel_results.length ? `<div class="border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${text("noHotels")}</p></div>` : ""}${!state.loadingHotels && state.draft.hotel_results.length ? `<div class="grid gap-4 xl:grid-cols-2">${state.draft.hotel_results.map(hotelCard).join("")}</div>` : ""}</div>`;
-    document.getElementById("plan-back-destinations-from-hotels")?.addEventListener("click", () => { state.step = "destinations"; render(); });
-    modalBody.querySelectorAll("[data-plan-reserve-hotel]").forEach((button) => {
-      button.addEventListener("click", () => reserveHotel(button.dataset.planReserveHotel));
-    });
-  }
-
-  function renderTourCard(tour) {
-    const active = state.draft.selected_tour_ids.includes(tour.id);
-    const firstSessions = Array.isArray(tour.available_sessions) ? tour.available_sessions.slice(0, 3) : [];
-    return `<article class="flex h-full flex-col border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex items-start justify-between gap-3"><div><h3 class="font-display text-2xl text-slate-100">${escapeHtml(tour.title)}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(tour.description || "")}</p></div><button type="button" data-plan-toggle-tour="${escapeHtml(tour.id)}" class="inline-flex items-center justify-center border px-3 py-2 text-sm font-semibold transition ${active ? "border-slate-100 bg-slate-100 text-teal-700" : "border-slate-200/30 text-slate-100 hover:bg-white/10"}">${active ? text("selectedState") : text("selectTour")}</button></div><div class="mt-5 grid gap-3 sm:grid-cols-2"><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("adultLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_adult)} ${escapeHtml(tour.currency || "TRY")}</p></div><div class="border border-slate-200/10 p-3"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("childLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(tour.price_child)} ${escapeHtml(tour.currency || "TRY")}</p></div></div><div class="mt-5 space-y-2 text-sm text-slate-200">${firstSessions.length ? firstSessions.map((session) => `<div class="border border-slate-200/10 bg-white/[0.02] px-3 py-2"><p class="font-semibold text-slate-100">${escapeHtml(session.date)}</p><p class="mt-1">${escapeHtml(session.start_time)} - ${escapeHtml(session.end_time)}</p><p class="mt-1 text-slate-200">${text("availableLabel")}: ${escapeHtml(session.available_spots)}</p></div>`).join("") : `<p>${text("noTours")}</p>`}</div></article>`;
-  }
-
-  function renderToursStep() {
-    modalBody.innerHTML = `<div class="space-y-6"><div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><div class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedHotel")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.selected_hotel_name)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.city)}</p><p class="mt-4 text-sm text-slate-200">${text("optionalToursHint")}</p></div><div class="space-y-3"><button id="plan-back-hotels" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button><button id="plan-generate-from-tours" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${state.generatingPlans ? "opacity-60" : ""}" ${state.generatingPlans ? "disabled" : ""}><i class="fa-solid fa-route"></i><span>${state.generatingPlans ? text("generatingPlans") : text("generatePlans")}</span></button><button id="plan-generate-without-tours" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10 ${state.generatingPlans ? "opacity-60" : ""}" ${state.generatingPlans ? "disabled" : ""}><i class="fa-solid fa-forward"></i><span>${text("continueWithoutTours")}</span></button></div></div>${state.loadingTours ? `<div class="flex min-h-[16rem] items-center justify-center border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><div><i class="fa-solid fa-map-location-dot animate-pulse text-3xl"></i><p class="mt-4 text-base">${text("loadingTours")}</p></div></div>` : ""}${!state.loadingTours && !state.draft.tour_results.length ? `<div class="border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${state.draft.tour_empty_state ? escapeHtml(state.draft.tour_fallback?.summary || text("noTours")) : text("noTours")}</p></div>` : ""}${!state.loadingTours && state.draft.tour_results.length ? `<div class="grid gap-4 xl:grid-cols-2">${state.draft.tour_results.map(renderTourCard).join("")}</div>` : ""}</div>`;
-    document.getElementById("plan-back-hotels")?.addEventListener("click", () => { state.step = "hotels"; render(); });
-    document.getElementById("plan-generate-from-tours")?.addEventListener("click", generatePlanOptions);
-    document.getElementById("plan-generate-without-tours")?.addEventListener("click", () => {
-      state.draft.selected_tour_ids = [];
-      saveDraft();
-      generatePlanOptions();
-    });
-    modalBody.querySelectorAll("[data-plan-toggle-tour]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const id = button.dataset.planToggleTour;
-        const next = new Set(state.draft.selected_tour_ids);
-        if (next.has(id)) next.delete(id); else next.add(id);
-        state.draft.selected_tour_ids = Array.from(next);
-        saveDraft();
-        render();
-      });
-    });
-  }
-
   function renderPlanOption(option) {
     const confirming = state.confirmingPlanId === option.plan_id;
-    return `<article class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex flex-col gap-4 border-b border-slate-200/10 pb-5 lg:flex-row lg:items-start lg:justify-between"><div><h3 class="font-display text-3xl text-slate-100">${escapeHtml(option.title || "Plan")}</h3><p class="mt-3 text-sm leading-6 text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p></div><div class="min-w-[12rem] border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("estimatedTotal")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.estimated_total || "-")} ${escapeHtml(option.currency || "TRY")}</p></div></div><div class="mt-5 space-y-4">${(option.days || []).map((day) => `<section class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("dayLabel")} ${escapeHtml(day.day)}</p><div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `<div class="grid gap-2 border border-slate-200/5 bg-white/[0.02] p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start"><span class="text-sm font-semibold text-lagoon-300">${escapeHtml(item.time)}</span><div><p class="text-sm font-semibold text-slate-100">${escapeHtml(item.title)}</p><p class="mt-1 text-sm text-slate-200">${escapeHtml(item.notes || "")}</p></div></div>`).join("")}</div></section>`).join("")}</div><button type="button" data-plan-confirm="${escapeHtml(option.plan_id)}" class="mt-6 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${confirming ? "opacity-60" : ""}" ${confirming ? "disabled" : ""}><i class="fa-solid fa-check"></i><span>${confirming ? text("loadingPlan") : text("confirmPlan")}</span></button></article>`;
+    return `<article class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><div class="flex flex-col gap-4 border-b border-slate-200/10 pb-5 lg:flex-row lg:items-start lg:justify-between"><div><h3 class="font-display text-3xl text-slate-100">${escapeHtml(option.title || "Plan")}</h3><p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p></div><div class="min-w-[12rem] border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("estimatedTotal")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.estimated_total || "-")} ${escapeHtml(option.currency || "TRY")}</p></div></div><div class="mt-5 space-y-4">${(option.days || []).map((day) => `<section class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("dayLabel")} ${escapeHtml(day.day)}</p><div class="mt-4 space-y-3">${(day.timeline || []).map((item) => `<div class="grid gap-2 border border-slate-200/5 bg-white/[0.02] p-3 md:grid-cols-[5rem_minmax(0,1fr)] md:items-start"><span class="text-sm font-semibold text-lagoon-300">${escapeHtml(item.time)}</span><div><p class="text-sm font-semibold text-slate-100">${escapeHtml(item.title)}</p>${item.notes ? `<p class="mt-1 line-clamp-2 text-sm text-slate-200">${escapeHtml(item.notes)}</p>` : ""}</div></div>`).join("")}</div></section>`).join("")}</div><button type="button" data-plan-confirm="${escapeHtml(option.plan_id)}" class="mt-6 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200 ${confirming ? "opacity-60" : ""}" ${confirming ? "disabled" : ""}><i class="fa-solid fa-check"></i><span>${confirming ? text("loadingPlan") : text("confirmPlan")}</span></button></article>`;
   }
 
   function renderPlansStep() {
-    modalBody.innerHTML = `<div class="space-y-6"><div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><div class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.start_date)} — ${escapeHtml(state.draft.end_date)}</p></div><button id="plan-back-destinations-from-plans" type="button" class="inline-flex h-fit items-center justify-center gap-2 border border-slate-200/30 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button></div>${state.generatingPlans ? `<div class="flex min-h-[16rem] items-center justify-center border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><div><i class="fa-solid fa-route animate-pulse text-3xl"></i><p class="mt-4 text-base">${text("generatingPlans")}</p></div></div>` : ""}${!state.generatingPlans && state.draft.plan_options.length ? `<div class="grid gap-6 xl:grid-cols-2">${state.draft.plan_options.map(renderPlanOption).join("")}</div>` : ""}${!state.generatingPlans && !state.draft.plan_options.length ? `<div class="border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${text("noActivePlan")}</p></div>` : ""}</div>`;
+    modalBody.innerHTML = `<div class="space-y-6"><div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]"><div class="border border-slate-200/20 bg-white/5 p-5 text-slate-100"><p class="text-xs uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.start_date)} — ${escapeHtml(state.draft.end_date)}</p>${state.draft.selected_hotel_name ? `<p class="mt-2 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p>` : ""}</div><button id="plan-back-destinations-from-plans" type="button" class="inline-flex h-fit items-center justify-center gap-2 border border-slate-200/30 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10"><i class="fa-solid fa-arrow-left"></i><span>${text("back")}</span></button></div>${state.generatingPlans ? `<div class="flex min-h-[16rem] items-center justify-center border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><div><i class="fa-solid fa-route animate-pulse text-3xl"></i><p class="mt-4 text-base">${text("generatingPlans")}</p></div></div>` : ""}${!state.generatingPlans && state.draft.plan_options.length ? `<div class="grid gap-6 xl:grid-cols-2">${state.draft.plan_options.map(renderPlanOption).join("")}</div>` : ""}${!state.generatingPlans && !state.draft.plan_options.length ? `<div class="space-y-5 border border-slate-200/20 bg-white/5 px-6 py-10 text-center text-slate-100"><p>${text("noActivePlan")}</p><button id="plan-retry-generate" type="button" class="inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("retryGenerate")}</button></div>` : ""}</div>`;
     document.getElementById("plan-back-destinations-from-plans")?.addEventListener("click", () => { state.step = "destinations"; render(); });
+    document.getElementById("plan-retry-generate")?.addEventListener("click", generatePlanOptions);
     modalBody.querySelectorAll("[data-plan-confirm]").forEach((button) => {
       button.addEventListener("click", () => confirmPlan(button.dataset.planConfirm));
     });
@@ -1073,7 +776,7 @@
 
   function renderCompleteStep() {
     const option = selectedPlan();
-    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div class="space-y-5 border border-slate-200/20 bg-white/5 p-6 text-slate-100"><div><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3><p class="mt-3 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p></div><div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("startDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.start_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("endDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.end_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("selectedTours")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.selected_tour_ids.length)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("planIdLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.confirmed_plan_id)}</p></div></div>${option ? `<div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("optionLabel")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.title || "Plan")}</p><p class="mt-2 text-sm text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p><a href="/account/" class="mt-4 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${text("viewDetails")}</span></a><p class="mt-3 text-xs uppercase tracking-[0.16em] text-slate-300">${text("viewDetailsHint")}</p></div>` : ""}</div><div class="space-y-3"><a href="/account/" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("goToAccount")}</a><button id="plan-create-another" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("createAnotherPlan")}</button><button id="plan-complete-close" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("close")}</button></div></div>`;
+    modalBody.innerHTML = `<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]"><div class="space-y-5 border border-slate-200/20 bg-white/5 p-6 text-slate-100"><div><p class="text-sm uppercase tracking-[0.18em] text-slate-200">${text("selectedDestination")}</p><h3 class="mt-2 font-display text-3xl text-slate-100">${escapeHtml(state.draft.city)}</h3>${state.draft.selected_hotel_name ? `<p class="mt-3 text-sm text-slate-200">${escapeHtml(state.draft.selected_hotel_name)}</p>` : ""}</div><div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4"><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("startDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.start_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("endDate")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.end_date)}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("guestsLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(guestSummary())}</p></div><div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("planIdLabel")}</p><p class="mt-2 text-sm font-semibold text-slate-100">${escapeHtml(state.draft.confirmed_plan_id)}</p></div></div>${option ? `<div class="border border-slate-200/10 p-4"><p class="text-xs uppercase tracking-[0.16em] text-slate-300">${text("optionLabel")}</p><p class="mt-2 text-base font-semibold text-slate-100">${escapeHtml(option.title || "Plan")}</p><p class="mt-2 line-clamp-3 text-sm text-slate-200">${escapeHtml(option.gemini_recommendation || option.summary || "")}</p><a href="/account/" class="mt-4 inline-flex items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-4 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>${text("viewDetails")}</span></a><p class="mt-3 text-xs uppercase tracking-[0.16em] text-slate-300">${text("viewDetailsHint")}</p></div>` : ""}</div><div class="space-y-3"><a href="/account/" class="inline-flex w-full items-center justify-center gap-2 border border-slate-100 bg-slate-100 px-5 py-3 text-sm font-semibold text-teal-700 transition hover:bg-slate-200">${text("goToAccount")}</a><button id="plan-create-another" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("createAnotherPlan")}</button><button id="plan-complete-close" type="button" class="inline-flex w-full items-center justify-center gap-2 border border-slate-200/30 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">${text("close")}</button></div></div>`;
     document.getElementById("plan-complete-close")?.addEventListener("click", closeModal);
     document.getElementById("plan-create-another")?.addEventListener("click", () => {
       state.draft = normalizeDraft({ language: getLang() });
@@ -1088,8 +791,6 @@
     setFeedback(state.feedback, state.feedbackType);
     if (state.step === "destinations") return renderDestinationsStep();
     if (state.step === "account") return renderAccountStep();
-    if (state.step === "hotels") return renderHotelsStep();
-    if (state.step === "tours") return renderToursStep();
     if (state.step === "plans") return renderPlansStep();
     if (state.step === "complete") return renderCompleteStep();
     return renderDetailsStep();

@@ -1,7 +1,7 @@
 from datetime import timedelta
 from unittest.mock import patch
 
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -966,3 +966,41 @@ class PartnerSessionViewTests(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertTrue(TourSession.objects.filter(id=session.id).exists())
 		self.assertContains(response, 'Rezervasyonu olan seans silinemez.')
+
+
+@override_settings(STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage')
+class LandingSeoTests(SimpleTestCase):
+	def test_robots_txt_points_to_sitemap_and_hides_private_paths(self):
+		response = self.client.get('/robots.txt')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertIn('text/plain', response['Content-Type'])
+		self.assertIn('Sitemap: https://turquaway.com/sitemap.xml', response.content.decode())
+		self.assertIn('Disallow: /admin/', response.content.decode())
+		self.assertIn('Disallow: /account/', response.content.decode())
+
+	def test_sitemap_lists_public_pages(self):
+		response = self.client.get('/sitemap.xml')
+		body = response.content.decode()
+
+		self.assertEqual(response.status_code, 200)
+		self.assertIn('application/xml', response['Content-Type'])
+		self.assertIn('https://turquaway.com/</loc>', body)
+		self.assertIn('https://turquaway.com/about/</loc>', body)
+		self.assertNotIn('/account/', body)
+
+	def test_homepage_exposes_indexable_meta(self):
+		response = self.client.get('/')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'Turquaway | AI Holiday Planner for Türkiye')
+		self.assertContains(response, 'name="description"')
+		self.assertContains(response, 'rel="canonical"')
+		self.assertContains(response, 'application/ld+json')
+		self.assertContains(response, 'index, follow')
+
+	def test_account_page_is_noindex(self):
+		response = self.client.get('/account/')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertContains(response, 'noindex, nofollow')

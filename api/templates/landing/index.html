@@ -1,7 +1,25 @@
 {% extends 'landing/base.html' %}
 {% load static %}
 
-{% block title %}Turquaway - AI Tour Planner{% endblock %}
+{% block title %}Turquaway | AI Holiday Planner for Türkiye{% endblock %}
+{% block extra_head %}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Turquaway",
+    "applicationCategory": "TravelApplication",
+    "operatingSystem": "Web, iOS, Android",
+    "url": "{{ SITE_URL }}/",
+    "description": "AI holiday planner that turns dates, budget, and activities into destination matches and two itinerary options for Türkiye.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TRY"
+    }
+  }
+</script>
+{% endblock %}
 
 {% block content %}
     <main class="bg-lagoon-50 text-slate-950 font-sans antialiased">
@@ -26,7 +44,7 @@
                 class="mb-4 inline-flex items-center gap-2 border border-lagoon-500/40 bg-white/60 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-black"
                 data-i18n="heroEyebrow"
               >
-                AI Holiday Planner for Türkiye
+                Turquaway · AI Holiday Planner for Türkiye
               </p>
               <h1
                 class="font-display text-lg md:text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl"

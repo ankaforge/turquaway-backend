@@ -5,7 +5,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Turquaway - AI Tour Planner{% endblock %}</title>
+    <title>{% block title %}Turquaway | AI Holiday Planner for Türkiye{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Turquaway is an AI holiday planner for Türkiye. Enter dates, budget, and activities to get destination matches and two personalized itineraries.{% endblock %}" />
+    <meta name="robots" content="{% block robots %}index, follow{% endblock %}" />
+    <meta name="author" content="Turquaway" />
+    <meta name="application-name" content="Turquaway" />
+    <meta name="theme-color" content="#0DB28F" />
+    <link rel="canonical" href="{% block canonical %}{{ CANONICAL_URL }}{% endblock %}" />
+    <link rel="alternate" hreflang="x-default" href="{{ SITE_URL }}/" />
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}" />
+    <meta property="og:site_name" content="Turquaway" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="{% block og_title %}Turquaway | AI Holiday Planner for Türkiye{% endblock %}" />
+    <meta property="og:description" content="{% block og_description %}Turquaway is an AI holiday planner for Türkiye. Enter dates, budget, and activities to get destination matches and two personalized itineraries.{% endblock %}" />
+    <meta property="og:url" content="{{ CANONICAL_URL }}" />
+    <meta property="og:image" content="{{ OG_IMAGE_URL }}" />
+    <meta property="og:image:alt" content="Turquaway" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="{% block twitter_title %}Turquaway | AI Holiday Planner for Türkiye{% endblock %}" />
+    <meta name="twitter:description" content="{% block twitter_description %}Turquaway is an AI holiday planner for Türkiye. Enter dates, budget, and activities to get destination matches and two personalized itineraries.{% endblock %}" />
+    <meta name="twitter:image" content="{{ OG_IMAGE_URL }}" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "name": "Turquaway",
+            "legalName": "Turquaway Teknoloji A.S.",
+            "url": "{{ SITE_URL }}/",
+            "logo": "{{ OG_IMAGE_URL }}",
+            "email": "{{ SEO_EMAIL }}",
+            "telephone": "{{ SEO_PHONE }}",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Cevizli Mah. Zuhal Cad. A Blok No: 46",
+              "addressLocality": "Maltepe",
+              "addressRegion": "Istanbul",
+              "addressCountry": "TR"
+            },
+            "sameAs": [
+              "https://instagram.com/turquaway",
+              "https://facebook.com/turquaway"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "name": "Turquaway",
+            "url": "{{ SITE_URL }}/",
+            "inLanguage": ["en", "tr", "ru", "ar"],
+            "publisher": {
+              "@type": "Organization",
+              "name": "Turquaway"
+            }
+          }
+        ]
+      }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {

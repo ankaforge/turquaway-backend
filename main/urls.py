@@ -25,7 +25,11 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from api.seo_views import robots_txt, sitemap_xml
+
 urlpatterns = [
+    path('robots.txt', robots_txt, name='robots'),
+    path('sitemap.xml', sitemap_xml, name='sitemap'),
     path('', TemplateView.as_view(template_name='landing/index.html'), name='landing'),
     path('about/', TemplateView.as_view(template_name='landing/about.html'), name='about'),
     path('privacy/', TemplateView.as_view(template_name='landing/privacy.html'), name='privacy'),

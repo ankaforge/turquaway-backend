@@ -1,6 +1,7 @@
 ﻿const translations = {
   en: {
-    pageTitle: "Turquaway - AI Tour Planner",
+    pageTitle: "Turquaway | AI Holiday Planner for Türkiye",
+    pageDescription: "Turquaway is an AI holiday planner for Türkiye. Enter dates, budget, and activities to get destination matches and two personalized itineraries.",
     languageLabel: "Language",
     navFeatures: "Features",
     navHowItWorks: "How it Works",
@@ -8,7 +9,7 @@
     navDownload: "Download",
     navCreatePlan: "Create Plan",
     navAccount: "Account",
-    heroEyebrow: "AI Holiday Planner for Türkiye",
+    heroEyebrow: "Turquaway · AI Holiday Planner for Türkiye",
     heroTitle: "Start with your dates. Let AI choose the destination.",
     heroSubtitle: "From destination match to hotel and tour flow, all on the web.",
     heroBody:
@@ -164,7 +165,8 @@
     authRegisterBtn: "Create Account",
     navExplore: "Explore",
     navLogout: "Sign Out",
-    aboutPageTitle: "Turquaway - About Us",
+    aboutPageTitle: "About Turquaway | AI Travel Technology for Türkiye",
+    aboutPageDescription: "Turquaway Teknoloji A.S. builds AI trip planning for Türkiye from Istanbul. Learn how we match destinations and create personalized itineraries.",
     aboutEyebrow: "About Turquaway",
     aboutHeroTitle: "Pioneering Digital Transformation in Tourism: The Future of Travel with Turquaway",
     aboutHeroLead: "As Turquaway Teknoloji A.S., we are rewriting the traditional tourism model with modern engineering solutions. New-generation travelers now expect a travel experience that is more digital, faster, and more personalized. Our mission is to build a scalable and global ecosystem that answers these dynamic expectations with advanced travel technology.",
@@ -189,7 +191,8 @@
     aboutVisionTitle: "Travelers Empowered by Technology",
     aboutVisionBody1: "In our world, travel is free, smart, and fully digital. We are not just building a mobile application; we are leading the digital transformation of tourism as a technology hub.",
     aboutVisionBody2: "By combining software strength with the passion to explore, we transform travel from a burden into a digital art form. Meet Turquaway and become part of a next-generation tourism ecosystem that crosses borders with code.",
-    privacyPageTitle: "Turquaway - Privacy Policy",
+    privacyPageTitle: "Privacy Policy | Turquaway",
+    privacyPageDescription: "Read how Turquaway collects, uses, and protects personal data for AI trip planning and account services.",
     privacyEyebrow: "Privacy Policy",
     privacyTitle: "How We Protect Your Data",
     privacyLead: "Turquaway processes personal data to provide travel planning, booking, and account services in a secure and transparent way.",
@@ -199,7 +202,8 @@
     privacySection2Body: "This information is used to personalize recommendations, manage reservations, improve service quality, support customer communication, and maintain platform security.",
     privacySection3Title: "Your Rights",
     privacySection3Body: "You may request access, correction, or deletion of your data and can contact Turquaway regarding privacy questions or legal rights related to your account.",
-    termsPageTitle: "Turquaway - Terms of Service",
+    termsPageTitle: "Terms of Service | Turquaway",
+    termsPageDescription: "Terms for using Turquaway, the AI holiday planner for Türkiye, including account rules and service conditions.",
     termsEyebrow: "Terms of Service",
     termsTitle: "Terms for Using Turquaway",
     termsLead: "By accessing Turquaway, you agree to use the platform lawfully, provide accurate information, and follow the booking and account rules described here.",
@@ -236,7 +240,8 @@
     accountPlanUnavailable: "Active plan information is unavailable.",
   },
   tr: {
-    pageTitle: "Turquaway - Yapay Zeka Destekli Tur Planlayıcı",
+    pageTitle: "Turquaway | Türkiye için Yapay Zeka Tatil Planı",
+    pageDescription: "Turquaway, Türkiye için yapay zeka tatil planlayıcısıdır. Tarih, bütçe ve aktivite girin; destinasyon önerisi ve iki kişiselleştirilmiş rota alın.",
     languageLabel: "Dil",
     navFeatures: "Özellikler",
     navHowItWorks: "Nasıl Çalışır?",
@@ -244,7 +249,7 @@
     navDownload: "İndir",
     navCreatePlan: "Plan Oluştur",
     navAccount: "Hesabım",
-    heroEyebrow: "Türkiye İçin Yapay Zeka Tatil Planlayıcısı",
+    heroEyebrow: "Turquaway · Türkiye İçin Yapay Zeka Tatil Planlayıcısı",
     heroTitle: "Tarihini gir. Destinasyonu yapay zeka bulsun.",
     heroSubtitle: "Destinasyon eşleşmesinden otel ve tur akışına kadar her şey web üzerinde.",
     heroBody: "Tarihlerini, bütçeni ve aktivitelerini seç. Turquaway uygun destinasyonu bulsun, o bölgedeki en uygun otelleri sıralasın, istersen turları eklesin ve sonunda değerlendirebileceğin iki AI plan oluştursun.",
@@ -371,7 +376,8 @@
     authRegisterBtn: "Hesap Olu\u015ftur",
     navExplore: "Keşfet",
     navLogout: "Çıkış Yap",
-    aboutPageTitle: "Turquaway - Hakkımızda",
+    aboutPageTitle: "Turquaway Hakkında | Türkiye için Yapay Zeka Seyahat Teknolojisi",
+    aboutPageDescription: "Turquaway Teknoloji A.Ş., İstanbul’dan Türkiye için yapay zeka tatil planı üretir. Destinasyon eşleştirme ve kişiselleştirilmiş rota yaklaşımını okuyun.",
     aboutEyebrow: "Turquaway Hakkında",
     aboutHeroTitle: "Turizmde Dijital Dönüşümün Öncüsü: Turquaway ile Geleceğin Seyahat Deneyimi",
     aboutHeroLead: "Turquaway Teknoloji A.Ş. olarak, geleneksel turizm anlayışını modern mühendislik çözümleriyle yeniden kodluyoruz. Yeni nesil gezginlerin beklentileri artık çok daha dijital, çok daha hızlı ve kişiselleştirilmiş bir yapıya evrildi. Misyonumuz, bu dinamik beklentilere en ileri seyahat teknolojileri ile yanıt veren, ölçeklenebilir ve küresel bir ekosistem inşa etmektir.",
@@ -396,7 +402,8 @@
     aboutVisionTitle: "Teknolojiyle Özgürleşen Gezginler",
     aboutVisionBody1: "Bizim dünyamızda seyahat; özgür, akıllı ve tamamen dijitaldir. Sadece bir mobil uygulama değil, turizmin geleceğini şekillendiren bir teknoloji üssü inşa ediyoruz.",
     aboutVisionBody2: "Yazılım gücümüzü keşif tutkusuyla birleştirerek seyahat etmeyi bir yük olmaktan çıkarıp dijital bir sanata dönüştürüyoruz. Turquaway ile tanışın ve sınırları kodlarla aşan yeni nesil turizm ekosisteminin bir parçası olun.",
-    privacyPageTitle: "Turquaway - Gizlilik Politikası",
+    privacyPageTitle: "Gizlilik Politikası | Turquaway",
+    privacyPageDescription: "Turquaway’in yapay zeka tatil planı ve hesap hizmetleri için kişisel verileri nasıl topladığını ve koruduğunu okuyun.",
     privacyEyebrow: "Gizlilik Politikası",
     privacyTitle: "Verilerinizi Nasıl Koruyoruz",
     privacyLead: "Turquaway, seyahat planlama, rezervasyon ve hesap hizmetlerini güvenli ve şeffaf biçimde sunabilmek için kişisel verileri işler.",
@@ -406,7 +413,8 @@
     privacySection2Body: "Bu bilgiler önerileri kişiselleştirmek, rezervasyonları yönetmek, hizmet kalitesini geliştirmek, müşteri iletişimini sürdürmek ve platform güvenliğini sağlamak için kullanılır.",
     privacySection3Title: "Haklarınız",
     privacySection3Body: "Verilerinize erişim, düzeltme veya silme talebinde bulunabilirsiniz. Gizlilik veya hesabınıza ilişkin yasal haklar için Turquaway ile iletişime geçebilirsiniz.",
-    termsPageTitle: "Turquaway - Kullanım Şartları",
+    termsPageTitle: "Kullanım Şartları | Turquaway",
+    termsPageDescription: "Türkiye için yapay zeka tatil planlayıcısı Turquaway’i kullanırken geçerli hesap ve hizmet kuralları.",
     termsEyebrow: "Kullanım Şartları",
     termsTitle: "Turquaway Kullanım Koşulları",
     termsLead: "Turquaway platformuna erişerek hizmeti hukuka uygun şekilde kullanmayı, doğru bilgi vermeyi ve burada belirtilen rezervasyon ile hesap kurallarına uymayı kabul edersiniz.",
@@ -443,7 +451,8 @@
     accountPlanUnavailable: "Aktif plan bilgileri kullanılamıyor.",
   },
   ru: {
-    pageTitle: "Turquaway - ИИ-планировщик путешествий",
+    pageTitle: "Turquaway | ИИ-планировщик отдыха по Турции",
+    pageDescription: "Turquaway — ИИ-планировщик отдыха по Турции. Укажите даты, бюджет и активности, чтобы получить подходящие города и два персональных маршрута.",
     languageLabel: "Язык",
     navFeatures: "Возможности",
     navHowItWorks: "Как это работает",
@@ -451,7 +460,7 @@
     navDownload: "Скачать",
     navCreatePlan: "Создать план",
     navAccount: "Аккаунт",
-    heroEyebrow: "AI-планировщик отдыха по Турции",
+    heroEyebrow: "Turquaway · AI-планировщик отдыха по Турции",
     heroTitle: "Начните с дат. Пусть ИИ выберет направление.",
     heroSubtitle: "От подбора направления до отеля и туров - весь поток доступен в вебе.",
     heroBody: "Выберите даты, бюджет и активности. Turquaway подберет направление, покажет наиболее подходящие отели в этом регионе, при желании добавит туры, а затем создаст два AI-плана, с которыми можно двигаться дальше.",
@@ -577,7 +586,8 @@
     authRegisterBtn: "Создать аккаунт",
     navExplore: "Исследовать",
     navLogout: "Выйти",
-    aboutPageTitle: "Turquaway - О нас",
+    aboutPageTitle: "О Turquaway | ИИ-технологии путешествий по Турции",
+    aboutPageDescription: "Turquaway Teknoloji A.S. создает ИИ-планирование поездок по Турции из Стамбула.",
     aboutEyebrow: "О Turquaway",
     aboutHeroTitle: "Лидер цифровой трансформации в туризме: будущее путешествий с Turquaway",
     aboutHeroLead: "В Turquaway Teknoloji A.S. мы заново кодируем традиционный туризм с помощью современных инженерных решений. Новое поколение путешественников ожидает более цифровой, быстрой и персонализированной среды. Наша миссия - построить масштабируемую глобальную экосистему, которая отвечает этим ожиданиям с помощью передовых travel-tech решений.",
@@ -602,7 +612,8 @@
     aboutVisionTitle: "Путешественники, которых усиливает технология",
     aboutVisionBody1: "В нашем мире путешествие - это свобода, интеллект и полная цифровизация. Мы создаем не просто мобильное приложение, а технологический центр, формирующий будущее туризма.",
     aboutVisionBody2: "Объединяя силу программного обеспечения и страсть к открытиям, мы превращаем путешествие из нагрузки в цифровое искусство. Познакомьтесь с Turquaway и станьте частью экосистемы нового поколения, которая пересекает границы с помощью кода.",
-    privacyPageTitle: "Turquaway - Политика конфиденциальности",
+    privacyPageTitle: "Политика конфиденциальности | Turquaway",
+    privacyPageDescription: "Как Turquaway собирает и защищает персональные данные для ИИ-планирования поездок.",
     privacyEyebrow: "Политика конфиденциальности",
     privacyTitle: "Как мы защищаем ваши данные",
     privacyLead: "Turquaway обрабатывает персональные данные для безопасного и прозрачного предоставления услуг по планированию поездок, бронированию и управлению аккаунтом.",
@@ -612,7 +623,8 @@
     privacySection2Body: "Эта информация используется для персонализации рекомендаций, управления бронированиями, улучшения качества сервиса, коммуникации с пользователями и обеспечения безопасности платформы.",
     privacySection3Title: "Ваши права",
     privacySection3Body: "Вы можете запросить доступ, исправление или удаление ваших данных и связаться с Turquaway по вопросам конфиденциальности или прав, связанных с вашим аккаунтом.",
-    termsPageTitle: "Turquaway - Условия использования",
+    termsPageTitle: "Условия использования | Turquaway",
+    termsPageDescription: "Правила аккаунта и сервиса для ИИ-планировщика отдыха Turquaway.",
     termsEyebrow: "Условия использования",
     termsTitle: "Условия использования Turquaway",
     termsLead: "Получая доступ к Turquaway, вы соглашаетесь использовать платформу законно, предоставлять точную информацию и соблюдать правила аккаунта и бронирований, описанные здесь.",
@@ -650,7 +662,8 @@
     accountPlanUnavailable: "Информация об активном плане недоступна.",
 },
   ar: {
-    pageTitle: "Turquaway - مخطط رحلات ذكي",
+    pageTitle: "Turquaway | مخطط عطلات بالذكاء الاصطناعي لتركيا",
+    pageDescription: "Turquaway مخطط عطلات بالذكاء الاصطناعي لتركيا. أدخل التواريخ والميزانية والأنشطة لتحصل على وجهات مناسبة ومسارين مخصصين.",
     languageLabel: "اللغة",
     navFeatures: "الميزات",
     navHowItWorks: "كيف يعمل؟",
@@ -658,7 +671,7 @@
     navDownload: "تحميل",
     navCreatePlan: "أنشئ خطة",
     navAccount: "الحساب",
-    heroEyebrow: "مخطط عطلات ذكي لتركيا",
+    heroEyebrow: "Turquaway · مخطط عطلات ذكي لتركيا",
     heroTitle: "ابدأ بالتواريخ. ودع الذكاء الاصطناعي يختار الوجهة.",
     heroSubtitle: "من مطابقة الوجهة إلى الفندق والتجارب، كل التدفق يعمل على الويب.",
     heroBody: "اختر التواريخ والميزانية والأنشطة. يقوم Turquaway بمطابقة الوجهة، ويعرض أفضل الفنادق المناسبة في تلك المنطقة، ويضيف الجولات إذا أردت، ثم ينشئ لك خطتين ذكيتين يمكن متابعة الرحلة من خلالهما.",
@@ -784,7 +797,8 @@
     authRegisterBtn: "إنشاء الحساب",
     navExplore: "استكشف",
     navLogout: "تسجيل الخروج",
-    aboutPageTitle: "Turquaway - من نحن",
+    aboutPageTitle: "عن Turquaway | تقنية سفر بالذكاء الاصطناعي لتركيا",
+    aboutPageDescription: "تبني Turquaway Teknoloji A.S. تخطيط الرحلات بالذكاء الاصطناعي لتركيا من إسطنبول.",
     aboutEyebrow: "عن Turquaway",
     aboutHeroTitle: "الريادة في التحول الرقمي للسياحة: تجربة السفر المستقبلية مع Turquaway",
     aboutHeroLead: "في Turquaway Teknoloji A.S. نعيد صياغة المفهوم التقليدي للسياحة عبر حلول هندسية حديثة. لقد أصبحت توقعات المسافرين الجدد أكثر رقمية وسرعة وتخصيصا. مهمتنا هي بناء منظومة عالمية قابلة للتوسع تستجيب لهذه التوقعات من خلال أحدث تقنيات السفر.",
@@ -809,7 +823,8 @@
     aboutVisionTitle: "مسافرون يتحررون بالتكنولوجيا",
     aboutVisionBody1: "في عالمنا، السفر حر وذكي ورقمي بالكامل. نحن لا نبني مجرد تطبيق جوال، بل نقود التحول الرقمي في السياحة كمركز تقني متكامل.",
     aboutVisionBody2: "من خلال دمج قوة البرمجيات مع شغف الاكتشاف، نحول السفر من عبء إلى فن رقمي. تعرّف على Turquaway وكن جزءا من منظومة سياحية جديدة تعبر الحدود عبر الكود.",
-    privacyPageTitle: "Turquaway - سياسة الخصوصية",
+    privacyPageTitle: "سياسة الخصوصية | Turquaway",
+    privacyPageDescription: "كيف تجمع Turquaway البيانات الشخصية وتحميها لخدمات تخطيط الرحلات.",
     privacyEyebrow: "سياسة الخصوصية",
     privacyTitle: "كيف نحمي بياناتك",
     privacyLead: "تعالج Turquaway البيانات الشخصية لتقديم خدمات تخطيط السفر والحجوزات والحسابات بطريقة آمنة وشفافة.",
@@ -819,7 +834,8 @@
     privacySection2Body: "تستخدم هذه المعلومات لتخصيص التوصيات وإدارة الحجوزات وتحسين جودة الخدمة ودعم التواصل مع العملاء والحفاظ على أمن المنصة.",
     privacySection3Title: "حقوقك",
     privacySection3Body: "يمكنك طلب الوصول إلى بياناتك أو تصحيحها أو حذفها، كما يمكنك التواصل مع Turquaway بخصوص الخصوصية أو الحقوق القانونية المرتبطة بحسابك.",
-    termsPageTitle: "Turquaway - شروط الخدمة",
+    termsPageTitle: "شروط الخدمة | Turquaway",
+    termsPageDescription: "شروط استخدام مخطط العطلات Turquaway بما في ذلك قواعد الحساب والخدمة.",
     termsEyebrow: "شروط الخدمة",
     termsTitle: "شروط استخدام Turquaway",
     termsLead: "عند استخدام Turquaway فإنك توافق على استخدام المنصة بشكل قانوني، وتقديم معلومات دقيقة، والالتزام بقواعد الحساب والحجوزات الموضحة هنا.",
@@ -925,11 +941,21 @@ function updateLangUI(lang) {
 function translatePage(lang) {
   const dict = translations[lang] || translations[DEFAULT_LANG];
   const pageTitleKey = document.querySelector("[data-page-title-i18n]")?.dataset.pageTitleI18n;
+  const pageTitle = pageTitleKey && dict[pageTitleKey] ? dict[pageTitleKey] : dict.pageTitle;
+  const descriptionKey = pageTitleKey ? pageTitleKey.replace("PageTitle", "PageDescription") : "pageDescription";
+  const pageDescription = dict[descriptionKey] || dict.pageDescription;
   
-  document.title = pageTitleKey && dict[pageTitleKey] ? dict[pageTitleKey] : dict.pageTitle;
+  document.title = pageTitle;
   document.documentElement.lang = lang;
   document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
   document.body.dataset.locale = lang;
+  document.querySelector('meta[name="description"]')?.setAttribute("content", pageDescription);
+  document.querySelector('meta[property="og:title"]')?.setAttribute("content", pageTitle);
+  document.querySelector('meta[property="og:description"]')?.setAttribute("content", pageDescription);
+  document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", pageTitle);
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", pageDescription);
+  const ogLocales = { en: "en_US", tr: "tr_TR", ru: "ru_RU", ar: "ar_SA" };
+  document.querySelector('meta[property="og:locale"]')?.setAttribute("content", ogLocales[lang] || "en_US");
   
   document.querySelectorAll("[data-i18n]").forEach(el => {
     const key = el.dataset.i18n;

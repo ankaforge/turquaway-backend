@@ -47,6 +47,7 @@ SECRET_KEY = env(
 DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1', 'localhost'])
+SITE_URL = env('SITE_URL', default='https://turquaway.com').rstrip('/')
 
 
 # Application definition
@@ -93,6 +94,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'api.context_processors.seo',
             ],
         },
     },
