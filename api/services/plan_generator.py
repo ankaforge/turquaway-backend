@@ -320,7 +320,12 @@ Output schema:
 }}
 """.strip()
             try:
-                payload = self.client.chat_json(prompt=prompt, temperature=0.45, timeout=60)
+                payload = self.client.chat_json(
+                    prompt=prompt,
+                    temperature=0.45,
+                    timeout=16,
+                    max_retries=1,
+                )
             except Exception as exc:
                 last_error = exc
                 break

@@ -204,7 +204,7 @@ Return strict JSON object:
 """.strip()
 
         try:
-            payload = self.client.chat_json(prompt=prompt, temperature=0.3, timeout=8)
+            payload = self.client.chat_json(prompt=prompt, temperature=0.3, timeout=5, max_retries=1)
         except Exception:
             return {
                 "hotel_area": self._normalize_text(area_district) or self._normalize_text(area_zone),

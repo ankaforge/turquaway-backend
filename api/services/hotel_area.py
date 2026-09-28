@@ -17,7 +17,7 @@ class HotelAreaContext:
 
 
 class HotelAreaResolver:
-    def __init__(self, timeout_seconds: float = 8.0):
+    def __init__(self, timeout_seconds: float = 5.0):
         self.timeout_seconds = timeout_seconds
 
     def _is_valid_coord(self, lat: float | None, lng: float | None) -> bool:

@@ -472,6 +472,14 @@ class PlanContractTests(APITestCase):
 		plan = TravelPlan.objects.filter(user=self.user).latest('created_at')
 		self.assertIsNone(plan.source_payload.get('hotel_reservation_id'))
 
+	@patch('api.views.GeminiService.generate_plan_options', side_effect=TimeoutError('AI provider timed out'))
+	def test_generate_options_falls_back_when_ai_provider_times_out(self, _mock_generate):
+		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')
+
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.assertEqual(len(response.data['options']), 2)
+		self.assertTrue(all(option['days'] for option in response.data['options']))
+
 	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
 	def test_generate_options_accepts_phase1_hotel_name_without_reservation(self, _mock_generate):
 		payload = self._payload()

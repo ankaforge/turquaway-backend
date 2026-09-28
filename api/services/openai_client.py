@@ -64,7 +64,9 @@ class OpenAIJsonClient:
 
         for attempt in range(max_retries):
             try:
-                with httpx.Client(timeout=httpx.Timeout(timeout_seconds, connect=10.0)) as client:
+                with httpx.Client(
+                    timeout=httpx.Timeout(timeout_seconds, connect=min(10.0, timeout_seconds))
+                ) as client:
                     resp = client.post(url, headers=headers, json=payload)
 
                 if resp.status_code >= 400:
