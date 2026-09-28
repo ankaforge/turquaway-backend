@@ -213,11 +213,24 @@ class TravelPlan(models.Model):
         ACTIVE = 'active', 'Active'
         COMPLETED = 'completed', 'Completed'
 
-    uuid = models.UUIDField(default=uuid4, db_index=True, editable=False)
+    class GenerationStatus(models.TextChoices):
+        PENDING = 'pending', 'Pending'
+        PROCESSING = 'processing', 'Processing'
+        COMPLETED = 'completed', 'Completed'
+        FAILED = 'failed', 'Failed'
+
+    uuid = models.UUIDField(default=uuid4, unique=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='travel_plans', null=True, blank=True)
     destination = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
     source_payload = models.JSONField(default=dict, blank=True)
     options_payload = models.JSONField(default=list, blank=True)
+    generation_status = models.CharField(
+        max_length=20,
+        choices=GenerationStatus.choices,
+        default=GenerationStatus.COMPLETED,
+        db_index=True,
+    )
+    generation_error = models.CharField(max_length=255, blank=True)
     confirmed_plan_id = models.CharField(max_length=64, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     created_at = models.DateTimeField(default=timezone.now)

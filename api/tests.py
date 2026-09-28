@@ -454,6 +454,84 @@ class PlanContractTests(APITestCase):
 			'family_mode': False,
 		}
 
+	@patch('api.tasks.generate_plan_options_task.delay')
+	def test_async_generation_returns_job_and_status(self, mock_enqueue):
+		response = self.client.post(
+			reverse('plans-generation-create'),
+			self._payload(),
+			format='json',
+		)
+
+		self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+		mock_enqueue.assert_called_once()
+		plan = TravelPlan.objects.get(uuid=response.data['job_id'], user=self.user)
+		self.assertEqual(plan.generation_status, TravelPlan.GenerationStatus.PENDING)
+
+		status_response = self.client.get(
+			reverse('plans-generation-status', kwargs={'plan_uuid': plan.uuid})
+		)
+		self.assertEqual(status_response.status_code, status.HTTP_200_OK)
+		self.assertEqual(status_response.data['status'], TravelPlan.GenerationStatus.PENDING)
+
+	@patch('api.tasks.generate_plan_options_task.delay')
+	def test_async_generation_status_is_private_to_owner(self, mock_enqueue):
+		response = self.client.post(
+			reverse('plans-generation-create'),
+			self._payload(),
+			format='json',
+		)
+		plan = TravelPlan.objects.get(uuid=response.data['job_id'])
+
+		other_user = User.objects.create_user(
+			email='other-plan-user@example.com',
+			password='StrongPass123!',
+			full_name='Other Plan User',
+		)
+		other_refresh = RefreshToken.for_user(other_user)
+		self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {str(other_refresh.access_token)}')
+		status_response = self.client.get(
+			reverse('plans-generation-status', kwargs={'plan_uuid': plan.uuid})
+		)
+
+		self.assertEqual(status_response.status_code, status.HTTP_404_NOT_FOUND)
+
+	@patch(
+		'api.tasks.GeminiService.generate_plan_options',
+		return_value=[
+			{
+				'plan_id': 'async-plan',
+				'title': 'Plan A',
+				'summary': 'A generated itinerary.',
+				'estimated_total': 12000,
+				'currency': 'TRY',
+				'days': [{'day': 1, 'timeline': [
+					{'time': '09:00', 'type': 'activity', 'title': 'Walk', 'notes': 'A local walk.'},
+				]}],
+			},
+		],
+	)
+	def test_async_task_persists_generated_options(self, _mock_generate):
+		plan = TravelPlan.objects.create(
+			user=self.user,
+			destination=self.destination,
+			source_payload={
+				**self._payload(),
+				'hotel_name': '',
+				'hotel_reservation_id': None,
+				'language': 'en',
+				'selected_tour_ids': [],
+			},
+			generation_status=TravelPlan.GenerationStatus.PENDING,
+		)
+
+		from api.tasks import generate_plan_options_task
+
+		generate_plan_options_task.apply(args=[str(plan.uuid)]).get()
+
+		plan.refresh_from_db()
+		self.assertEqual(plan.generation_status, TravelPlan.GenerationStatus.COMPLETED)
+		self.assertEqual(plan.options_payload[0]['plan_id'], 'async-plan')
+
 	@patch('api.views.GeminiService.generate_plan_options', return_value=[])
 	def test_generate_options_accepts_missing_hotel_reservation_id(self, _mock_generate):
 		response = self.client.post(reverse('plans-generate-options'), self._payload(), format='json')

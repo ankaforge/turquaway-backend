@@ -1560,6 +1560,101 @@ class PlanGenerateOptionsView(APIView):
         return Response({"options": options})
 
 
+class PlanGenerateAsyncView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = PlanGenerateOptionsSerializer(data=request.data)
+        if not serializer.is_valid():
+            return error_response(
+                code="validation_error",
+                detail="Plan options validation failed.",
+                fields=serializer.errors,
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        payload = serializer.validated_data
+        hotel_reservation_id = payload.get('hotel_reservation_id')
+        if hotel_reservation_id and not HotelReservation.objects.filter(
+            uuid=hotel_reservation_id,
+            user=request.user,
+        ).exists():
+            return error_response(
+                code='not_found',
+                detail='hotel_reservation_id not found or does not belong to you.',
+                fields={'hotel_reservation_id': ['Invalid value.']},
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+
+        source_payload = {
+            'city': payload['city'],
+            'start_date': payload['start_date'].isoformat(),
+            'end_date': payload['end_date'].isoformat(),
+            'adults': payload['adults'],
+            'children': payload['children'],
+            'budget_type': payload['budget_type'],
+            'activities': payload['activities'],
+            'hotel_name': str(payload.get('hotel_name') or '').strip(),
+            'hotel_reservation_id': str(hotel_reservation_id) if hotel_reservation_id else None,
+            'selected_tour_ids': [str(value) for value in payload.get('selected_tour_ids', [])],
+            'language': normalize_lang(getattr(request.user, 'language', None) or payload.get('language')),
+            'family_mode': payload['family_mode'],
+        }
+        plan = TravelPlan.objects.create(
+            user=request.user,
+            destination=Destination.objects.filter(name__iexact=source_payload['city']).first(),
+            source_payload=source_payload,
+            generation_status=TravelPlan.GenerationStatus.PENDING,
+        )
+
+        try:
+            from api.tasks import generate_plan_options_task
+
+            generate_plan_options_task.delay(str(plan.uuid))
+        except Exception:
+            TravelPlan.objects.filter(pk=plan.pk).update(
+                generation_status=TravelPlan.GenerationStatus.FAILED,
+                generation_error='Plan generation is temporarily unavailable. Please try again.',
+            )
+            return error_response(
+                code='service_unavailable',
+                detail='Plan generation is temporarily unavailable. Please try again.',
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        session = getattr(request, 'session', None)
+        if session is not None:
+            session['last_plan_uuid'] = str(plan.uuid)
+
+        return Response(
+            {
+                'job_id': str(plan.uuid),
+                'status': plan.generation_status,
+                'status_url': f'/api/v1/plans/generation/{plan.uuid}/',
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+
+class PlanGenerationStatusView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request, plan_uuid):
+        plan = TravelPlan.objects.filter(uuid=plan_uuid, user=request.user).first()
+        if plan is None:
+            return error_response(
+                code='not_found',
+                detail='Plan generation job not found.',
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
+        return Response({
+            'job_id': str(plan.uuid),
+            'status': plan.generation_status,
+            'options': plan.options_payload if plan.generation_status == TravelPlan.GenerationStatus.COMPLETED else None,
+            'detail': plan.generation_error or None,
+        })
+
+
 class PlanConfirmView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 

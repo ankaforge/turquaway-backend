@@ -49,6 +49,7 @@
     confirmPlan: "Confirm this plan",
     estimatedTotal: "Estimated total",
     loadingPlan: "Preparing your final itinerary...",
+    planWaitTimeout: "Plan generation is taking longer than expected. Please try again shortly.",
     goToAccount: "Go to account",
     createAnotherPlan: "Create another plan",
     noActivePlan: "Plan options could not be created yet. Try again or pick another destination.",
@@ -115,6 +116,7 @@
       confirmPlan: "Bu planı onayla",
       estimatedTotal: "Tahmini toplam",
       loadingPlan: "Final rota hazırlanıyor...",
+      planWaitTimeout: "Plan beklenenden uzun sürüyor. Lütfen biraz sonra tekrar dene.",
       goToAccount: "Hesaba git",
       createAnotherPlan: "Yeni plan oluştur",
       noActivePlan: "Plan seçenekleri henüz oluşturulamadı. Tekrar dene veya başka destinasyon seç.",
@@ -590,7 +592,7 @@
     setFeedback("");
     render();
     try {
-      const payload = await apiRequest("/plans/generate-options/", {
+      const job = await apiRequest("/plans/generation/", {
         method: "POST",
         body: JSON.stringify({
           city: state.draft.city,
@@ -606,7 +608,22 @@
           family_mode: Number(state.draft.children) > 0,
         }),
       });
-      state.draft.plan_options = Array.isArray(payload.options) ? payload.options : [];
+      const deadline = Date.now() + 120000;
+      let result;
+      let pollDelay = 1500;
+      while (Date.now() < deadline) {
+        await new Promise((resolve) => window.setTimeout(resolve, pollDelay));
+        result = await apiRequest(`/plans/generation/${encodeURIComponent(job.job_id)}/`, {
+          method: "GET",
+        });
+        if (result.status === "completed") break;
+        if (result.status === "failed") {
+          throw new Error(result.detail || text("genericError"));
+        }
+        pollDelay = Math.min(Math.round(pollDelay * 1.5), 5000);
+      }
+      if (result?.status !== "completed") throw new Error(text("planWaitTimeout"));
+      state.draft.plan_options = Array.isArray(result.options) ? result.options : [];
       state.step = "plans";
       saveDraft();
     } catch (error) {
